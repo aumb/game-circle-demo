@@ -4,13 +4,13 @@ import 'package:gamecircle/core/errors/failure.dart';
 import 'package:gamecircle/features/login/domain/entities/token.dart';
 
 abstract class LoginRepository {
-  Future<Either<Failure, Token>> postEmailLogin({
-    required String? email,
-    required String? password,
-  });
+  Future<Either<Failure, Token?>> postEmailLogin(
+    String? email,
+    String? password,
+  );
 
-  Future<Either<Failure, Token>> postSocialLogin({
-    required String? provider,
-    required String? token,
-  });
+  Future<Either<Failure, Token?>> postSocialLogin(
+    String? provider,
+    String? token,
+  );
 }

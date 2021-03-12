@@ -1,0 +1,64 @@
+import 'package:dio/dio.dart';
+import 'package:gamecircle/core/api.dart';
+import 'package:gamecircle/features/login/data/datasources/login_local_data_source.dart';
+import 'package:gamecircle/features/login/data/datasources/login_remote_data_source.dart';
+import 'package:gamecircle/features/login/data/repositories/login_repository_impl.dart';
+import 'package:gamecircle/features/login/domain/repositories/login_repository.dart';
+import 'package:gamecircle/features/login/domain/usecases/post_email_login.dart';
+import 'package:gamecircle/features/login/domain/usecases/post_social_login.dart';
+import 'package:gamecircle/features/login/presentation/bloc/login_bloc.dart';
+import 'package:gamecircle/features/login/presentation/controllers/login_controller.dart';
+import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+final sl = GetIt.instance;
+
+Future<void> init() async {
+  //! Features - GameCircle
+  // Bloc
+  sl.registerFactory(
+    () => LoginBloc(
+      postEmailLogin: sl(),
+      postSocialLogin: sl(),
+    ),
+  );
+
+  sl.registerFactory(() => LoginController());
+
+  // Use cases
+  sl.registerLazySingleton(() => PostEmailLogin(sl()));
+  sl.registerLazySingleton(() => PostSocialLogin(sl()));
+
+  // Repository
+  sl.registerLazySingleton<LoginRepository>(
+    () => LoginRespositoryImpl(
+      localDataSource: sl(),
+      remoteDataSource: sl(),
+    ),
+  );
+
+  // Data sources
+  sl.registerLazySingleton<LoginRemoteDataSource>(
+    () => LoginRemoteDataSourceImpl(client: sl()),
+  );
+
+  sl.registerLazySingleton<LoginLocalDataSource>(
+    () => LoginLocalDataSourceImpl(sharedPreferences: sl()),
+  );
+
+  //! Core
+  // sl.registerLazySingleton(() => InputConverter());
+  // sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
+
+  //! External
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton(
+    () => Dio(
+      BaseOptions(baseUrl: API.base),
+    )..interceptors.add(
+        LogInterceptor(),
+      ),
+  );
+  // sl.registerLazySingleton(() => DataConnectionChecker());
+}
