@@ -21,7 +21,7 @@ class Loaded extends LoginState {
 }
 
 class Error extends LoginState {
-  final String message;
+  final String? message;
 
   Error({required this.message});
 

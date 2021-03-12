@@ -6,7 +6,7 @@ import 'package:gamecircle/core/widgets/buttons/custom_raised_button.dart';
 import 'package:gamecircle/core/widgets/buttons/register_options_button.dart';
 import 'package:gamecircle/core/widgets/custom_text_field.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_bloc.dart';
-import 'package:gamecircle/features/login/presentation/controllers/login_controller.dart';
+import 'package:gamecircle/features/login/presentation/bloc/login_form_bloc.dart';
 import 'package:gamecircle/injection_container.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -16,8 +16,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late LoginController _controller;
   late LoginBloc _bloc;
+  late LoginFormBloc _formBloc;
 
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
@@ -26,15 +26,14 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     _bloc = sl<LoginBloc>();
-    _controller = sl<LoginController>();
+    _formBloc = sl<LoginFormBloc>();
   }
 
   @override
   void dispose() {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
-    _bloc.drain();
-    _controller.dispose();
+    _bloc.close();
     super.dispose();
   }
 
@@ -43,142 +42,190 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
-          child: BlocProvider(
-            create: (_) => _bloc,
-            child: StreamBuilder<bool>(
-                stream: _controller.canSubmitPageStream,
-                builder: (context, snapshot) {
-                  return BlocBuilder<LoginBloc, LoginState>(
-                    builder: (context, state) {
-                      return ConstrainedBox(
-                        constraints:
-                            BoxConstraints(minHeight: constraints.maxHeight),
-                        child: IntrinsicHeight(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 32),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                SizedBox(height: 24),
-                                Container(
-                                  padding: EdgeInsets.all(24),
-                                  height: 250,
-                                  width: 250,
-                                  child: Image.asset(Images.logo),
-                                ),
-                                SizedBox(height: 24),
-                                CustomTextField(
-                                  enabled: state is! Loading,
-                                  labelText: "E-mail",
-                                  hintText: "E-mail",
-                                  focusNode: _emailFocusNode,
-                                  onSubmitted: _emailSubmitted,
-                                  maxLength: 254,
-                                  onChanged: (String value) {
-                                    _controller.email = value;
-                                  },
-                                ),
-                                SizedBox(height: 24),
-                                CustomTextField(
-                                  enabled: state is! Loading,
-                                  labelText: "Password",
-                                  hintText: "Password",
-                                  focusNode: _passwordFocusNode,
-                                  onSubmitted: _passwordSubmitted,
-                                  obscureText: _controller.obscurePassword,
-                                  suffixIcon: (_controller.obscurePassword ??
-                                          true)
-                                      ? IconButton(
-                                          icon: Icon(
-                                            Icons.visibility_off,
-                                            color: Colors.white30,
-                                          ),
-                                          onPressed: () {
-                                            _controller.obscurePassword = false;
-                                          },
-                                        )
-                                      : IconButton(
-                                          icon: Icon(
-                                            Icons.visibility,
-                                            color: Colors.white30,
-                                          ),
-                                          onPressed: () {
-                                            _controller.obscurePassword = true;
-                                          }),
-                                  onChanged: (String value) {
-                                    _controller.password = value;
-                                  },
-                                ),
-                                SizedBox(height: 24),
-                                CustomRaisedButton(
-                                  disabled: !_controller.canSubmitPage,
-                                  label: "Submit",
-                                  isLoading: state is Loading,
-                                  onPressed: () {
-                                    _bloc.add(
-                                      PostEmailLoginEvent(
-                                        email: _controller.email,
-                                        password: _controller.password,
-                                      ),
-                                    );
-                                  },
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider<LoginBloc>(
+                create: (BuildContext context) => _bloc,
+              ),
+              BlocProvider<LoginFormBloc>(
+                create: (BuildContext context) => _formBloc,
+              ),
+            ],
+            child: MultiBlocListener(
+              listeners: [
+                BlocListener<LoginBloc, LoginState>(
+                  listener: (BuildContext context, state) {
+                    if (state is Error) {
+                      final snackBar = SnackBar(
+                          content: Text(state.message ?? ''),
+                          behavior: SnackBarBehavior.floating);
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
+                  },
+                ),
+                BlocListener<LoginFormBloc, LoginFormState>(
+                  listener: (context, state) {
+                    print(state.email);
+                  },
+                ),
+              ],
+              child: BlocBuilder<LoginBloc, LoginState>(
+                builder: (context, state) =>
+                    BlocBuilder<LoginFormBloc, LoginFormState>(
+                        builder: (context, formState) {
+                  return ConstrainedBox(
+                    constraints:
+                        BoxConstraints(minHeight: constraints.maxHeight),
+                    child: IntrinsicHeight(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            SizedBox(height: 24),
+                            Container(
+                              padding: EdgeInsets.all(24),
+                              height: 276,
+                              child: Image.asset(Images.logo),
+                            ),
+                            SizedBox(height: 24),
+                            _buildEmailInput(state),
+                            SizedBox(height: 24),
+                            _buildPasswordInput(state, formState),
+                            SizedBox(height: 24),
+                            _buildSubmitButton(formState, state),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  Text("No account? Get started:"),
+                                  SizedBox(height: 16),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Text("No account? Get started:"),
-                                      SizedBox(height: 16),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          RegisterOptionsButton(
-                                            onPressed: () {},
-                                            isCircular: true,
-                                            size: 48,
-                                            icon: MdiIcons.facebook,
-                                            color: CustomColors.facebookColor,
-                                          ),
-                                          SizedBox(width: 16),
-                                          RegisterOptionsButton(
-                                            onPressed: () {},
-                                            isCircular: true,
-                                            size: 48,
-                                            icon: MdiIcons.google,
-                                          ),
-                                          SizedBox(width: 16),
-                                          RegisterOptionsButton(
-                                            onPressed: () {
-                                              // Navigator.of(context).push(
-                                              //   MaterialPageRoute(
-                                              //     builder: (BuildContext context) =>
-                                              //         RegisterWithEmailScreen(),
-                                              //   ),
-                                              // );
-                                            },
-                                            isCircular: true,
-                                            size: 48,
-                                            color: Theme.of(context).errorColor,
-                                            icon: MdiIcons.email,
-                                          ),
-                                        ],
+                                      _buildRegisterOptionsButton(
+                                        onPressed: () {},
+                                        color: CustomColors.facebookColor,
+                                        icon: MdiIcons.facebook,
                                       ),
-                                      SizedBox(height: 24),
+                                      SizedBox(width: 16),
+                                      _buildRegisterOptionsButton(
+                                        onPressed: () {},
+                                        icon: MdiIcons.google,
+                                      ),
+                                      SizedBox(width: 16),
+                                      _buildRegisterOptionsButton(
+                                        onPressed: () {
+                                          // Navigator.of(context).push(
+                                          //   MaterialPageRoute(
+                                          //     builder: (BuildContext context) =>
+                                          //         RegisterWithEmailScreen(),
+                                          //   ),
+                                          // );
+                                        },
+                                        color: Theme.of(context).errorColor,
+                                        icon: MdiIcons.email,
+                                      ),
                                     ],
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: 24),
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      );
-                    },
+                      ),
+                    ),
                   );
                 }),
+              ),
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  RegisterOptionsButton _buildRegisterOptionsButton({
+    required Function() onPressed,
+    Color? color,
+    required icon,
+  }) {
+    return RegisterOptionsButton(
+      onPressed: onPressed,
+      isCircular: true,
+      size: 48,
+      icon: icon,
+      color: color,
+    );
+  }
+
+  CustomRaisedButton _buildSubmitButton(
+      LoginFormState formState, LoginState state) {
+    return CustomRaisedButton(
+      disabled: !formState.canSubmitForm,
+      label: "Submit",
+      isLoading: state is Loading,
+      onPressed: () {
+        _bloc.add(
+          PostEmailLoginEvent(
+            email: formState.email,
+            password: formState.password,
+          ),
+        );
+      },
+    );
+  }
+
+  CustomTextField _buildPasswordInput(
+      LoginState state, LoginFormState formState) {
+    return CustomTextField(
+      enabled: state is! Loading,
+      labelText: "Password",
+      hintText: "Password",
+      focusNode: _passwordFocusNode,
+      onSubmitted: _passwordSubmitted,
+      obscureText: formState.obsecureText,
+      suffixIcon: (formState.obsecureText ?? true)
+          ? IconButton(
+              icon: Icon(
+                Icons.visibility_off,
+                color: Colors.white30,
+              ),
+              onPressed: () {
+                _formBloc.add(
+                  ChangedObsecureTextEvent(obsecureText: false),
+                );
+              },
+            )
+          : IconButton(
+              icon: Icon(
+                Icons.visibility,
+                color: Colors.white30,
+              ),
+              onPressed: () {
+                _formBloc.add(
+                  ChangedObsecureTextEvent(obsecureText: true),
+                );
+              }),
+      onChanged: (String value) {
+        _formBloc.add(ChangedPasswordEvent(password: value));
+      },
+    );
+  }
+
+  CustomTextField _buildEmailInput(LoginState state) {
+    return CustomTextField(
+      enabled: state is! Loading,
+      labelText: "E-mail",
+      hintText: "E-mail",
+      focusNode: _emailFocusNode,
+      onSubmitted: _emailSubmitted,
+      maxLength: 254,
+      onChanged: (String value) {
+        _formBloc.add(ChangedEmailEvent(email: value));
+      },
     );
   }
 

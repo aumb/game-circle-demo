@@ -116,14 +116,19 @@ void main() {
       'should emit [Loading, Error] when getting data fails',
       () async {
         // arrange
-        // setUpMockInputConverterSuccess();
-        when(() => mockPostEmailLogin(any()))
-            .thenAnswer((_) async => Left(ServerFailure()));
+        final failure = ServerFailure(code: 500, message: "Unexpected eroor");
+        when(() => mockPostEmailLogin(any())).thenAnswer(
+          (_) async => Left(
+            failure,
+          ),
+        );
         // assert later
         final expected = [
           // Empty(),
           Loading(),
-          Error(message: "HELLO"),
+          Error(
+            message: failure.message,
+          ),
         ];
         expectLater(bloc, emitsInOrder(expected));
         // act
@@ -206,15 +211,17 @@ void main() {
     test(
       'should emit [Loading, Error] when getting data fails',
       () async {
+        final serverFailure =
+            ServerFailure(code: 500, message: "unexpected error");
         // arrange
         // setUpMockInputConverterSuccess();
         when(() => mockPostSocialLogin(any()))
-            .thenAnswer((_) async => Left(ServerFailure()));
+            .thenAnswer((_) async => Left(serverFailure));
         // assert later
         final expected = [
           // Empty(),
           Loading(),
-          Error(message: "HELLO"),
+          Error(message: serverFailure.message),
         ];
         expectLater(bloc, emitsInOrder(expected));
         // act

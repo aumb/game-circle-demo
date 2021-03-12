@@ -43,8 +43,13 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
       if (response?.statusCode == 200) {
         return TokenModel.fromJson(response?.data);
       }
+    } on DioError catch (e) {
+      final serverError = ServerError.fromJson(e.response?.data);
+      throw ServerException(serverError);
     } catch (e) {
-      throw ServerException();
+      print(e);
+      throw ServerException(
+          ServerError(code: 500, message: "An unexpected error has occured"));
     }
   }
 }

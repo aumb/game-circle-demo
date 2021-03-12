@@ -7,6 +7,7 @@ import 'package:gamecircle/features/login/domain/repositories/login_repository.d
 import 'package:gamecircle/features/login/domain/usecases/post_email_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_social_login.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_bloc.dart';
+import 'package:gamecircle/features/login/presentation/bloc/login_form_bloc.dart';
 import 'package:gamecircle/features/login/presentation/controllers/login_controller.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,6 +22,10 @@ Future<void> init() async {
       postEmailLogin: sl(),
       postSocialLogin: sl(),
     ),
+  );
+
+  sl.registerFactory(
+    () => LoginFormBloc(),
   );
 
   sl.registerFactory(() => LoginController());

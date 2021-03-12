@@ -38,7 +38,10 @@ void main() {
   }
 
   void setUpMockHttpClientFailure() {
-    final responsepayload = jsonEncode("Something went wrong");
+    final responsepayload = jsonEncode({
+      "error": "Something went wrong",
+      "code": 500,
+    });
 
     final httpResponse =
         ResponseBody.fromString(responsepayload, 404, headers: {

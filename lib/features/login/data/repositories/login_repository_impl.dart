@@ -23,8 +23,8 @@ class LoginRespositoryImpl implements LoginRepository {
           await remoteDataSource.postEmailLogin(email, password);
       localDataSource.cacheToken(remoteToken);
       return Right(remoteToken);
-    } on ServerException {
-      return Left(ServerFailure());
+    } on ServerException catch (e) {
+      return Left(ServerFailure.fromServerException(e.error));
     }
   }
 
@@ -36,8 +36,8 @@ class LoginRespositoryImpl implements LoginRepository {
           await remoteDataSource.postSocialLogin(provider, token);
       localDataSource.cacheToken(remoteToken);
       return Right(remoteToken);
-    } on ServerException {
-      return Left(ServerFailure());
+    } on ServerException catch (e) {
+      return Left(ServerFailure.fromServerException(e.error));
     }
   }
 }

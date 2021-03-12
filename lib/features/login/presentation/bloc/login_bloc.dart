@@ -49,7 +49,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Either<Failure, Token?> failureOrTrivia,
   ) async* {
     yield failureOrTrivia.fold(
-      (failure) => Error(message: "HELLO"),
+      (failure) {
+        if (failure is ServerFailure) {
+          return Error(message: failure.message);
+        } else {
+          return Error(message: "An error has occured");
+        }
+      },
       (token) => Loaded(token: token),
     );
   }
