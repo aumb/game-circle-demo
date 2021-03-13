@@ -1,22 +1,32 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gamecircle/core/errors/failure.dart';
+import 'package:gamecircle/core/usecases/usecases.dart';
 import 'package:gamecircle/features/login/domain/entities/token.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_email_login.dart';
+import 'package:gamecircle/features/login/domain/usecases/post_google_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_social_login.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_bloc.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockPostEmailLogin extends Mock implements PostEmailLogin {}
 
 class MockPostSocialLogin extends Mock implements PostSocialLogin {}
 
+class MockPostGoogleLogin extends Mock implements PostGoogleLogin {}
+
 void main() {
   late LoginBloc bloc;
   late MockPostEmailLogin mockPostEmailLogin;
   late MockPostSocialLogin mockPostSocialLogin;
+  late MockPostGoogleLogin mockPostGoogleLogin;
 
   setUpAll(() {
+    registerFallbackValue<NoParams>(NoParams());
+    registerFallbackValue<MockPostGoogleLogin>(
+      MockPostGoogleLogin(),
+    );
     registerFallbackValue<PostEmailLoginParams>(
       PostEmailLoginParams(
         email: "mathiew95@gmail.com",
@@ -33,10 +43,12 @@ void main() {
 
     mockPostEmailLogin = MockPostEmailLogin();
     mockPostSocialLogin = MockPostSocialLogin();
+    mockPostGoogleLogin = MockPostGoogleLogin();
 
     bloc = LoginBloc(
       postEmailLogin: mockPostEmailLogin,
       postSocialLogin: mockPostSocialLogin,
+      postGoogleLogin: mockPostGoogleLogin,
     );
   });
 
@@ -49,27 +61,6 @@ void main() {
     final tEmail = "mathiew95@gmail.com";
     final tPassword = "123456";
     final tToken = Token(accessToken: "abcdef", refreshToken: '123456');
-
-    // void setUpMockInputConverterSuccess() =>
-    //     when(mockInputConverter.stringToUnsignedInteger(any))
-    //         .thenReturn(Right(tNumberParsed));
-
-    // test(
-    //   'should emit [Error] when the input is invalid',
-    //   () async {
-    //     // arrange
-    //     when(mockInputConverter.stringToUnsignedInteger(any))
-    //         .thenReturn(Left(InvalidInputFailure()));
-    //     // assert later
-    //     final expected = [
-    //       Empty(),
-    //       Error(message: INVALID_INPUT_FAILURE_MESSAGE),
-    //     ];
-    //     expectLater(bloc, emitsInOrder(expected));
-    //     // act
-    //     bloc.add(GetTriviaForConcreteNumber(tNumberString));
-    //   },
-    // );
 
     test(
       'should get data from the concrete use case',
@@ -145,32 +136,10 @@ void main() {
     final tSocialToken = "123456";
     final tToken = Token(accessToken: "abcdef", refreshToken: '123456');
 
-    // void setUpMockInputConverterSuccess() =>
-    //     when(mockInputConverter.stringToUnsignedInteger(any))
-    //         .thenReturn(Right(tNumberParsed));
-
-    // test(
-    //   'should emit [Error] when the input is invalid',
-    //   () async {
-    //     // arrange
-    //     when(mockInputConverter.stringToUnsignedInteger(any))
-    //         .thenReturn(Left(InvalidInputFailure()));
-    //     // assert later
-    //     final expected = [
-    //       Empty(),
-    //       Error(message: INVALID_INPUT_FAILURE_MESSAGE),
-    //     ];
-    //     expectLater(bloc, emitsInOrder(expected));
-    //     // act
-    //     bloc.add(GetTriviaForConcreteNumber(tNumberString));
-    //   },
-    // );
-
     test(
       'should get data from the concrete use case',
       () async {
         // arrange
-        // setUpMockInputConverterSuccess();
         when(() => mockPostSocialLogin(any()))
             .thenAnswer((_) async => Right(tToken));
         // act
@@ -190,7 +159,6 @@ void main() {
       'should emit [Loading, Loaded] when data is gotten successfully',
       () async {
         // arrange
-        // setUpMockInputConverterSuccess();
         when(() => mockPostSocialLogin(any()))
             .thenAnswer((_) async => Right(tToken));
         // assert later
@@ -214,7 +182,6 @@ void main() {
         final serverFailure =
             ServerFailure(code: 500, message: "unexpected error");
         // arrange
-        // setUpMockInputConverterSuccess();
         when(() => mockPostSocialLogin(any()))
             .thenAnswer((_) async => Left(serverFailure));
         // assert later
@@ -232,4 +199,55 @@ void main() {
       },
     );
   });
+
+  group('postGoogleLogin', () {
+    final tToken = Token(accessToken: "abcdef", refreshToken: '123456');
+    test(
+      'should emit [Empty, Loading, Loaded] when data is gotten successfully after google login',
+      () async {
+        // arrange
+        when(() => mockPostGoogleLogin(any()))
+            .thenAnswer((_) async => Right(_MockGoogleSignInAuthentication()));
+        when(() => mockPostSocialLogin(any()))
+            .thenAnswer((_) async => Right(tToken));
+        // assert later
+        final expected = [
+          Empty(),
+          Loading(),
+          Loaded(token: tToken),
+        ];
+        expectLater(bloc, emitsInOrder(expected));
+        // act
+        bloc.add(GoogleLoginEvent());
+      },
+    );
+
+    test(
+      'should emit [Error] when getting google data fails',
+      () async {
+        final serverFailure =
+            ServerFailure(code: 500, message: "unexpected error");
+        // arrange
+        when(
+          () => mockPostGoogleLogin(any()),
+        ).thenAnswer((_) async => Left(serverFailure));
+        // assert later
+        final expected = [
+          Error(message: serverFailure.message),
+        ];
+        expectLater(bloc, emitsInOrder(expected));
+        // act
+        bloc.add(GoogleLoginEvent());
+      },
+    );
+  });
+}
+
+class _MockGoogleSignInAuthentication extends Mock
+    implements GoogleSignInAuthentication {
+  @override
+  String get idToken => 'idToken';
+
+  @override
+  String get accessToken => 'accessToken';
 }

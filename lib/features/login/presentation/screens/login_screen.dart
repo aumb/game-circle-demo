@@ -61,13 +61,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           behavior: SnackBarBehavior.floating);
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    } else {
+                      print(state.toString());
                     }
                   },
                 ),
                 BlocListener<LoginFormBloc, LoginFormState>(
-                  listener: (context, state) {
-                    print(state.email);
-                  },
+                  listener: (context, state) {},
                 ),
               ],
               child: BlocBuilder<LoginBloc, LoginState>(
@@ -111,7 +111,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ),
                                       SizedBox(width: 16),
                                       _buildRegisterOptionsButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          _bloc.add(GoogleLoginEvent());
+                                        },
                                         icon: MdiIcons.google,
                                       ),
                                       SizedBox(width: 16),

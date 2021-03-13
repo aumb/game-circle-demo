@@ -28,3 +28,5 @@ class Error extends LoginState {
   @override
   List<Object?> get props => [message];
 }
+
+class SucessfullGoogleLogin extends LoginState {}

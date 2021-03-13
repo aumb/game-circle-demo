@@ -6,6 +6,7 @@ import 'package:gamecircle/core/api.dart';
 import 'package:gamecircle/core/errors/exceptions.dart';
 import 'package:gamecircle/features/login/data/datasources/login_remote_data_source.dart';
 import 'package:gamecircle/features/login/data/models/token_model.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:matcher/matcher.dart';
 
@@ -13,15 +14,22 @@ import '../../../../fixtures/fixture_reader.dart';
 
 class MockHttpClient extends Mock implements HttpClientAdapter {}
 
+class MockGoogleSignIn extends Mock implements GoogleSignIn {}
+
 void main() {
   late LoginRemoteDataSourceImpl dataSource;
   late MockHttpClient mockHttpClient;
+  late MockGoogleSignIn mockGoogleSignIn;
   final Dio dio = Dio();
 
   setUpAll(() {
     registerFallbackValue<RequestOptions>(RequestOptions(path: API.login));
     mockHttpClient = MockHttpClient();
-    dataSource = LoginRemoteDataSourceImpl(client: dio);
+    mockGoogleSignIn = MockGoogleSignIn();
+    dataSource = LoginRemoteDataSourceImpl(
+      client: dio,
+      googleSignIn: mockGoogleSignIn,
+    );
     dio.httpClientAdapter = mockHttpClient;
   });
 
@@ -112,4 +120,6 @@ void main() {
       },
     );
   });
+
+  //TODO: implement google sign in tests when available.
 }

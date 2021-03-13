@@ -16,9 +16,22 @@ class ServerError {
   });
 
   factory ServerError.fromJson(Map<String, dynamic>? json) {
-    return ServerError(
-      message: json?['error'],
-      code: json?['code'],
-    );
+    if (json != null) {
+      return ServerError(
+        message: (json['error'] is String)
+            ? json['error']
+            : _getErrorsFromMap(json['error']),
+        code: json['code'],
+      );
+    } else {
+      return ServerError(code: 500, message: "An unexpected error has occured");
+    }
+  }
+
+  static _getErrorsFromMap(Map<String, dynamic>? json) {
+    final List firstListError = json?.values.first;
+    final String firstError = firstListError.first;
+
+    return firstError;
   }
 }

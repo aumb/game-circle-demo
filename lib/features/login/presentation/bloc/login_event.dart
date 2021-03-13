@@ -21,8 +21,8 @@ class PostEmailLoginEvent extends LoginEvent {
 }
 
 class PostSocialLoginEvent extends LoginEvent {
-  final String provider;
-  final String token;
+  final String? provider;
+  final String? token;
 
   PostSocialLoginEvent({
     required this.provider,
@@ -32,3 +32,7 @@ class PostSocialLoginEvent extends LoginEvent {
   @override
   List<Object?> get props => [provider, token];
 }
+
+class GoogleLoginEvent extends LoginEvent {}
+
+class FacebookLoginEvent extends LoginEvent {}
