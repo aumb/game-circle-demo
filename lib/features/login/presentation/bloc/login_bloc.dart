@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/errors/failure.dart';
 import 'package:gamecircle/core/usecases/usecases.dart';
 import 'package:gamecircle/features/login/domain/entities/token.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_email_login.dart';
+import 'package:gamecircle/features/login/domain/usecases/post_facebook_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_google_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_social_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -18,11 +20,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final PostEmailLogin postEmailLogin;
   final PostSocialLogin postSocialLogin;
   final PostGoogleLogin postGoogleLogin;
+  final PostFacebookLogin postFacebookLogin;
 
   LoginBloc({
     required this.postEmailLogin,
     required this.postSocialLogin,
     required this.postGoogleLogin,
+    required this.postFacebookLogin,
   }) : super(Empty());
 
   @override
@@ -51,7 +55,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield Empty();
       final googleFailureOrAccount = await postGoogleLogin(NoParams());
       yield* _handleGoogleLoginState(googleFailureOrAccount);
-    } else if (event is FacebookLoginEvent) {}
+    } else if (event is FacebookLoginEvent) {
+      yield Empty();
+      final facebookFailureOrAccount = await postFacebookLogin(NoParams());
+      yield* _handleFacebookLoginState(facebookFailureOrAccount);
+    }
   }
 
   Stream<LoginState> _eitherLoadedOrErrorState(
@@ -75,6 +83,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }, (token) {
       this.add(
         PostSocialLoginEvent(provider: 'google', token: token?.accessToken),
+      );
+      return Empty();
+    });
+  }
+
+  Stream<LoginState> _handleFacebookLoginState(
+    Either<Failure, AccessToken?> failureOrToken,
+  ) async* {
+    yield failureOrToken.fold((failure) {
+      return _handleFailureEvent(failure);
+    }, (accessToken) {
+      this.add(
+        PostSocialLoginEvent(provider: 'facebook', token: accessToken?.token),
       );
       return Empty();
     });

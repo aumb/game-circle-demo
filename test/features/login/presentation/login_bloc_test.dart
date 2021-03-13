@@ -1,9 +1,11 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gamecircle/core/errors/failure.dart';
 import 'package:gamecircle/core/usecases/usecases.dart';
 import 'package:gamecircle/features/login/domain/entities/token.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_email_login.dart';
+import 'package:gamecircle/features/login/domain/usecases/post_facebook_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_google_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_social_login.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_bloc.dart';
@@ -16,16 +18,22 @@ class MockPostSocialLogin extends Mock implements PostSocialLogin {}
 
 class MockPostGoogleLogin extends Mock implements PostGoogleLogin {}
 
+class MockPostFacebookLogin extends Mock implements PostFacebookLogin {}
+
 void main() {
   late LoginBloc bloc;
   late MockPostEmailLogin mockPostEmailLogin;
   late MockPostSocialLogin mockPostSocialLogin;
   late MockPostGoogleLogin mockPostGoogleLogin;
+  late MockPostFacebookLogin mockPostFacebookLogin;
 
   setUpAll(() {
     registerFallbackValue<NoParams>(NoParams());
     registerFallbackValue<MockPostGoogleLogin>(
       MockPostGoogleLogin(),
+    );
+    registerFallbackValue<MockPostFacebookLogin>(
+      MockPostFacebookLogin(),
     );
     registerFallbackValue<PostEmailLoginParams>(
       PostEmailLoginParams(
@@ -44,11 +52,13 @@ void main() {
     mockPostEmailLogin = MockPostEmailLogin();
     mockPostSocialLogin = MockPostSocialLogin();
     mockPostGoogleLogin = MockPostGoogleLogin();
+    mockPostFacebookLogin = MockPostFacebookLogin();
 
     bloc = LoginBloc(
       postEmailLogin: mockPostEmailLogin,
       postSocialLogin: mockPostSocialLogin,
       postGoogleLogin: mockPostGoogleLogin,
+      postFacebookLogin: mockPostFacebookLogin,
     );
   });
 
@@ -233,11 +243,56 @@ void main() {
         ).thenAnswer((_) async => Left(serverFailure));
         // assert later
         final expected = [
+          Empty(),
           Error(message: serverFailure.message),
         ];
         expectLater(bloc, emitsInOrder(expected));
         // act
         bloc.add(GoogleLoginEvent());
+      },
+    );
+  });
+
+  group('postFacebookLogin', () {
+    final tToken = Token(accessToken: "abcdef", refreshToken: '123456');
+    final facebookToken = AccessToken(token: "123456");
+    test(
+      'should emit [Empty, Loading, Loaded] when data is gotten successfully after google login',
+      () async {
+        // arrange
+        when(() => mockPostFacebookLogin(any()))
+            .thenAnswer((_) async => Right(facebookToken));
+        when(() => mockPostSocialLogin(any()))
+            .thenAnswer((_) async => Right(tToken));
+        // assert later
+        final expected = [
+          Empty(),
+          Loading(),
+          Loaded(token: tToken),
+        ];
+        expectLater(bloc, emitsInOrder(expected));
+        // act
+        bloc.add(FacebookLoginEvent());
+      },
+    );
+
+    test(
+      'should emit [Error] when getting google data fails',
+      () async {
+        final serverFailure =
+            ServerFailure(code: 500, message: "unexpected error");
+        // arrange
+        when(
+          () => mockPostFacebookLogin(any()),
+        ).thenAnswer((_) async => Left(serverFailure));
+        // assert later
+        final expected = [
+          Empty(),
+          Error(message: serverFailure.message),
+        ];
+        expectLater(bloc, emitsInOrder(expected));
+        // act
+        bloc.add(FacebookLoginEvent());
       },
     );
   });

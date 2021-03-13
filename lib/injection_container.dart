@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/api.dart';
 import 'package:gamecircle/features/login/data/datasources/login_local_data_source.dart';
 import 'package:gamecircle/features/login/data/datasources/login_remote_data_source.dart';
 import 'package:gamecircle/features/login/data/repositories/login_repository_impl.dart';
 import 'package:gamecircle/features/login/domain/repositories/login_repository.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_email_login.dart';
+import 'package:gamecircle/features/login/domain/usecases/post_facebook_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_google_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_social_login.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_bloc.dart';
@@ -22,6 +24,7 @@ Future<void> init() async {
       postEmailLogin: sl(),
       postSocialLogin: sl(),
       postGoogleLogin: sl(),
+      postFacebookLogin: sl(),
     ),
   );
 
@@ -33,6 +36,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => PostEmailLogin(sl()));
   sl.registerLazySingleton(() => PostSocialLogin(sl()));
   sl.registerLazySingleton(() => PostGoogleLogin(sl()));
+  sl.registerLazySingleton(() => PostFacebookLogin(sl()));
 
   // Repository
   sl.registerLazySingleton<LoginRepository>(
@@ -44,7 +48,8 @@ Future<void> init() async {
 
   // Data sources
   sl.registerLazySingleton<LoginRemoteDataSource>(
-    () => LoginRemoteDataSourceImpl(client: sl(), googleSignIn: sl()),
+    () => LoginRemoteDataSourceImpl(
+        client: sl(), googleSignIn: sl(), facebookSignIn: sl()),
   );
 
   sl.registerLazySingleton<LoginLocalDataSource>(
@@ -54,6 +59,7 @@ Future<void> init() async {
   // External
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton(() => FacebookAuth.instance);
   sl.registerLazySingleton(
     () => GoogleSignIn(
       scopes: [
@@ -61,6 +67,7 @@ Future<void> init() async {
       ],
     ),
   );
+
   sl.registerLazySingleton(
     () => Dio(
       BaseOptions(baseUrl: API.base),

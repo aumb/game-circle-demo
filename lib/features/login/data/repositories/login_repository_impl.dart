@@ -1,3 +1,4 @@
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/errors/exceptions.dart';
 import 'package:gamecircle/features/login/data/datasources/login_local_data_source.dart';
 import 'package:gamecircle/features/login/data/datasources/login_remote_data_source.dart';
@@ -48,6 +49,17 @@ class LoginRespositoryImpl implements LoginRepository {
       final GoogleSignInAuthentication? googleSignInAccount =
           await remoteDataSource.postGoogleLogin();
       return Right(googleSignInAccount);
+    } on ServerException catch (e) {
+      return Left(ServerFailure.fromServerException(e.error));
+    }
+  }
+
+  @override
+  Future<Either<Failure, AccessToken?>> postFacebookLogin() async {
+    try {
+      final AccessToken? accessToken =
+          await remoteDataSource.postFacebookLogin();
+      return Right(accessToken);
     } on ServerException catch (e) {
       return Left(ServerFailure.fromServerException(e.error));
     }

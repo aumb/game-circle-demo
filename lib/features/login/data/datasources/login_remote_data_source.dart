@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/api.dart';
 import 'package:gamecircle/core/errors/exceptions.dart';
 import 'package:gamecircle/core/utils/string_utils.dart';
@@ -18,16 +19,55 @@ abstract class LoginRemoteDataSource {
   Future<TokenModel?> postSocialLogin(String? provider, String? token);
 
   Future<GoogleSignInAuthentication?> postGoogleLogin();
+
+  Future<AccessToken?> postFacebookLogin();
 }
 
 class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
   final Dio client;
   final GoogleSignIn googleSignIn;
+  final FacebookAuth facebookSignIn;
 
   LoginRemoteDataSourceImpl({
     required this.client,
     required this.googleSignIn,
+    required this.facebookSignIn,
   });
+
+  @override
+  Future<AccessToken?> postFacebookLogin() async {
+    try {
+      // by default the login method has the next permissions ['email','public_profile']
+      AccessToken? accessToken = await facebookSignIn.login();
+      if (StringUtils().isEmpty(accessToken?.token)) {
+        throw ServerException(
+          ServerError(
+              code: 401, message: "Could not get information from facebook"),
+        );
+      }
+
+      return accessToken;
+    } on FacebookAuthException catch (e) {
+      switch (e.errorCode) {
+        case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
+          throw ServerException(
+            ServerError(
+                code: 401,
+                message: "You have a previous login operation in progress"),
+          );
+        case FacebookAuthErrorCode.CANCELLED:
+          throw ServerException(
+            ServerError(
+                code: 401, message: "Could not get information from facebook"),
+          );
+        case FacebookAuthErrorCode.FAILED:
+          throw ServerException(
+            ServerError(
+                code: 401, message: "Could not get information from facebook"),
+          );
+      }
+    }
+  }
 
   @override
   Future<GoogleSignInAuthentication?> postGoogleLogin() async {

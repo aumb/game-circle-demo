@@ -105,7 +105,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       _buildRegisterOptionsButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          _bloc.add(FacebookLoginEvent());
+                                        },
                                         color: CustomColors.facebookColor,
                                         icon: MdiIcons.facebook,
                                       ),

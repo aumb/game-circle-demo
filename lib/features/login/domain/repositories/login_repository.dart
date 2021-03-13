@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'package:gamecircle/core/errors/failure.dart';
 import 'package:gamecircle/features/login/domain/entities/token.dart';
@@ -16,4 +17,6 @@ abstract class LoginRepository {
   );
 
   Future<Either<Failure, GoogleSignInAuthentication?>> postGoogleLogin();
+
+  Future<Either<Failure, AccessToken?>> postFacebookLogin();
 }

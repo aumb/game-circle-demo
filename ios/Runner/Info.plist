@@ -2,8 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-<!-- <key>LSApplicationQueriesSchemes</key> -->
-	<!-- <array>
+ <key>LSApplicationQueriesSchemes</key>
+	<array>
   		<string>fbapi</string>
   		<string>fbapi20130214</string>
   		<string>fbapi20130410</string>
@@ -21,11 +21,10 @@
   		<string>fbshareextension</string>
 	</array>
 	<key>FacebookAppID</key>
-	<string>130413882303930</string>
+	<string>435838010980768</string>
 	<key>FacebookDisplayName</key>
-	<string>GameCircle</string> -->
-<!-- Put me in the [my_project]/ios/Runner/Info.plist file -->
-<!-- Google Sign-in Section -->
+	<string>GameCircle</string>
+<!-- Social Sign-in Section -->
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -33,12 +32,12 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<!-- <string>fb130413882303930</string> -->
+				<string>fb435838010980768</string>
 				<string>com.googleusercontent.apps.143236840270-rpn5n6bsp0rs58bfpu5067f6ptj4uqb2</string>
 			</array>
 		</dict>
 	</array>
-<!-- End of the Google Sign-in Section -->
+<!-- End of the Social Sign-in Section -->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>NSAppTransportSecurity</key>

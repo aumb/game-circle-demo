@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gamecircle/core/api.dart';
 import 'package:gamecircle/core/errors/exceptions.dart';
@@ -16,19 +17,25 @@ class MockHttpClient extends Mock implements HttpClientAdapter {}
 
 class MockGoogleSignIn extends Mock implements GoogleSignIn {}
 
+class MockFacebookSignIn extends Mock implements FacebookAuth {}
+
 void main() {
   late LoginRemoteDataSourceImpl dataSource;
   late MockHttpClient mockHttpClient;
   late MockGoogleSignIn mockGoogleSignIn;
+  late MockFacebookSignIn mockFacebookSignIn;
   final Dio dio = Dio();
 
   setUpAll(() {
     registerFallbackValue<RequestOptions>(RequestOptions(path: API.login));
     mockHttpClient = MockHttpClient();
     mockGoogleSignIn = MockGoogleSignIn();
+    mockFacebookSignIn = MockFacebookSignIn();
+
     dataSource = LoginRemoteDataSourceImpl(
       client: dio,
       googleSignIn: mockGoogleSignIn,
+      facebookSignIn: mockFacebookSignIn,
     );
     dio.httpClientAdapter = mockHttpClient;
   });
@@ -117,6 +124,40 @@ void main() {
         // assert
         expect(() => call(tProvider, tToken),
             throwsA(TypeMatcher<ServerException>()));
+      },
+    );
+  });
+
+  group('postFacebookLogin', () {
+    final token = AccessToken(
+      token: "123456",
+    );
+
+    final emptyToken = AccessToken();
+
+    test(
+      'should return AcessToken when the response code is 200 (success)',
+      () async {
+        // arrange
+        when(() => mockFacebookSignIn.login())
+            .thenAnswer((invocation) async => token);
+        // act
+        final result = await dataSource.postFacebookLogin();
+        // assert
+        expect(result, equals(token));
+      },
+    );
+
+    test(
+      'should throw a ServerException when the response code is 404 or other',
+      () async {
+        // arrange
+        when(() => mockFacebookSignIn.login())
+            .thenAnswer((invocation) async => emptyToken);
+        // act
+        final call = dataSource.postFacebookLogin;
+        // assert
+        expect(() => call(), throwsA(TypeMatcher<ServerException>()));
       },
     );
   });
