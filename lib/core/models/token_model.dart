@@ -1,4 +1,4 @@
-import 'package:gamecircle/features/login/domain/entities/token.dart';
+import 'package:gamecircle/core/entities/token.dart';
 
 class TokenModel extends Token {
   TokenModel({

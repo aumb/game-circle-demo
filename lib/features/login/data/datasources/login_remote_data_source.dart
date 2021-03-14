@@ -4,7 +4,7 @@ import 'package:gamecircle/core/api.dart';
 import 'package:gamecircle/core/errors/exceptions.dart';
 import 'package:gamecircle/core/utils/string_utils.dart';
 
-import 'package:gamecircle/features/login/data/models/token_model.dart';
+import 'package:gamecircle/core/models/token_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class LoginRemoteDataSource {

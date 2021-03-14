@@ -6,7 +6,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/errors/failure.dart';
 import 'package:gamecircle/core/usecases/usecases.dart';
-import 'package:gamecircle/features/login/domain/entities/token.dart';
+import 'package:gamecircle/core/entities/token.dart';
+import 'package:gamecircle/features/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_email_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_facebook_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_google_login.dart';
@@ -21,12 +22,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final PostSocialLogin postSocialLogin;
   final PostGoogleLogin postGoogleLogin;
   final PostFacebookLogin postFacebookLogin;
+  final AuthenticationBloc authenticationBloc;
 
   LoginBloc({
     required this.postEmailLogin,
     required this.postSocialLogin,
     required this.postGoogleLogin,
     required this.postFacebookLogin,
+    required this.authenticationBloc,
   }) : super(Empty());
 
   @override
@@ -70,7 +73,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         return _handleFailureEvent(failure);
       },
       (token) {
-        return Loaded(token: token);
+        authenticationBloc.add(GetCachedTokenEvent());
+        return Empty();
       },
     );
   }

@@ -2,9 +2,9 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gamecircle/features/login/data/datasources/login_local_data_source.dart';
 import 'package:gamecircle/features/login/data/datasources/login_remote_data_source.dart';
-import 'package:gamecircle/features/login/data/models/token_model.dart';
+import 'package:gamecircle/core/models/token_model.dart';
 import 'package:gamecircle/features/login/data/repositories/login_repository_impl.dart';
-import 'package:gamecircle/features/login/domain/entities/token.dart';
+import 'package:gamecircle/core/entities/token.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockRemoteDataSource extends Mock implements LoginRemoteDataSource {}

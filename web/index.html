@@ -20,8 +20,10 @@
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="gamecircle">
+  <meta name="apple-mobile-web-app-title" content="GameCircle">
+  <meta name="google-signin-client_id" content="1045478673661-joqirlsk6o5crbtc1009io1tslu4j517.apps.googleusercontent.com">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
@@ -30,6 +32,20 @@
   <link rel="manifest" href="manifest.json">
 </head>
 <body>
+  <script>
+    var FACEBOOK_APP_ID = "435838010980768";
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: FACEBOOK_APP_ID,
+        cookie: true,
+        xfbml: true,
+        version: "v9.0",
+      });
+      FB.AppEvents.logPageView();
+    };
+  </script>
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js" ></script>
+  <script src="flutter_facebook_auth.js" type="application/javascript" ></script>
   <!-- This script installs service_worker.js to provide PWA functionality to
        application. For more information, see:
        https://developers.google.com/web/fundamentals/primers/service-workers -->
@@ -41,5 +57,6 @@
     }
   </script>
   <script src="main.dart.js" type="application/javascript"></script>
+
 </body>
 </html>

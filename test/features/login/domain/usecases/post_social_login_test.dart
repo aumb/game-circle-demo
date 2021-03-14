@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:gamecircle/features/login/domain/entities/token.dart';
+import 'package:gamecircle/core/entities/token.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:gamecircle/features/login/domain/repositories/login_repository.dart';

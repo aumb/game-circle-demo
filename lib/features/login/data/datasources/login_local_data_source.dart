@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:gamecircle/features/login/data/models/token_model.dart';
+import 'package:gamecircle/core/models/token_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class LoginLocalDataSource {

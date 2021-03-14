@@ -1,6 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/api.dart';
+import 'package:gamecircle/features/authentication/data/datasources/authentication_local_data_source.dart';
+import 'package:gamecircle/features/authentication/data/repositories/authentication_repository_impl.dart';
+import 'package:gamecircle/features/authentication/domain/repositories/authentication_repository.dart';
+import 'package:gamecircle/features/authentication/domain/usecases/get_cached_token.dart';
+import 'package:gamecircle/features/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:gamecircle/features/login/data/datasources/login_local_data_source.dart';
 import 'package:gamecircle/features/login/data/datasources/login_remote_data_source.dart';
 import 'package:gamecircle/features/login/data/repositories/login_repository_impl.dart';
@@ -25,6 +30,7 @@ Future<void> init() async {
       postSocialLogin: sl(),
       postGoogleLogin: sl(),
       postFacebookLogin: sl(),
+      authenticationBloc: sl(),
     ),
   );
 
@@ -32,17 +38,33 @@ Future<void> init() async {
     () => LoginFormBloc(),
   );
 
+  sl.registerLazySingleton(
+    () => AuthenticationBloc(
+      getCachedToken: sl(),
+    ),
+  );
+
   // Use cases
+
+  //Login
   sl.registerLazySingleton(() => PostEmailLogin(sl()));
   sl.registerLazySingleton(() => PostSocialLogin(sl()));
   sl.registerLazySingleton(() => PostGoogleLogin(sl()));
   sl.registerLazySingleton(() => PostFacebookLogin(sl()));
 
-  // Repository
+  //Authentication
+  sl.registerLazySingleton(() => GetCachedToken(sl()));
+
+  // Repositories
   sl.registerLazySingleton<LoginRepository>(
     () => LoginRespositoryImpl(
       localDataSource: sl(),
       remoteDataSource: sl(),
+    ),
+  );
+  sl.registerLazySingleton<AuthenticationRepository>(
+    () => AuthenticationRepositoryImpl(
+      localDataSource: sl(),
     ),
   );
 
@@ -54,6 +76,10 @@ Future<void> init() async {
 
   sl.registerLazySingleton<LoginLocalDataSource>(
     () => LoginLocalDataSourceImpl(sharedPreferences: sl()),
+  );
+
+  sl.registerLazySingleton<AuthenticationLocalDataSource>(
+    () => AuthenticationLocalDataSourceImpl(sharedPreferences: sl()),
   );
 
   // External

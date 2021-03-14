@@ -3,7 +3,9 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gamecircle/core/errors/failure.dart';
 import 'package:gamecircle/core/usecases/usecases.dart';
-import 'package:gamecircle/features/login/domain/entities/token.dart';
+import 'package:gamecircle/core/entities/token.dart';
+import 'package:gamecircle/features/authentication/domain/usecases/get_cached_token.dart';
+import 'package:gamecircle/features/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_email_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_facebook_login.dart';
 import 'package:gamecircle/features/login/domain/usecases/post_google_login.dart';
@@ -20,12 +22,16 @@ class MockPostGoogleLogin extends Mock implements PostGoogleLogin {}
 
 class MockPostFacebookLogin extends Mock implements PostFacebookLogin {}
 
+class MockGetCachedToken extends Mock implements GetCachedToken {}
+
 void main() {
   late LoginBloc bloc;
   late MockPostEmailLogin mockPostEmailLogin;
   late MockPostSocialLogin mockPostSocialLogin;
   late MockPostGoogleLogin mockPostGoogleLogin;
   late MockPostFacebookLogin mockPostFacebookLogin;
+  late MockGetCachedToken mockGetCachedToken;
+  late AuthenticationBloc authenticationBloc;
 
   setUpAll(() {
     registerFallbackValue<NoParams>(NoParams());
@@ -53,14 +59,25 @@ void main() {
     mockPostSocialLogin = MockPostSocialLogin();
     mockPostGoogleLogin = MockPostGoogleLogin();
     mockPostFacebookLogin = MockPostFacebookLogin();
+    mockGetCachedToken = MockGetCachedToken();
+    authenticationBloc = AuthenticationBloc(
+      getCachedToken: mockGetCachedToken,
+    );
 
     bloc = LoginBloc(
       postEmailLogin: mockPostEmailLogin,
       postSocialLogin: mockPostSocialLogin,
       postGoogleLogin: mockPostGoogleLogin,
       postFacebookLogin: mockPostFacebookLogin,
+      authenticationBloc: authenticationBloc,
     );
   });
+
+  void setUpAuthenticationBlocMock() {
+    final tToken = Token(accessToken: "abcdef", refreshToken: '123456');
+    when(() => mockGetCachedToken(any()))
+        .thenAnswer((invocation) async => Right(tToken));
+  }
 
   // test('initialState should be Empty', () {
   //   // assert
@@ -76,9 +93,9 @@ void main() {
       'should get data from the concrete use case',
       () async {
         // arrange
-        // setUpMockInputConverterSuccess();
         when(() => mockPostEmailLogin(any()))
             .thenAnswer((_) async => Right(tToken));
+        setUpAuthenticationBlocMock();
         // act
         bloc.add(PostEmailLoginEvent(email: tEmail, password: tPassword));
         await untilCalled(() => mockPostEmailLogin(any()));
@@ -95,14 +112,13 @@ void main() {
       'should emit [Loading, Loaded] when data is gotten successfully',
       () async {
         // arrange
-        // setUpMockInputConverterSuccess();
         when(() => mockPostEmailLogin(any()))
             .thenAnswer((_) async => Right(tToken));
-        // assert later
+        setUpAuthenticationBlocMock();
+        // assert
         final expected = [
-          // Empty(),
           Loading(),
-          Loaded(token: tToken),
+          Empty(),
         ];
         expectLater(bloc, emitsInOrder(expected));
         // act
@@ -166,16 +182,16 @@ void main() {
     );
 
     test(
-      'should emit [Loading, Loaded] when data is gotten successfully',
+      'should emit [Loading, Empty] when data is gotten successfully',
       () async {
         // arrange
         when(() => mockPostSocialLogin(any()))
             .thenAnswer((_) async => Right(tToken));
-        // assert later
+        setUpAuthenticationBlocMock();
+        // assert
         final expected = [
-          // Empty(),
           Loading(),
-          Loaded(token: tToken),
+          Empty(),
         ];
         expectLater(bloc, emitsInOrder(expected));
         // act
@@ -220,11 +236,12 @@ void main() {
             .thenAnswer((_) async => Right(_MockGoogleSignInAuthentication()));
         when(() => mockPostSocialLogin(any()))
             .thenAnswer((_) async => Right(tToken));
+        setUpAuthenticationBlocMock();
         // assert later
         final expected = [
           Empty(),
           Loading(),
-          Loaded(token: tToken),
+          Empty(),
         ];
         expectLater(bloc, emitsInOrder(expected));
         // act
@@ -243,7 +260,7 @@ void main() {
         ).thenAnswer((_) async => Left(serverFailure));
         // assert later
         final expected = [
-          Empty(),
+          if (bloc.state != Empty()) Empty(),
           Error(message: serverFailure.message),
         ];
         expectLater(bloc, emitsInOrder(expected));
@@ -264,11 +281,12 @@ void main() {
             .thenAnswer((_) async => Right(facebookToken));
         when(() => mockPostSocialLogin(any()))
             .thenAnswer((_) async => Right(tToken));
+        setUpAuthenticationBlocMock();
         // assert later
         final expected = [
           Empty(),
           Loading(),
-          Loaded(token: tToken),
+          Empty(),
         ];
         expectLater(bloc, emitsInOrder(expected));
         // act
@@ -287,7 +305,7 @@ void main() {
         ).thenAnswer((_) async => Left(serverFailure));
         // assert later
         final expected = [
-          Empty(),
+          if (bloc.state != Empty()) Empty(),
           Error(message: serverFailure.message),
         ];
         expectLater(bloc, emitsInOrder(expected));

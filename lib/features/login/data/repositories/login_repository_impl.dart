@@ -2,7 +2,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/errors/exceptions.dart';
 import 'package:gamecircle/features/login/data/datasources/login_local_data_source.dart';
 import 'package:gamecircle/features/login/data/datasources/login_remote_data_source.dart';
-import 'package:gamecircle/features/login/domain/entities/token.dart';
+import 'package:gamecircle/core/entities/token.dart';
 import 'package:gamecircle/core/errors/failure.dart';
 import 'package:dartz/dartz.dart';
 import 'package:gamecircle/features/login/domain/repositories/login_repository.dart';

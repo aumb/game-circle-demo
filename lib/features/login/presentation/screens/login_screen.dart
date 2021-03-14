@@ -61,8 +61,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           behavior: SnackBarBehavior.floating);
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                    } else {
-                      print(state.toString());
                     }
                   },
                 ),
