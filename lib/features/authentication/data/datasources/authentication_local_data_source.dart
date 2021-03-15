@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:gamecircle/core/errors/exceptions.dart';
 import 'package:gamecircle/core/models/token_model.dart';
+import 'package:gamecircle/core/utils/safe_print.dart';
 import 'package:gamecircle/features/login/data/datasources/login_local_data_source.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,7 +32,7 @@ class AuthenticationLocalDataSourceImpl
 
       return Future.value(tokenModel);
     } catch (e) {
-      print(e);
+      safePrint(e.toString());
       throw ServerException(
           ServerError(message: "Could not access local storage", code: 401));
     }

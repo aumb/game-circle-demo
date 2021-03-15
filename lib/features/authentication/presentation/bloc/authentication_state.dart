@@ -11,9 +11,9 @@ class AuthenticationInitial extends AuthenticationState {}
 
 class AuthenticatedState extends AuthenticationState {}
 
-class UnauthenticatedState extends AuthenticatedState {}
+class UnauthenticatedState extends AuthenticationState {}
 
-class UnknownAuthenticationState extends AuthenticatedState {}
+class UnknownAuthenticationState extends AuthenticationState {}
 
 class AuthenticationError extends AuthenticationState {
   final String? message;

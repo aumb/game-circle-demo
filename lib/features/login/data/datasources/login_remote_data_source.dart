@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/api.dart';
 import 'package:gamecircle/core/errors/exceptions.dart';
+import 'package:gamecircle/core/utils/safe_print.dart';
 import 'package:gamecircle/core/utils/string_utils.dart';
 
 import 'package:gamecircle/core/models/token_model.dart';
@@ -86,7 +87,7 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
       googleSignIn.signOut();
       return googleSignInAuthentication;
     } catch (e) {
-      print(e);
+      safePrint(e.toString());
       throw ServerException(
         ServerError(
             code: 401, message: "Could not get information from google"),
