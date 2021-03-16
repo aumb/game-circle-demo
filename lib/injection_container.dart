@@ -16,6 +16,13 @@ import 'package:gamecircle/features/login/domain/usecases/post_google_login.dart
 import 'package:gamecircle/features/login/domain/usecases/post_social_login.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_bloc.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_form_bloc.dart';
+import 'package:gamecircle/features/registration/data/datasources/registration_local_data_source.dart';
+import 'package:gamecircle/features/registration/data/datasources/registration_remote_data_source.dart';
+import 'package:gamecircle/features/registration/data/repositories/registration_repository_impl.dart';
+import 'package:gamecircle/features/registration/domain/repository/registration_repository.dart';
+import 'package:gamecircle/features/registration/domain/usecases/post_email_registration.dart';
+import 'package:gamecircle/features/registration/presentation/bloc/registration_bloc.dart';
+import 'package:gamecircle/features/registration/presentation/bloc/registration_form_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,6 +45,15 @@ Future<void> init() async {
     () => LoginFormBloc(),
   );
 
+  sl.registerFactory(
+    () =>
+        RegistrationBloc(authenticationBloc: sl(), postEmailRegistration: sl()),
+  );
+
+  sl.registerFactory(
+    () => RegistrationFormBloc(),
+  );
+
   sl.registerLazySingleton(
     () => AuthenticationBloc(
       getCachedToken: sl(),
@@ -55,6 +71,9 @@ Future<void> init() async {
   //Authentication
   sl.registerLazySingleton(() => GetCachedToken(sl()));
 
+  //Registration
+  sl.registerLazySingleton(() => PostEmailRegistration(sl()));
+
   // Repositories
   sl.registerLazySingleton<LoginRepository>(
     () => LoginRespositoryImpl(
@@ -64,6 +83,12 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<AuthenticationRepository>(
     () => AuthenticationRepositoryImpl(
+      localDataSource: sl(),
+    ),
+  );
+  sl.registerLazySingleton<RegistrationRepository>(
+    () => RegistrationRepositoryImpl(
+      remoteDataSource: sl(),
       localDataSource: sl(),
     ),
   );
@@ -80,6 +105,16 @@ Future<void> init() async {
 
   sl.registerLazySingleton<AuthenticationLocalDataSource>(
     () => AuthenticationLocalDataSourceImpl(sharedPreferences: sl()),
+  );
+
+  sl.registerLazySingleton<RegistrationLocalDataSource>(
+    () => RegistrationLocalDataSourceImpl(sharedPreferences: sl()),
+  );
+
+  sl.registerLazySingleton<RegistrationRemoteDataSource>(
+    () => RegistrationRemoteDataSourceImpl(
+      client: sl(),
+    ),
   );
 
   // External

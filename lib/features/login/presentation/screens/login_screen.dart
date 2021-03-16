@@ -5,8 +5,10 @@ import 'package:gamecircle/core/utils/images.dart';
 import 'package:gamecircle/core/widgets/buttons/custom_raised_button.dart';
 import 'package:gamecircle/core/widgets/buttons/register_options_button.dart';
 import 'package:gamecircle/core/widgets/custom_text_field.dart';
+import 'package:gamecircle/core/widgets/toggle_visibility_icon.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_bloc.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_form_bloc.dart';
+import 'package:gamecircle/features/registration/presentation/screens/registration_screen.dart';
 import 'package:gamecircle/injection_container.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -34,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
     _bloc.close();
+    _formBloc.close();
     super.dispose();
   }
 
@@ -119,12 +122,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                       SizedBox(width: 16),
                                       _buildRegisterOptionsButton(
                                         onPressed: () {
-                                          // Navigator.of(context).push(
-                                          //   MaterialPageRoute(
-                                          //     builder: (BuildContext context) =>
-                                          //         RegisterWithEmailScreen(),
-                                          //   ),
-                                          // );
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  RegistrationScreen(),
+                                            ),
+                                          );
                                         },
                                         color: Theme.of(context).errorColor,
                                         icon: MdiIcons.email,
@@ -189,28 +192,15 @@ class _LoginScreenState extends State<LoginScreen> {
       focusNode: _passwordFocusNode,
       onSubmitted: _passwordSubmitted,
       obscureText: formState.obsecureText,
-      suffixIcon: (formState.obsecureText ?? true)
-          ? IconButton(
-              icon: Icon(
-                Icons.visibility_off,
-                color: Colors.white30,
-              ),
-              onPressed: () {
-                _formBloc.add(
-                  ChangedObsecureTextEvent(obsecureText: false),
-                );
-              },
-            )
-          : IconButton(
-              icon: Icon(
-                Icons.visibility,
-                color: Colors.white30,
-              ),
-              onPressed: () {
-                _formBloc.add(
-                  ChangedObsecureTextEvent(obsecureText: true),
-                );
-              }),
+      suffixIcon: ToggleVisibilityIcon(
+        condition: formState.obsecureText ?? false,
+        onPressedOff: () {
+          _formBloc.add(ChangedObsecureTextEvent(obsecureText: false));
+        },
+        onPressedOn: () {
+          _formBloc.add(ChangedObsecureTextEvent(obsecureText: true));
+        },
+      ),
       onChanged: (String value) {
         _formBloc.add(ChangedPasswordEvent(password: value));
       },
