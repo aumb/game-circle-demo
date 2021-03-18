@@ -64,7 +64,7 @@ void main() {
       'should emit [UnauthenticatedState], [Error] when getting data fails',
       () async {
         // arrange
-        final failure = ServerFailure(code: 500, message: "Unexpected eroor");
+        final failure = ServerFailure(code: 500, message: "unexpected error");
         when(() => mockGetCachedToken(any())).thenAnswer(
           (_) async => Left(
             failure,

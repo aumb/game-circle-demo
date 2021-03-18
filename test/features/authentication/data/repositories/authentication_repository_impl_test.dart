@@ -39,7 +39,7 @@ void main() {
 
     test('should return [ServerFailure] if an error occurs', () async {
       final error = ServerException(
-          ServerError(message: "Could not access local storage", code: 401));
+          ServerError(message: "local_storage_access_error", code: 401));
       final failure = ServerFailure.fromServerException(error.error);
       // arrange
       when(() => mockLocalDataSource.getCachedToken()).thenThrow(error);

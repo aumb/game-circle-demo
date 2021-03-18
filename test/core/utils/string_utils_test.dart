@@ -162,4 +162,21 @@ void main() {
       expect(true, equals(result));
     });
   });
+
+  group("replaceString", () {
+    String tMessage = "Hello iam {VALUE}";
+    String variable = "VALUE";
+    String value = "Mathiew";
+    String tCompeleteMessage = "Hello iam Mathiew";
+    test('Should return empty string if message is empty', () {
+      final result = stringUtils.replaceVariable('', '', '');
+      //assert
+      expect('', equals(result));
+    });
+    test('Should return the comleted if email does not match regex', () {
+      final result = stringUtils.replaceVariable(tMessage, variable, value);
+      //assert
+      expect(tCompeleteMessage, equals(result));
+    });
+  });
 }

@@ -24,7 +24,7 @@ class ServerError {
         code: json['code'],
       );
     } else {
-      return ServerError(code: 500, message: "An unexpected error has occured");
+      return ServerError(code: 500, message: "unexpected_error");
     }
   }
 

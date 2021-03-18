@@ -1,13 +1,12 @@
 import 'dart:convert';
 
 import 'package:gamecircle/core/models/token_model.dart';
+import 'package:gamecircle/core/utils/const_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class LoginLocalDataSource {
   Future<void> cacheToken(TokenModel? tokenModel);
 }
-
-const CACHED_TOKEN = 'CACHED_TOKEN';
 
 class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   final SharedPreferences sharedPreferences;

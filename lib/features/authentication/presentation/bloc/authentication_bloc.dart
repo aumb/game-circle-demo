@@ -49,7 +49,7 @@ class AuthenticationBloc
     if (failure is ServerFailure) {
       error = AuthenticationError(message: failure.message);
     } else {
-      error = AuthenticationError(message: "An error has occured");
+      error = AuthenticationError(message: "unexpected_error");
     }
 
     return error;

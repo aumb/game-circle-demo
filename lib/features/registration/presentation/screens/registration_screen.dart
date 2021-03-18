@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/buttons/custom_raised_button.dart';
-import 'package:gamecircle/core/widgets/custom_text_field.dart';
 import 'package:gamecircle/core/widgets/custom_text_form_field.dart';
 import 'package:gamecircle/core/widgets/flat_app_bar.dart';
 import 'package:gamecircle/core/widgets/page_title.dart';
 import 'package:gamecircle/core/widgets/toggle_visibility_icon.dart';
+import 'package:gamecircle/features/locale/presentation/bloc/locale_bloc.dart';
 import 'package:gamecircle/features/registration/presentation/bloc/registration_bloc.dart';
 import 'package:gamecircle/features/registration/presentation/bloc/registration_form_bloc.dart';
 import 'package:gamecircle/injection_container.dart';
@@ -68,7 +69,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 } else if (state is Loaded) {
-                  Navigator.of(context).pop();
+                  Navigator.of(context).popUntil((route) => route.isFirst);
                 }
               },
             ),
@@ -89,17 +90,20 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   const EdgeInsets.symmetric(horizontal: 28.0),
                               child: Column(
                                 children: [
-                                  PageTitle(title: "Greetings, traveller"),
+                                  PageTitle(
+                                      title: Localization.of(
+                                          context, 'register_title')),
                                   SizedBox(height: 32),
                                   CustomTextFormField(
                                     enabled: state is! Loading,
-                                    labelText: "Name",
-                                    hintText: "Name",
+                                    labelText: Localization.of(context, 'name'),
+                                    hintText: Localization.of(context, 'name'),
                                     focusNode: _nameFocusNode,
                                     onSubmitted: _nameSubmitted,
                                     validator: (v) {
                                       if (!formState.isNameValid) {
-                                        return "Please enter a valid name";
+                                        return Localization.of(
+                                            context, 'register_name_error');
                                       }
                                     },
                                     maxLength: 70,
@@ -110,13 +114,15 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   SizedBox(height: 32),
                                   CustomTextFormField(
                                     enabled: state is! Loading,
-                                    labelText: "E-mail",
-                                    hintText: "E-mail",
+                                    labelText:
+                                        Localization.of(context, 'email'),
+                                    hintText: Localization.of(context, 'email'),
                                     focusNode: _emailFocusNode,
                                     onSubmitted: _emailSubmitted,
                                     validator: (v) {
                                       if (!formState.isEmailValid) {
-                                        return "Please enter a valid email";
+                                        return Localization.of(
+                                            context, 'register_email_error');
                                       }
                                     },
                                     maxLength: 70,
@@ -128,8 +134,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   SizedBox(height: 32),
                                   CustomTextFormField(
                                     enabled: state is! Loading,
-                                    labelText: "Password",
-                                    hintText: "Password",
+                                    labelText:
+                                        Localization.of(context, 'password'),
+                                    hintText:
+                                        Localization.of(context, 'password'),
                                     focusNode: _passwordFocusNode,
                                     onSubmitted: _passwordSubmitted,
                                     obscureText:
@@ -152,15 +160,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     },
                                     validator: (v) {
                                       if (!formState.isPasswordValid) {
-                                        return "Password must be at least 8 characters long and must contain at least 1 uppercase, 1 lowercase, and 1 number";
+                                        return Localization.of(
+                                            context, 'register_password_error');
                                       }
                                     },
                                   ),
                                   SizedBox(height: 32),
                                   CustomTextFormField(
                                     enabled: state is! Loading,
-                                    labelText: "Confirm Password",
-                                    hintText: "Confirm Password",
+                                    labelText: Localization.of(
+                                        context, 'confirm_password'),
+                                    hintText: Localization.of(
+                                        context, 'confirm_password'),
                                     focusNode: _confirmPasswordFocusNode,
                                     onSubmitted: _confirmPasswordSubmitted,
                                     obscureText:
@@ -183,7 +194,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     },
                                     validator: (v) {
                                       if (!formState.isConfirmPasswordValid) {
-                                        return "Passwords do not match";
+                                        return Localization.of(context,
+                                            'register_confirm_password_error');
                                       }
                                     },
                                   ),
@@ -197,18 +209,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 16, horizontal: 32),
                         child: CustomRaisedButton(
-                          disabled: !formState.canSubmitForm,
+                          // disabled: !formState.canSubmitForm,
                           isLoading: state is Loading,
-                          label: "Create".toUpperCase(),
+                          label:
+                              Localization.of(context, 'create').toUpperCase(),
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _bloc.add(PostEmailRegistrationEvent(
-                                email: formState.email,
-                                name: formState.name,
-                                password: formState.password,
-                                confirmPassword: formState.confirmPassword,
-                              ));
-                            }
+                            BlocProvider.of<LocaleBloc>(context)
+                                .add(GetCachedLocaleEvent());
+                            Navigator.of(context)
+                                .popUntil((route) => route.isFirst);
+                            // if (_formKey.currentState!.validate()) {
+                            //   _bloc.add(PostEmailRegistrationEvent(
+                            //     email: formState.email,
+                            //     name: formState.name,
+                            //     password: formState.password,
+                            //     confirmPassword: formState.confirmPassword,
+                            //   ));
+                            // }
                           },
                         ),
                       ),

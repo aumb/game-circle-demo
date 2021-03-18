@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/images.dart';
+import 'package:gamecircle/core/utils/locale/app_localizations.dart';
+import 'package:gamecircle/core/utils/string_utils.dart';
 import 'package:gamecircle/core/widgets/buttons/custom_raised_button.dart';
 import 'package:gamecircle/core/widgets/buttons/register_options_button.dart';
 import 'package:gamecircle/core/widgets/custom_text_field.dart';
@@ -59,8 +61,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 BlocListener<LoginBloc, LoginState>(
                   listener: (BuildContext context, state) {
                     if (state is Error) {
+                      final completeError = StringUtils().replaceVariable(
+                          Localization.of(context, state.message ?? ''),
+                          "VALUE",
+                          state.provider);
                       final snackBar = SnackBar(
-                          content: Text(state.message ?? ''),
+                          content: Text(completeError),
                           behavior: SnackBarBehavior.floating);
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -100,7 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  Text("No account? Get started:"),
+                                  Text(Localization.of(
+                                      context, "no_account_message")),
                                   SizedBox(height: 16),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -170,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
       LoginFormState formState, LoginState state) {
     return CustomRaisedButton(
       disabled: !formState.canSubmitForm,
-      label: "Submit",
+      label: Localization.of(context, 'submit').toUpperCase(),
       isLoading: state is Loading,
       onPressed: () {
         _bloc.add(
@@ -187,8 +194,8 @@ class _LoginScreenState extends State<LoginScreen> {
       LoginState state, LoginFormState formState) {
     return CustomTextField(
       enabled: state is! Loading,
-      labelText: "Password",
-      hintText: "Password",
+      labelText: Localization.of(context, 'password'),
+      hintText: Localization.of(context, 'password'),
       focusNode: _passwordFocusNode,
       onSubmitted: _passwordSubmitted,
       obscureText: formState.obsecureText,
@@ -210,8 +217,8 @@ class _LoginScreenState extends State<LoginScreen> {
   CustomTextField _buildEmailInput(LoginState state) {
     return CustomTextField(
       enabled: state is! Loading,
-      labelText: "E-mail",
-      hintText: "E-mail",
+      labelText: Localization.of(context, 'email'),
+      hintText: Localization.of(context, 'email'),
       focusNode: _emailFocusNode,
       onSubmitted: _emailSubmitted,
       maxLength: 254,

@@ -6,6 +6,11 @@ import 'package:gamecircle/features/authentication/data/repositories/authenticat
 import 'package:gamecircle/features/authentication/domain/repositories/authentication_repository.dart';
 import 'package:gamecircle/features/authentication/domain/usecases/get_cached_token.dart';
 import 'package:gamecircle/features/authentication/presentation/bloc/authentication_bloc.dart';
+import 'package:gamecircle/features/locale/data/datasources/locale_local_data_source.dart';
+import 'package:gamecircle/features/locale/data/repositories/locale_repository_impl.dart';
+import 'package:gamecircle/features/locale/domain/repositories/locale_repository.dart';
+import 'package:gamecircle/features/locale/domain/usecases/get_cached_locale.dart';
+import 'package:gamecircle/features/locale/presentation/bloc/locale_bloc.dart';
 import 'package:gamecircle/features/login/data/datasources/login_local_data_source.dart';
 import 'package:gamecircle/features/login/data/datasources/login_remote_data_source.dart';
 import 'package:gamecircle/features/login/data/repositories/login_repository_impl.dart';
@@ -60,6 +65,12 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton(
+    () => LocaleBloc(
+      getCachedLocale: sl(),
+    ),
+  );
+
   // Use cases
 
   //Login
@@ -73,6 +84,9 @@ Future<void> init() async {
 
   //Registration
   sl.registerLazySingleton(() => PostEmailRegistration(sl()));
+
+  //Locale
+  sl.registerLazySingleton(() => GetCachedLocale(sl()));
 
   // Repositories
   sl.registerLazySingleton<LoginRepository>(
@@ -89,6 +103,11 @@ Future<void> init() async {
   sl.registerLazySingleton<RegistrationRepository>(
     () => RegistrationRepositoryImpl(
       remoteDataSource: sl(),
+      localDataSource: sl(),
+    ),
+  );
+  sl.registerLazySingleton<LocaleRepository>(
+    () => LocaleRepositoryImpl(
       localDataSource: sl(),
     ),
   );
@@ -115,6 +134,10 @@ Future<void> init() async {
     () => RegistrationRemoteDataSourceImpl(
       client: sl(),
     ),
+  );
+
+  sl.registerLazySingleton<LocaleLocalDataSource>(
+    () => LocaleLocalDataSourceImpl(sharedPreferences: sl()),
   );
 
   // External

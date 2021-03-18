@@ -31,4 +31,9 @@ class StringUtils {
     RegExp regex = new RegExp(pattern);
     return regex.hasMatch(name);
   }
+
+  String replaceVariable(String? message, String? variable, String? value) {
+    if (isEmpty(message)) return '';
+    return message!.replaceFirst('{$variable}', value ?? '');
+  }
 }

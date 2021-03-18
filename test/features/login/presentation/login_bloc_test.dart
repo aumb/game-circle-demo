@@ -133,7 +133,7 @@ void main() {
       'should emit [Loading, Error] when getting data fails',
       () async {
         // arrange
-        final failure = ServerFailure(code: 500, message: "Unexpected eroor");
+        final failure = ServerFailure(code: 500, message: "unexpected_error");
         when(() => mockPostEmailLogin(any())).thenAnswer(
           (_) async => Left(
             failure,
@@ -206,7 +206,7 @@ void main() {
       'should emit [Loading, Error] when getting data fails',
       () async {
         final serverFailure =
-            ServerFailure(code: 500, message: "unexpected error");
+            ServerFailure(code: 500, message: "unexpected_error");
         // arrange
         when(() => mockPostSocialLogin(any()))
             .thenAnswer((_) async => Left(serverFailure));
@@ -253,7 +253,7 @@ void main() {
       'should emit [Error] when getting google data fails',
       () async {
         final serverFailure =
-            ServerFailure(code: 500, message: "unexpected error");
+            ServerFailure(code: 500, message: "unexpected_error");
         // arrange
         when(
           () => mockPostGoogleLogin(any()),
@@ -298,7 +298,7 @@ void main() {
       'should emit [Error] when getting google data fails',
       () async {
         final serverFailure =
-            ServerFailure(code: 500, message: "unexpected error");
+            ServerFailure(code: 500, message: "unexpected_error");
         // arrange
         when(
           () => mockPostFacebookLogin(any()),

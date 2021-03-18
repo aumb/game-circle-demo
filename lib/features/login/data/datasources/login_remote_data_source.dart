@@ -42,8 +42,7 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
       AccessToken? accessToken = await facebookSignIn.login();
       if (StringUtils().isEmpty(accessToken?.token)) {
         throw ServerException(
-          ServerError(
-              code: 401, message: "Could not get information from facebook"),
+          ServerError(code: 401, message: "social_provider_error"),
         );
       }
 
@@ -52,19 +51,15 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
       switch (e.errorCode) {
         case FacebookAuthErrorCode.OPERATION_IN_PROGRESS:
           throw ServerException(
-            ServerError(
-                code: 401,
-                message: "You have a previous login operation in progress"),
+            ServerError(code: 401, message: "social_provider_error"),
           );
         case FacebookAuthErrorCode.CANCELLED:
           throw ServerException(
-            ServerError(
-                code: 401, message: "Could not get information from facebook"),
+            ServerError(code: 401, message: "social_provider_error"),
           );
         case FacebookAuthErrorCode.FAILED:
           throw ServerException(
-            ServerError(
-                code: 401, message: "Could not get information from facebook"),
+            ServerError(code: 401, message: "social_provider_error"),
           );
       }
     }
@@ -80,8 +75,7 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
 
       if (StringUtils().isEmpty(googleSignInAuthentication?.accessToken)) {
         throw ServerException(
-          ServerError(
-              code: 401, message: "Could not get information from google"),
+          ServerError(code: 401, message: "social_provider_error"),
         );
       }
       googleSignIn.signOut();
@@ -89,8 +83,7 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
     } catch (e) {
       safePrint(e.toString());
       throw ServerException(
-        ServerError(
-            code: 401, message: "Could not get information from google"),
+        ServerError(code: 401, message: "social_provider_error"),
       );
     }
   }

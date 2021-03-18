@@ -57,7 +57,7 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
     if (failure is ServerFailure) {
       error = Error(message: failure.message);
     } else {
-      error = Error(message: "An error has occured");
+      error = Error(message: "unexpected_error");
     }
 
     return error;

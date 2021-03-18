@@ -22,8 +22,9 @@ class Loaded extends LoginState {
 
 class Error extends LoginState {
   final String? message;
+  final String? provider;
 
-  Error({required this.message});
+  Error({required this.message, this.provider});
 
   @override
   List<Object?> get props => [message];

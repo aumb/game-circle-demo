@@ -70,7 +70,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async* {
     yield failureOrToken.fold(
       (failure) {
-        return _handleFailureEvent(failure);
+        return _handleFailureEvent(failure, '');
       },
       (token) {
         authenticationBloc.add(GetCachedTokenEvent());
@@ -83,7 +83,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Either<Failure, GoogleSignInAuthentication?> failureOrToken,
   ) async* {
     yield failureOrToken.fold((failure) {
-      return _handleFailureEvent(failure);
+      return _handleFailureEvent(failure, 'google');
     }, (token) {
       this.add(
         PostSocialLoginEvent(provider: 'google', token: token?.accessToken),
@@ -96,7 +96,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     Either<Failure, AccessToken?> failureOrToken,
   ) async* {
     yield failureOrToken.fold((failure) {
-      return _handleFailureEvent(failure);
+      return _handleFailureEvent(failure, 'facebook');
     }, (accessToken) {
       this.add(
         PostSocialLoginEvent(provider: 'facebook', token: accessToken?.token),
@@ -105,12 +105,12 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     });
   }
 
-  Error _handleFailureEvent(Failure failure) {
+  Error _handleFailureEvent(Failure failure, String provider) {
     Error error;
     if (failure is ServerFailure) {
-      error = Error(message: failure.message);
+      error = Error(message: failure.message, provider: provider);
     } else {
-      error = Error(message: "An error has occured");
+      error = Error(message: "unexpected_error");
     }
 
     return error;

@@ -15,7 +15,7 @@ class ServerFailure extends Failure {
   factory ServerFailure.fromServerException(ServerError? error) {
     return ServerFailure(
       code: error?.code ?? 500,
-      message: error?.message ?? 'An unexpected error has occured',
+      message: error?.message ?? 'unexpected_error',
     );
   }
 }
