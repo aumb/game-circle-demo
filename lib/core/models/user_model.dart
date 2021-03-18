@@ -18,11 +18,12 @@ class UserModel extends User {
         );
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    final Map<String, dynamic>? innerBody = json['data'];
     return UserModel(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      imageUrl: json['avatar'],
+      id: innerBody?['id'],
+      name: innerBody?['name'],
+      email: innerBody?['email'],
+      imageUrl: innerBody?['avatar'],
     );
   }
 

@@ -3,4 +3,6 @@ class API {
 
   static final String login = "/login";
   static final String register = "/register";
+  static final String user = "/user";
+  static final String users = "/users";
 }

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gamecircle/core/entities/user.dart';
-import 'package:gamecircle/core/models/user_token.dart';
+import 'package:gamecircle/core/models/user_model.dart';
 
 import '../../fixtures/fixture_reader.dart';
 

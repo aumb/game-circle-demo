@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:gamecircle/core/api.dart';
 import 'package:gamecircle/core/errors/exceptions.dart';
 import 'package:gamecircle/core/models/token_model.dart';
-import 'package:gamecircle/core/models/user_token.dart';
+import 'package:gamecircle/core/models/user_model.dart';
 
 abstract class RegistrationRemoteDataSource {
   /// Calls the /register endpoint with email and password params.

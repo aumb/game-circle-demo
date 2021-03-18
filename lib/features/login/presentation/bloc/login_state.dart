@@ -27,7 +27,7 @@ class Error extends LoginState {
   Error({required this.message, this.provider});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, provider];
 }
 
 class SucessfullGoogleLogin extends LoginState {}

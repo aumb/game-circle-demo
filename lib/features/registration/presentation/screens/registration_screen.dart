@@ -6,7 +6,6 @@ import 'package:gamecircle/core/widgets/custom_text_form_field.dart';
 import 'package:gamecircle/core/widgets/flat_app_bar.dart';
 import 'package:gamecircle/core/widgets/page_title.dart';
 import 'package:gamecircle/core/widgets/toggle_visibility_icon.dart';
-import 'package:gamecircle/features/locale/presentation/bloc/locale_bloc.dart';
 import 'package:gamecircle/features/registration/presentation/bloc/registration_bloc.dart';
 import 'package:gamecircle/features/registration/presentation/bloc/registration_form_bloc.dart';
 import 'package:gamecircle/injection_container.dart';
@@ -209,23 +208,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 16, horizontal: 32),
                         child: CustomRaisedButton(
-                          // disabled: !formState.canSubmitForm,
+                          disabled: !formState.canSubmitForm,
                           isLoading: state is Loading,
                           label:
                               Localization.of(context, 'create').toUpperCase(),
                           onPressed: () {
-                            BlocProvider.of<LocaleBloc>(context)
-                                .add(GetCachedLocaleEvent());
-                            Navigator.of(context)
-                                .popUntil((route) => route.isFirst);
-                            // if (_formKey.currentState!.validate()) {
-                            //   _bloc.add(PostEmailRegistrationEvent(
-                            //     email: formState.email,
-                            //     name: formState.name,
-                            //     password: formState.password,
-                            //     confirmPassword: formState.confirmPassword,
-                            //   ));
-                            // }
+                            if (_formKey.currentState!.validate()) {
+                              _bloc.add(PostEmailRegistrationEvent(
+                                email: formState.email,
+                                name: formState.name,
+                                password: formState.password,
+                                confirmPassword: formState.confirmPassword,
+                              ));
+                            }
                           },
                         ),
                       ),

@@ -145,6 +145,7 @@ void main() {
           Loading(),
           Error(
             message: failure.message,
+            provider: '',
           ),
         ];
         expectLater(bloc, emitsInOrder(expected));
@@ -214,7 +215,7 @@ void main() {
         final expected = [
           // Empty(),
           Loading(),
-          Error(message: serverFailure.message),
+          Error(message: serverFailure.message, provider: ''),
         ];
         expectLater(bloc, emitsInOrder(expected));
         // act
@@ -261,7 +262,7 @@ void main() {
         // assert later
         final expected = [
           if (bloc.state != Empty()) Empty(),
-          Error(message: serverFailure.message),
+          Error(message: serverFailure.message, provider: 'google'),
         ];
         expectLater(bloc, emitsInOrder(expected));
         // act
@@ -306,7 +307,7 @@ void main() {
         // assert later
         final expected = [
           if (bloc.state != Empty()) Empty(),
-          Error(message: serverFailure.message),
+          Error(message: serverFailure.message, provider: 'facebook'),
         ];
         expectLater(bloc, emitsInOrder(expected));
         // act

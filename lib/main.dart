@@ -51,27 +51,32 @@ class _MyAppState extends State<MyApp> {
           create: (BuildContext context) => _localesBloc,
         ),
       ],
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<AuthenticationBloc, AuthenticationState>(
-            listener: (context, state) {},
-          ),
-          BlocListener<LocaleBloc, LocaleState>(
-            listener: (context, state) {},
-          ),
-        ],
-        child: BlocBuilder<LocaleBloc, LocaleState>(
-          builder: (context, localeState) {
-            print(localeState.locale);
-            return MaterialApp(
-              title: 'GameCircle',
-              theme: AppTheme().themeData,
-              locale: localeState.locale,
-              supportedLocales: LocaleUtil.localeList,
-              localizationsDelegates: LocaleUtil.localizationsDelegates,
-              localeResolutionCallback: LocaleUtil.localeResolutionCallback,
-              home: Scaffold(
-                body: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      child: BlocBuilder<LocaleBloc, LocaleState>(
+        builder: (context, localeState) {
+          print(localeState.locale);
+          return MaterialApp(
+            title: 'GameCircle',
+            theme: AppTheme().themeData,
+            locale: localeState.locale,
+            supportedLocales: LocaleUtil.localeList,
+            localizationsDelegates: LocaleUtil.localizationsDelegates,
+            localeResolutionCallback: LocaleUtil.localeResolutionCallback,
+            home: Scaffold(
+              body: MultiBlocListener(
+                listeners: [
+                  BlocListener<AuthenticationBloc, AuthenticationState>(
+                    listener: (context, state) {
+                      // if (state is AuthenticatedState) {
+                      //   Navigator.of(context)
+                      //       .popUntil((route) => route.isFirst);
+                      // }
+                    },
+                  ),
+                  BlocListener<LocaleBloc, LocaleState>(
+                    listener: (context, state) {},
+                  ),
+                ],
+                child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
                   builder: (context, state) {
                     if (state is UnauthenticatedState) {
                       return LoginScreen();
@@ -81,9 +86,9 @@ class _MyAppState extends State<MyApp> {
                   },
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

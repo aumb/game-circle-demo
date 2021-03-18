@@ -9,14 +9,8 @@ import 'package:gamecircle/core/models/token_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class LoginRemoteDataSource {
-  /// Calls the /login endpoint with email and password params.
-  ///
-  /// Throws a [ServerException] for all error codes.
   Future<TokenModel?> postEmailLogin(String? email, String? password);
 
-  /// Calls the /login endpoint with provider name and token.
-  ///
-  /// Throws a [ServerException] for all error codes.
   Future<TokenModel?> postSocialLogin(String? provider, String? token);
 
   Future<GoogleSignInAuthentication?> postGoogleLogin();
