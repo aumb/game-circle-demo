@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/api.dart';
+import 'package:gamecircle/core/utils/string_utils.dart';
 import 'package:gamecircle/features/authentication/data/datasources/authentication_local_data_source.dart';
 import 'package:gamecircle/features/authentication/data/repositories/authentication_repository_impl.dart';
 import 'package:gamecircle/features/authentication/domain/repositories/authentication_repository.dart';
@@ -11,6 +12,7 @@ import 'package:gamecircle/features/home/data/repositories/user_repository_impl.
 import 'package:gamecircle/features/home/domain/repositories/user_repository.dart';
 import 'package:gamecircle/features/home/domain/usecases/get_current_user_info.dart';
 import 'package:gamecircle/features/home/domain/usecases/get_user_info.dart';
+import 'package:gamecircle/features/home/domain/usecases/post_logout_user.dart';
 import 'package:gamecircle/features/home/presentation/bloc/home_bloc.dart';
 import 'package:gamecircle/features/locale/data/datasources/locale_local_data_source.dart';
 import 'package:gamecircle/features/locale/data/repositories/locale_repository_impl.dart';
@@ -27,6 +29,7 @@ import 'package:gamecircle/features/login/domain/usecases/post_google_login.dart
 import 'package:gamecircle/features/login/domain/usecases/post_social_login.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_bloc.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_form_bloc.dart';
+import 'package:gamecircle/features/logout/presentation/cubit/logout_cubit.dart';
 import 'package:gamecircle/features/registration/data/datasources/registration_local_data_source.dart';
 import 'package:gamecircle/features/registration/data/datasources/registration_remote_data_source.dart';
 import 'package:gamecircle/features/registration/data/repositories/registration_repository_impl.dart';
@@ -38,10 +41,34 @@ import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'features/home/data/datasources/user_local_data_source.dart';
+
 final sl = GetIt.instance;
 
 Future<void> init() async {
   // Blocs
+  _initBlocs();
+
+  //Singleton blocs
+  _initSingletonBlocs();
+  // Use cases
+  _initLoginUseCases();
+  _initAuthenticationUseCases();
+  _initRegistrationUseCases();
+  _initLocaleUseCases();
+  _initUsersUseCases();
+
+  // Repositories
+  _initRepositories();
+  // Data sources
+  _initDataSources();
+
+  // External
+  await _initExternal();
+}
+
+//Blocs
+void _initBlocs() {
   sl.registerFactory(
     () => LoginBloc(
       postEmailLogin: sl(),
@@ -69,6 +96,15 @@ Future<void> init() async {
     () => HomeBloc(getCurrentUserInfo: sl()),
   );
 
+  sl.registerFactory(
+    () => LogoutCubit(
+      postLogoutUser: sl(),
+      authenticationBloc: sl(),
+    ),
+  );
+}
+
+void _initSingletonBlocs() {
   sl.registerLazySingleton(
     () => AuthenticationBloc(
       getCachedToken: sl(),
@@ -80,29 +116,35 @@ Future<void> init() async {
       getCachedLocale: sl(),
     ),
   );
+}
 
-  // Use cases
-
-  //Login
+//Usecases
+void _initLoginUseCases() {
   sl.registerLazySingleton(() => PostEmailLogin(sl()));
   sl.registerLazySingleton(() => PostSocialLogin(sl()));
   sl.registerLazySingleton(() => PostGoogleLogin(sl()));
   sl.registerLazySingleton(() => PostFacebookLogin(sl()));
+}
 
-  //Authentication
+void _initAuthenticationUseCases() {
   sl.registerLazySingleton(() => GetCachedToken(sl()));
+}
 
-  //Registration
+void _initRegistrationUseCases() {
   sl.registerLazySingleton(() => PostEmailRegistration(sl()));
+}
 
-  //Locale
+void _initLocaleUseCases() {
   sl.registerLazySingleton(() => GetCachedLocale(sl()));
+}
 
-  //User
+void _initUsersUseCases() {
   sl.registerLazySingleton(() => GetCurrentUserInfo(sl()));
   sl.registerLazySingleton(() => GetUserInfo(sl()));
+  sl.registerLazySingleton(() => PostLogoutUser(sl()));
+}
 
-  // Repositories
+void _initRepositories() {
   sl.registerLazySingleton<LoginRepository>(
     () => LoginRespositoryImpl(
       localDataSource: sl(),
@@ -128,10 +170,27 @@ Future<void> init() async {
   sl.registerLazySingleton<UserRepository>(
     () => UserRepositoryImpl(
       remoteDataSource: sl(),
+      localDataSource: sl(),
+    ),
+  );
+}
+
+Future<void> _initExternal() async {
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton(() => FacebookAuth.instance);
+  sl.registerLazySingleton(
+    () => GoogleSignIn(
+      scopes: [
+        'email',
+      ],
     ),
   );
 
-  // Data sources
+  _initDio();
+}
+
+void _initDataSources() {
   sl.registerLazySingleton<LoginRemoteDataSource>(
     () => LoginRemoteDataSourceImpl(
         client: sl(), googleSignIn: sl(), facebookSignIn: sl()),
@@ -163,18 +222,12 @@ Future<void> init() async {
     () => UserRemoteDataSourceImpl(client: sl()),
   );
 
-  // External
-  final sharedPreferences = await SharedPreferences.getInstance();
-  sl.registerLazySingleton(() => sharedPreferences);
-  sl.registerLazySingleton(() => FacebookAuth.instance);
-  sl.registerLazySingleton(
-    () => GoogleSignIn(
-      scopes: [
-        'email',
-      ],
-    ),
+  sl.registerLazySingleton<UserLocalDataSource>(
+    () => UserLocalDataSourceImpl(sharedPreferences: sl()),
   );
+}
 
+void _initDio() {
   sl.registerLazySingleton(
     () => Dio(
       BaseOptions(baseUrl: API.base),
@@ -182,7 +235,8 @@ Future<void> init() async {
         LogInterceptor(),
         InterceptorsWrapper(onError: (e) {
           final RequestOptions options = e.response!.request;
-          if (e.response?.statusCode == 401) {
+          if (e.response?.statusCode == 401 &&
+              StringUtils().isNotEmpty(options.headers['Authorization'])) {
             sl<Dio>().lock();
             sl<Dio>().interceptors.responseLock.lock();
             sl<Dio>().interceptors.errorLock.lock();

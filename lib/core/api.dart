@@ -5,4 +5,5 @@ class API {
   static final String register = "/register";
   static final String user = "/user";
   static final String users = "/users";
+  static final String logout = "/logout";
 }

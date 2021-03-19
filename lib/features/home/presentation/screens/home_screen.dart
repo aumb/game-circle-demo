@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gamecircle/features/home/presentation/bloc/home_bloc.dart';
+import 'package:gamecircle/features/logout/presentation/cubit/logout_cubit.dart';
 import 'package:gamecircle/injection_container.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -54,9 +55,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               } else if (state is HomeLoaded) {
                 return Center(
-                  child: ElevatedButton(
-                    child: Text("test"),
-                    onPressed: () {},
+                  child: BlocProvider(
+                    create: (context) => sl<LogoutCubit>(),
+                    child: BlocConsumer<LogoutCubit, LogoutState>(
+                      listener: (context, state) {
+                        if (state is LogoutLoaded) {
+                          Navigator.of(context)
+                              .popUntil((route) => route.isFirst);
+                        }
+                      },
+                      builder: (context, state) {
+                        return ElevatedButton(
+                          child: state is LogoutLoading
+                              ? CircularProgressIndicator()
+                              : Text("test"),
+                          onPressed: () {
+                            BlocProvider.of<LogoutCubit>(context).logout();
+                          },
+                        );
+                      },
+                    ),
                   ),
                 );
               } else {

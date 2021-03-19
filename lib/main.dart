@@ -65,12 +65,7 @@ class _MyAppState extends State<MyApp> {
               body: MultiBlocListener(
                 listeners: [
                   BlocListener<AuthenticationBloc, AuthenticationState>(
-                    listener: (context, state) {
-                      // if (state is AuthenticatedState) {
-                      //   Navigator.of(context)
-                      //       .popUntil((route) => route.isFirst);
-                      // }
-                    },
+                    listener: (context, state) {},
                   ),
                   BlocListener<LocaleBloc, LocaleState>(
                     listener: (context, state) {},

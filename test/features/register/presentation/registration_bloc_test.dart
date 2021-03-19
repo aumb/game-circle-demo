@@ -15,6 +15,7 @@ class MockGetCachedToken extends Mock implements GetCachedToken {}
 
 void main() {
   late RegistrationBloc bloc;
+  //ignore: close_sinks
   late AuthenticationBloc authenticationBloc;
   late MockGetCachedToken mockGetCachedToken;
   late MockPostEmailRegistration mockPostEmailRegistration;

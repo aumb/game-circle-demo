@@ -31,6 +31,7 @@ void main() {
   late MockPostGoogleLogin mockPostGoogleLogin;
   late MockPostFacebookLogin mockPostFacebookLogin;
   late MockGetCachedToken mockGetCachedToken;
+  //ignore: close_sinks
   late AuthenticationBloc authenticationBloc;
 
   setUpAll(() {

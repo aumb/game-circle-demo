@@ -8,4 +8,6 @@ abstract class UserRepository {
 
   ///Gets a user by Id
   Future<Either<Failure, User?>> getUserInfo(int? id);
+
+  Future<Either<Failure, User?>> postLogoutUser();
 }

@@ -13,6 +13,7 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetCurrentUserInfo getCurrentUserInfo;
+
   HomeBloc({
     required this.getCurrentUserInfo,
   }) : super(HomeInitial());

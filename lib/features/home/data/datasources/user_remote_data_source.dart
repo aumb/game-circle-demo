@@ -8,6 +8,8 @@ abstract class UserRemoteDataSource {
   Future<User?> getCurrentUserInfo();
 
   Future<User?> getUserInfo(int? id);
+
+  Future<User?> postLogoutUser();
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -16,6 +18,19 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
   UserRemoteDataSourceImpl({
     required this.client,
   });
+
+  @override
+  Future<User?> postLogoutUser() async {
+    try {
+      final Response? response = await client.post(API.logout);
+      if (response?.statusCode == 200) {
+        return UserModel.fromJson(response?.data);
+      }
+    } on DioError catch (e) {
+      final serverError = ServerError.fromJson(e.response?.data);
+      throw ServerException(serverError);
+    }
+  }
 
   @override
   Future<UserModel?> getCurrentUserInfo() {
