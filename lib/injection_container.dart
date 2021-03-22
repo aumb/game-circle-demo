@@ -30,6 +30,12 @@ import 'package:gamecircle/features/login/domain/usecases/post_social_login.dart
 import 'package:gamecircle/features/login/presentation/bloc/login_bloc.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_form_bloc.dart';
 import 'package:gamecircle/features/logout/presentation/cubit/logout_cubit.dart';
+import 'package:gamecircle/features/lounges/data/datasources/lounges_remote_data_source.dart';
+import 'package:gamecircle/features/lounges/data/respositories/lounges_repository_impl.dart';
+import 'package:gamecircle/features/lounges/domain/repositories/lounges_repository.dart';
+import 'package:gamecircle/features/lounges/domain/usecases/get_lounges.dart';
+import 'package:gamecircle/features/lounges/domain/usecases/get_more_lounges.dart';
+import 'package:gamecircle/features/lounges/presentation/bloc/lounges_bloc.dart';
 import 'package:gamecircle/features/registration/data/datasources/registration_local_data_source.dart';
 import 'package:gamecircle/features/registration/data/datasources/registration_remote_data_source.dart';
 import 'package:gamecircle/features/registration/data/repositories/registration_repository_impl.dart';
@@ -57,6 +63,7 @@ Future<void> init() async {
   _initRegistrationUseCases();
   _initLocaleUseCases();
   _initUsersUseCases();
+  _initLoungesUseCases();
 
   // Repositories
   _initRepositories();
@@ -102,6 +109,13 @@ void _initBlocs() {
       authenticationBloc: sl(),
     ),
   );
+
+  sl.registerFactory(
+    () => LoungesBloc(
+      getLounges: sl(),
+      getMoreLounges: sl(),
+    ),
+  );
 }
 
 void _initSingletonBlocs() {
@@ -144,6 +158,11 @@ void _initUsersUseCases() {
   sl.registerLazySingleton(() => PostLogoutUser(sl()));
 }
 
+void _initLoungesUseCases() {
+  sl.registerLazySingleton(() => GetLounges(sl()));
+  sl.registerLazySingleton(() => GetMoreLounges(sl()));
+}
+
 void _initRepositories() {
   sl.registerLazySingleton<LoginRepository>(
     () => LoginRespositoryImpl(
@@ -171,6 +190,12 @@ void _initRepositories() {
     () => UserRepositoryImpl(
       remoteDataSource: sl(),
       localDataSource: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<LoungesRepository>(
+    () => LoungesRepositoryImpl(
+      remoteDataSource: sl(),
     ),
   );
 }
@@ -224,6 +249,10 @@ void _initDataSources() {
 
   sl.registerLazySingleton<UserLocalDataSource>(
     () => UserLocalDataSourceImpl(sharedPreferences: sl()),
+  );
+
+  sl.registerLazySingleton<LoungesRemoteDataSource>(
+    () => LoungesRemoteDataSourceImpl(client: sl()),
   );
 }
 

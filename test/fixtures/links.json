@@ -1,0 +1,6 @@
+{
+    "links": {
+        "previous": "http://gamecircle.test/api/users?page=1",
+        "next": "http://gamecircle.test/api/users?page=3"
+    }
+}

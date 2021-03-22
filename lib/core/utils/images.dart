@@ -6,6 +6,7 @@ final String _flare = "$_base/flare";
 abstract class Images {
   //Images
   static final String logo = "$_images/logo.png";
+  static final String logoNoText = "$_images/logo_no_text.png";
 
   //Gifs
   static final String loadingImageGif = "$_gifs/loading_image.gif";

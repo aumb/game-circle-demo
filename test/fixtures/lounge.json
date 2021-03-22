@@ -1,0 +1,66 @@
+{
+    "data": {
+        "id": 2,
+        "name": "consequatur",
+        "places": 10,
+        "review_count": 0,
+        "rating": 0,
+        "location": {
+            "id": 6,
+            "address": "296 Ratke Springs\nMcCluremouth, IN 41373-9270",
+            "longitude": 43.61,
+            "latitude": 25.28
+        },
+        "packages": [
+            {
+                "id": 6
+            },
+            {
+                "id": 9
+            }
+        ],
+        "timings": [
+            {
+                "id": 4,
+                "day": 1
+            },
+            {
+                "id": 9,
+                "day": 5
+            }
+        ],
+        "games": [
+            {
+                "id": 1,
+                "name": "quidem"
+            },
+            {
+                "id": 8,
+                "name": "consectetur"
+            }
+        ],
+        "sections": [
+            {
+                "name": "perspiciatis",
+                "price": 3,
+                "specs": [
+                    {
+                        "id": 3,
+                        "type": "M",
+                        "name": "ea"
+                    }
+                ]
+            }
+        ],
+        "images": [
+            {
+                "id": 7,
+                "image": "https://gamecircleinc.s3.eu-west-3.amazonaws.com/2.jpg"
+            },
+            {
+                "id": 9,
+                "image": "https://gamecircleinc.s3.eu-west-3.amazonaws.com/1.jpg"
+            }
+        ]
+    }
+}

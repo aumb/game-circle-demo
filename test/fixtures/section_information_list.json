@@ -1,0 +1,35 @@
+[
+    {
+        "name": "quia",
+        "price": 8,
+        "specs": [
+            {
+                "id": 3,
+                "type": "M",
+                "name": "ea"
+            }
+        ]
+    },
+    {
+        "name": "perspiciatis",
+        "price": 6,
+        "specs": [
+            {
+                "id": 5,
+                "type": "K",
+                "name": "earum"
+            }
+        ]
+    },
+    {
+        "name": "quia",
+        "price": 6,
+        "specs": [
+            {
+                "id": 3,
+                "type": "M",
+                "name": "ea"
+            }
+        ]
+    }
+]

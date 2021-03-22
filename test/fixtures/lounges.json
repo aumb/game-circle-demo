@@ -1,0 +1,184 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "inventore",
+            "places": 2,
+            "review_count": 5,
+            "rating": 10114144.78,
+            "logo": "1.jpg"
+        },
+        {
+            "id": 2,
+            "name": "consequatur",
+            "places": 10,
+            "review_count": 0,
+            "rating": 0,
+            "location": {
+                "id": 6,
+                "address": "296 Ratke Springs\nMcCluremouth, IN 41373-9270",
+                "longitude": 43.61,
+                "latitude": 25.28
+            },
+            "logo": "1.jpg"
+        },
+        {
+            "id": 3,
+            "name": "reiciendis",
+            "places": 9,
+            "review_count": 0,
+            "rating": 0,
+            "location": {
+                "id": 1,
+                "address": "4237 Ullrich Fields\nVeronicashire, WY 58222",
+                "longitude": 41.39,
+                "latitude": 28.34
+            },
+            "logo": "1.jpg"
+        },
+        {
+            "id": 4,
+            "name": "eligendi",
+            "places": 2,
+            "review_count": 0,
+            "rating": 0,
+            "logo": "1.jpg"
+        },
+        {
+            "id": 5,
+            "name": "sed",
+            "places": 4,
+            "review_count": 1,
+            "rating": 1.2,
+            "location": {
+                "id": 10,
+                "address": "202 Tiara Tunnel\nSchmidtshire, WY 19609",
+                "longitude": 48.58,
+                "latitude": 27.33
+            },
+            "logo": "2.jpg"
+        },
+        {
+            "id": 6,
+            "name": "dolor",
+            "places": 4,
+            "review_count": 0,
+            "rating": 0,
+            "location": {
+                "id": 8,
+                "address": "76946 Taylor Estate\nO'Reillychester, VT 70394-1561",
+                "longitude": 40.74,
+                "latitude": 25.4
+            },
+            "logo": "1.jpg"
+        },
+        {
+            "id": 7,
+            "name": "culpa",
+            "places": 8,
+            "review_count": 0,
+            "rating": 0,
+            "logo": "2.jpg"
+        },
+        {
+            "id": 8,
+            "name": "quod",
+            "places": 2,
+            "review_count": 0,
+            "rating": 0,
+            "location": {
+                "id": 3,
+                "address": "587 Romaguera Roads\nDuBuqueland, SD 88727-5592",
+                "longitude": 41.28,
+                "latitude": 26.69
+            },
+            "logo": "2.jpg"
+        },
+        {
+            "id": 9,
+            "name": "labore",
+            "places": 8,
+            "review_count": 0,
+            "rating": 0,
+            "location": {
+                "id": 2,
+                "address": "1585 Myrtle Villages Suite 823\nNew Garthton, WV 88539",
+                "longitude": 41.15,
+                "latitude": 25.45
+            },
+            "logo": "2.jpg"
+        },
+        {
+            "id": 10,
+            "name": "placeat",
+            "places": 9,
+            "review_count": 1,
+            "rating": 5,
+            "logo": "1.jpg"
+        },
+        {
+            "id": 11,
+            "name": "laborum",
+            "places": 10,
+            "review_count": 0,
+            "rating": 0,
+            "logo": "1.jpg"
+        },
+        {
+            "id": 12,
+            "name": "natus",
+            "places": 5,
+            "review_count": 1,
+            "rating": 272019.85,
+            "location": {
+                "id": 5,
+                "address": "236 Homenick Pass\nLabadiefort, UT 10626",
+                "longitude": 39.48,
+                "latitude": 31.11
+            },
+            "logo": "1.jpg"
+        },
+        {
+            "id": 13,
+            "name": "aspernatur",
+            "places": 5,
+            "review_count": 0,
+            "rating": 0,
+            "logo": "1.jpg"
+        },
+        {
+            "id": 14,
+            "name": "in",
+            "places": 1,
+            "review_count": 1,
+            "rating": 4.5,
+            "logo": "1.jpg"
+        },
+        {
+            "id": 15,
+            "name": "repellendus",
+            "places": 7,
+            "review_count": 3,
+            "rating": 41816.39,
+            "location": {
+                "id": 7,
+                "address": "50332 Ansel Place\nEast Kalebburgh, NJ 33910",
+                "longitude": 48.66,
+                "latitude": 26.64
+            },
+            "logo": "2.jpg"
+        }
+    ],
+    "meta": {
+        "pagination": {
+            "total": 15,
+            "count": 15,
+            "per_page": 15,
+            "current_page": 1,
+            "total_pages": 1,
+            "links": {
+                "next": "test"
+            }
+        }
+    }
+}

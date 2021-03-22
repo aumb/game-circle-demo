@@ -6,4 +6,5 @@ class API {
   static final String user = "/user";
   static final String users = "/users";
   static final String logout = "/logout";
+  static final String lounges = "/lounges";
 }
