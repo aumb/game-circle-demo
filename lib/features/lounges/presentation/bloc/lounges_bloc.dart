@@ -18,19 +18,19 @@ class LoungesBloc extends Bloc<LoungesEvent, LoungesState> {
   final num? userLongitude;
   final num? userLatitude;
 
-  LoungesBloc({
-    required this.getLounges,
-    required this.getMoreLounges,
-    this.userLatitude = 34,
-    this.userLongitude = 33,
-  }) : super(LoungesLoading());
-
   List<Lounge?> _lounges = [];
   List<Lounge?> get lounges => _lounges;
 
   bool canGetMoreLounges = true;
 
   LoungeFilterOption filter = LoungeFilterOption.distance;
+
+  LoungesBloc({
+    required this.getLounges,
+    required this.getMoreLounges,
+    this.userLatitude = 34,
+    this.userLongitude = 33,
+  }) : super(LoungesLoading());
 
   @override
   Stream<LoungesState> mapEventToState(

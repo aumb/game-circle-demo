@@ -36,6 +36,7 @@ import 'package:gamecircle/features/lounges/domain/repositories/lounges_reposito
 import 'package:gamecircle/features/lounges/domain/usecases/get_lounges.dart';
 import 'package:gamecircle/features/lounges/domain/usecases/get_more_lounges.dart';
 import 'package:gamecircle/features/lounges/presentation/bloc/lounges_bloc.dart';
+import 'package:gamecircle/features/lounges/presentation/cubit/lounges_search_cubit.dart';
 import 'package:gamecircle/features/registration/data/datasources/registration_local_data_source.dart';
 import 'package:gamecircle/features/registration/data/datasources/registration_remote_data_source.dart';
 import 'package:gamecircle/features/registration/data/repositories/registration_repository_impl.dart';
@@ -107,6 +108,13 @@ void _initBlocs() {
     () => LogoutCubit(
       postLogoutUser: sl(),
       authenticationBloc: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => LoungesSearchCubit(
+      getLounges: sl(),
+      getMoreLounges: sl(),
     ),
   );
 

@@ -15,8 +15,11 @@ class AppTheme {
             color: CustomColors.white87,
           ),
         ),
-        textSelectionHandleColor: CustomColors.accentColor,
-        textSelectionColor: CustomColors.accentColor,
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: CustomColors.accentColor, //thereby
+        ),
+        // textSelectionHandleColor: CustomColors.accentColor,
+        // textSelectionColor: CustomColors.accentColor,
         primarySwatch: MaterialColor(
           0xFF242729,
           <int, Color>{

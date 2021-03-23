@@ -13,5 +13,8 @@
     "create": "Create",
     "unexpected_error": "An unexpected error has occured",
     "local_storage_access_error": "Could not access local storage",
-    "social_provider_error": "Could not get data from {VALUE}"
+    "social_provider_error": "Could not get data from {VALUE}",
+    "lounges_search_suggestion": "Search for a name, location, or address.",
+    "lounges_search_failure": "No lounges were found.",
+    "search": "Search..."
 }

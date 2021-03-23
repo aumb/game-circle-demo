@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gamecircle/core/api.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/images.dart';
 import 'package:gamecircle/core/widgets/star_rating.dart';
 import 'package:gamecircle/features/lounges/domain/entities/lounge.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class LoungeCard extends StatelessWidget {
   final Lounge? lounge;
@@ -82,21 +82,14 @@ class LoungeCard extends StatelessWidget {
               SizedBox(width: 4),
               if (lounge?.distance != null)
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border(
-                        left: BorderSide(
-                          width: 1,
-                          color: CustomColors.white60,
-                        ),
-                      ),
-                    ),
-                    child: Column(
-                      children: <Widget>[
-                        Text((lounge?.distance.toString() ?? '') + " km",
-                            style: Theme.of(context).textTheme.caption),
-                      ],
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Icon(MdiIcons.car),
+                      SizedBox(width: 2),
+                      Text((lounge?.distance.toString() ?? '') + " km",
+                          style: Theme.of(context).textTheme.caption),
+                    ],
                   ),
                 ),
             ],
