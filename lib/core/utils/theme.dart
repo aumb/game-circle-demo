@@ -6,6 +6,8 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTheme {
   ThemeData get themeData {
     return ThemeData(
+        dividerColor: Colors.white70,
+        dialogBackgroundColor: CustomColors.backgroundColor,
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           foregroundColor: CustomColors.backgroundColor,
         ),

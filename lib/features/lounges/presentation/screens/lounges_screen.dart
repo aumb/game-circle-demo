@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/buttons/custom_outline_button.dart';
+import 'package:gamecircle/core/widgets/custom_dialog.dart';
 import 'package:gamecircle/core/widgets/profile_picture.dart';
+import 'package:gamecircle/features/lounges/presentation/widgets/avatar_dialog.dart';
 import 'package:gamecircle/features/lounges/domain/entities/lounges_filter_option.dart';
 import 'package:gamecircle/features/lounges/presentation/bloc/lounges_bloc.dart';
 import 'package:gamecircle/features/lounges/presentation/screens/lounges_search_screen.dart';
@@ -96,7 +98,10 @@ class _LoungesScreenState extends State<LoungesScreen> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             ProfilePicture(
-              user: sl<SessionManager>().user,
+              onTap: () => showDialog(
+                context: context,
+                builder: (context) => AvatarDialog(),
+              ),
             ),
           ],
         ),

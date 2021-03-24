@@ -16,5 +16,8 @@
     "social_provider_error": "Could not get data from {VALUE}",
     "lounges_search_suggestion": "Search for a name, location, or address.",
     "lounges_search_failure": "No lounges were found.",
-    "search": "Search..."
+    "search": "Search...",
+    "logout": "Logout",
+    "favorites": "Favorites",
+    "profile": "Profile"
 }
