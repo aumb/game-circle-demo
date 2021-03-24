@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gamecircle/core/errors/failure.dart';
+import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/features/lounges/domain/entities/lounge.dart';
 import 'package:gamecircle/features/lounges/domain/entities/lounges_filter_option.dart';
 import 'package:gamecircle/features/lounges/domain/usecases/get_lounges.dart';
@@ -15,8 +16,7 @@ part 'lounges_state.dart';
 class LoungesBloc extends Bloc<LoungesEvent, LoungesState> {
   final GetLounges getLounges;
   final GetMoreLounges getMoreLounges;
-  final num? userLongitude;
-  final num? userLatitude;
+  final SessionManager sessionManager;
 
   List<Lounge?> _lounges = [];
   List<Lounge?> get lounges => _lounges;
@@ -28,8 +28,7 @@ class LoungesBloc extends Bloc<LoungesEvent, LoungesState> {
   LoungesBloc({
     required this.getLounges,
     required this.getMoreLounges,
-    this.userLatitude = 34,
-    this.userLongitude = 33,
+    required this.sessionManager,
   }) : super(LoungesLoading());
 
   @override
@@ -37,25 +36,27 @@ class LoungesBloc extends Bloc<LoungesEvent, LoungesState> {
     LoungesEvent event,
   ) async* {
     if (event is GetLoungesEvent) {
+      canGetMoreLounges = true;
       if (state is! LoungesLoading) yield LoungesLoading();
+
+      print(sessionManager.latitude);
 
       final lounges = await getLounges(
         GetLoungesParams(
-          latitude: userLatitude,
-          longitude: userLongitude,
+          latitude: sessionManager.latitude,
+          longitude: sessionManager.longitude,
           sortBy: filter.value.toLowerCase(),
         ),
       );
+      print("test");
       yield* _handledGetLoungesState(lounges);
-    }
-
-    if (event is GetMoreLoungesEvent) {
+    } else if (event is GetMoreLoungesEvent) {
       if (state is! LoungesLoadingMore) yield LoungesLoadingMore();
 
       final lounges = await getMoreLounges(
         GetLoungesParams(
-          latitude: userLatitude,
-          longitude: userLongitude,
+          latitude: sessionManager.latitude,
+          longitude: sessionManager.longitude,
           sortBy: filter.value.toLowerCase(),
         ),
       );

@@ -182,6 +182,24 @@ class _SearchLoaded extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             // controller: _scrollController,
             itemBuilder: (ctx, index) {
+              if (index == _cubit.lounges.length - 1 &&
+                  _cubit.state is LoungesSearchLoadingMore) {
+                return Column(
+                  children: [
+                    LoungeCard(
+                      lounge: _cubit.lounges[index],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ],
+                );
+              }
               return LoungeCard(
                 lounge: _cubit.lounges[index],
               );
@@ -189,20 +207,6 @@ class _SearchLoaded extends StatelessWidget {
             itemCount: _cubit.lounges.length,
           ),
         ),
-        if (_cubit.state is LoungesSearchLoadingMore)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: SizedBox(
-                  height: 20,
-                  width: 20,
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            ],
-          ),
       ],
     );
   }

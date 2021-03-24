@@ -3,6 +3,7 @@ import 'package:gamecircle/core/api.dart';
 import 'package:gamecircle/core/entities/user.dart';
 import 'package:gamecircle/core/errors/exceptions.dart';
 import 'package:gamecircle/core/models/user_model.dart';
+import 'package:geolocator/geolocator.dart';
 
 abstract class UserRemoteDataSource {
   Future<User?> getCurrentUserInfo();
@@ -10,6 +11,8 @@ abstract class UserRemoteDataSource {
   Future<User?> getUserInfo(int? id);
 
   Future<User?> postLogoutUser();
+
+  Future<Position> getCurrentUserPosition();
 }
 
 class UserRemoteDataSourceImpl implements UserRemoteDataSource {
@@ -53,5 +56,37 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
       final serverError = ServerError.fromJson(e.response?.data);
       throw ServerException(serverError);
     }
+  }
+
+  @override
+  Future<Position> getCurrentUserPosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      throw ServerException(
+          ServerError(message: 'Location services are disabled.', code: 402));
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.deniedForever) {
+        throw ServerException(ServerError(
+            message:
+                'Location permissions are permanently denied, we cannot request permissions.',
+            code: 402));
+      }
+
+      if (permission == LocationPermission.denied) {
+        throw ServerException(
+            ServerError(message: 'Location permissions are denied', code: 402));
+      }
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 }

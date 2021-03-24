@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:gamecircle/core/entities/user.dart';
 import 'package:gamecircle/core/errors/failure.dart';
+import 'package:geolocator/geolocator.dart';
 
 abstract class UserRepository {
   ///Gets the current user based on his token
@@ -10,4 +11,6 @@ abstract class UserRepository {
   Future<Either<Failure, User?>> getUserInfo(int? id);
 
   Future<Either<Failure, User?>> postLogoutUser();
+
+  Future<Either<Failure, Position?>> getCurrentUserLocation();
 }

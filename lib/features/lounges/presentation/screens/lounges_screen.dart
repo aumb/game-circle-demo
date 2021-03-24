@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/buttons/custom_outline_button.dart';
+import 'package:gamecircle/core/widgets/profile_picture.dart';
 import 'package:gamecircle/features/lounges/domain/entities/lounges_filter_option.dart';
 import 'package:gamecircle/features/lounges/presentation/bloc/lounges_bloc.dart';
 import 'package:gamecircle/features/lounges/presentation/screens/lounges_search_screen.dart';
@@ -21,6 +23,12 @@ class _LoungesScreenState extends State<LoungesScreen> {
   void initState() {
     super.initState();
     _init();
+  }
+
+  @override
+  void didUpdateWidget(covariant LoungesScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _bloc.add(GetLoungesEvent());
   }
 
   @override
@@ -62,12 +70,12 @@ class _LoungesScreenState extends State<LoungesScreen> {
                 body: CustomScrollView(
                   controller: _scrollController,
                   slivers: [
+                    _buildProfilePicture(),
                     _buildAppBar(deviceSize),
                     _buildFilterList(),
                     (state is LoungesLoading)
-                        ? __buildLoungsLoading()
+                        ? _buildLoungesLoading()
                         : _buildLoungesList(),
-                    if (state is LoungesLoadingMore) _buildLoadingMore()
                   ],
                 ),
               ),
@@ -80,7 +88,23 @@ class _LoungesScreenState extends State<LoungesScreen> {
     );
   }
 
-  SliverToBoxAdapter __buildLoungsLoading() {
+  SliverToBoxAdapter _buildProfilePicture() {
+    return SliverToBoxAdapter(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ProfilePicture(
+              user: sl<SessionManager>().user,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  SliverToBoxAdapter _buildLoungesLoading() {
     return SliverToBoxAdapter(
       child: Column(
         children: [
@@ -94,32 +118,38 @@ class _LoungesScreenState extends State<LoungesScreen> {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: LoungeCard(
-              lounge: _bloc.lounges[index],
-            ),
-          );
+          if (index == _bloc.lounges.length - 1 &&
+              _bloc.state is LoungesLoadingMore) {
+            return Column(
+              children: [
+                _buildLoungeCard(index),
+                _buildLoadingMore(),
+              ],
+            );
+          }
+          return _buildLoungeCard(index);
         },
         childCount: _bloc.lounges.length,
       ),
     );
   }
 
-  SliverToBoxAdapter _buildLoadingMore() {
-    return SliverToBoxAdapter(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(),
-            ),
-          ),
-        ],
+  Padding _buildLoungeCard(int index) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: LoungeCard(
+        lounge: _bloc.lounges[index],
+      ),
+    );
+  }
+
+  Padding _buildLoadingMore() {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: SizedBox(
+        height: 20,
+        width: 20,
+        child: CircularProgressIndicator(),
       ),
     );
   }

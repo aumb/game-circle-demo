@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gamecircle/core/errors/failure.dart';
+import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/models/pagination_model.dart';
 import 'package:gamecircle/core/usecases/usecases.dart';
 import 'package:gamecircle/features/lounges/data/models/lounge_model.dart';
@@ -18,10 +19,13 @@ class MockGetLounges extends Mock implements GetLounges {}
 
 class MockGetMoreLounges extends Mock implements GetMoreLounges {}
 
+class MockSessionManager extends Mock implements SessionManager {}
+
 void main() {
   late LoungesBloc loungesBloc;
   late MockGetLounges mockGetLounges;
   late MockGetMoreLounges mockGetMoreLounges;
+  late MockSessionManager mockSessionManager;
 
   setUp(() {
     registerFallbackValue<NoParams>(NoParams());
@@ -33,9 +37,11 @@ void main() {
     ));
     mockGetLounges = MockGetLounges();
     mockGetMoreLounges = MockGetMoreLounges();
+    mockSessionManager = MockSessionManager();
     loungesBloc = LoungesBloc(
       getLounges: mockGetLounges,
       getMoreLounges: mockGetMoreLounges,
+      sessionManager: mockSessionManager,
     );
   });
 
@@ -51,7 +57,6 @@ void main() {
       'should get data from the local use case',
       () async {
         // arrange
-        // setUpMockInputConverterSuccess();
         when(() => mockGetLounges(any()))
             .thenAnswer((_) async => Right(tLounges));
         // act
@@ -60,8 +65,8 @@ void main() {
         // assert
         verify(
           () => mockGetLounges(GetLoungesParams(
-            longitude: 33,
-            latitude: 34,
+            longitude: null,
+            latitude: null,
             sortBy: 'distance',
             query: null,
           )),
@@ -133,8 +138,8 @@ void main() {
         // assert
         verify(
           () => mockGetMoreLounges(GetLoungesParams(
-            longitude: 33,
-            latitude: 34,
+            longitude: null,
+            latitude: null,
             sortBy: 'distance',
             query: null,
           )),

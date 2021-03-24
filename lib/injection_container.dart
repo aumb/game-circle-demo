@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/api.dart';
+import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/string_utils.dart';
 import 'package:gamecircle/features/authentication/data/datasources/authentication_local_data_source.dart';
 import 'package:gamecircle/features/authentication/data/repositories/authentication_repository_impl.dart';
@@ -11,6 +12,7 @@ import 'package:gamecircle/features/home/data/datasources/user_remote_data_sourc
 import 'package:gamecircle/features/home/data/repositories/user_repository_impl.dart';
 import 'package:gamecircle/features/home/domain/repositories/user_repository.dart';
 import 'package:gamecircle/features/home/domain/usecases/get_current_user_info.dart';
+import 'package:gamecircle/features/home/domain/usecases/get_current_user_location.dart';
 import 'package:gamecircle/features/home/domain/usecases/get_user_info.dart';
 import 'package:gamecircle/features/home/domain/usecases/post_logout_user.dart';
 import 'package:gamecircle/features/home/presentation/bloc/home_bloc.dart';
@@ -56,8 +58,9 @@ Future<void> init() async {
   // Blocs
   _initBlocs();
 
-  //Singleton blocs
+  // Singleton blocs
   _initSingletonBlocs();
+
   // Use cases
   _initLoginUseCases();
   _initAuthenticationUseCases();
@@ -71,6 +74,8 @@ Future<void> init() async {
   // Data sources
   _initDataSources();
 
+  // Managers
+  _initManagers();
   // External
   await _initExternal();
 }
@@ -101,7 +106,11 @@ void _initBlocs() {
   );
 
   sl.registerFactory(
-    () => HomeBloc(getCurrentUserInfo: sl()),
+    () => HomeBloc(
+      getCurrentUserInfo: sl(),
+      getCurrentUserLocation: sl(),
+      sessionManager: sl(),
+    ),
   );
 
   sl.registerFactory(
@@ -122,6 +131,7 @@ void _initBlocs() {
     () => LoungesBloc(
       getLounges: sl(),
       getMoreLounges: sl(),
+      sessionManager: sl(),
     ),
   );
 }
@@ -164,6 +174,7 @@ void _initUsersUseCases() {
   sl.registerLazySingleton(() => GetCurrentUserInfo(sl()));
   sl.registerLazySingleton(() => GetUserInfo(sl()));
   sl.registerLazySingleton(() => PostLogoutUser(sl()));
+  sl.registerLazySingleton(() => GetCurrentUserLocation(sl()));
 }
 
 void _initLoungesUseCases() {
@@ -206,6 +217,10 @@ void _initRepositories() {
       remoteDataSource: sl(),
     ),
   );
+}
+
+void _initManagers() {
+  sl.registerLazySingleton(() => SessionManager());
 }
 
 Future<void> _initExternal() async {

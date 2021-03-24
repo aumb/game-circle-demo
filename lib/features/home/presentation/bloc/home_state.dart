@@ -13,9 +13,19 @@ class HomeLoading extends HomeState {}
 
 class HomeLoaded extends HomeState {}
 
+class HomeRefreshing extends HomeState {}
+
 class HomeError extends HomeState {
   final String? message;
   HomeError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class LocationError extends HomeState {
+  final String? message;
+  LocationError({required this.message});
 
   @override
   List<Object?> get props => [message];

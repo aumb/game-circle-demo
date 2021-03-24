@@ -5,6 +5,7 @@ import 'package:dartz/dartz.dart';
 import 'package:gamecircle/features/home/data/datasources/user_local_data_source.dart';
 import 'package:gamecircle/features/home/data/datasources/user_remote_data_source.dart';
 import 'package:gamecircle/features/home/domain/repositories/user_repository.dart';
+import 'package:geolocator/geolocator.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final UserRemoteDataSource remoteDataSource;
@@ -41,6 +42,17 @@ class UserRepositoryImpl implements UserRepository {
       final User? user = await remoteDataSource.postLogoutUser();
       await localDataSource.deleteCachedToken();
       return Right(user);
+    } on ServerException catch (e) {
+      return Left(ServerFailure.fromServerException(e.error));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Position?>> getCurrentUserLocation() async {
+    try {
+      final Position? position =
+          await remoteDataSource.getCurrentUserPosition();
+      return Right(position);
     } on ServerException catch (e) {
       return Left(ServerFailure.fromServerException(e.error));
     }
