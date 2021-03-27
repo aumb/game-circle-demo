@@ -67,8 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 } else if (state is HomeLoaded || state is LocationError) {
                   return LoungesScreen();
-                } else if (state is HomeRefreshing) {
-                  return LoungesScreen();
                 } else {
                   return Container();
                 }

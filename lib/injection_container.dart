@@ -39,6 +39,11 @@ import 'package:gamecircle/features/lounges/domain/usecases/get_lounges.dart';
 import 'package:gamecircle/features/lounges/domain/usecases/get_more_lounges.dart';
 import 'package:gamecircle/features/lounges/presentation/bloc/lounges_bloc.dart';
 import 'package:gamecircle/features/lounges/presentation/cubit/lounges_search_cubit.dart';
+import 'package:gamecircle/features/profile/data/datasources/profile_remote_data_source.dart';
+import 'package:gamecircle/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:gamecircle/features/profile/domain/repositories/profile_repository.dart';
+import 'package:gamecircle/features/profile/domain/usecases/post_user_information.dart';
+import 'package:gamecircle/features/profile/presentation/cubit/profile_cubit.dart';
 import 'package:gamecircle/features/registration/data/datasources/registration_local_data_source.dart';
 import 'package:gamecircle/features/registration/data/datasources/registration_remote_data_source.dart';
 import 'package:gamecircle/features/registration/data/repositories/registration_repository_impl.dart';
@@ -68,6 +73,7 @@ Future<void> init() async {
   _initLocaleUseCases();
   _initUsersUseCases();
   _initLoungesUseCases();
+  _initProfileUseCases();
 
   // Repositories
   _initRepositories();
@@ -148,9 +154,21 @@ void _initSingletonBlocs() {
       getCachedLocale: sl(),
     ),
   );
+
+  sl.registerFactory(
+    () => ProfileCubit(
+      sessionManager: sl(),
+      postUserInformation: sl(),
+    ),
+  );
 }
 
 //Usecases
+
+void _initProfileUseCases() {
+  sl.registerLazySingleton(() => PostUserInformation(sl()));
+}
+
 void _initLoginUseCases() {
   sl.registerLazySingleton(() => PostEmailLogin(sl()));
   sl.registerLazySingleton(() => PostSocialLogin(sl()));
@@ -217,6 +235,12 @@ void _initRepositories() {
       remoteDataSource: sl(),
     ),
   );
+
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(
+      remoteDataSource: sl(),
+    ),
+  );
 }
 
 void _initManagers() {
@@ -276,6 +300,10 @@ void _initDataSources() {
 
   sl.registerLazySingleton<LoungesRemoteDataSource>(
     () => LoungesRemoteDataSourceImpl(client: sl()),
+  );
+
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(client: sl()),
   );
 }
 

@@ -95,12 +95,16 @@ class _LoungesScreenState extends State<LoungesScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            ProfilePicture(
-              onTap: () => showDialog(
+            ProfilePicture(onTap: () async {
+              final bool? result = await showDialog(
                 context: context,
                 builder: (context) => AvatarDialog(),
-              ),
-            ),
+              );
+
+              if (result ?? false) {
+                setState(() {});
+              }
+            }),
           ],
         ),
       ),

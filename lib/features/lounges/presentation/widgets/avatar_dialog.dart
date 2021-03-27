@@ -7,6 +7,7 @@ import 'package:gamecircle/core/widgets/custom_dialog.dart';
 import 'package:gamecircle/core/widgets/custom_divider.dart';
 import 'package:gamecircle/core/widgets/profile_picture.dart';
 import 'package:gamecircle/features/logout/presentation/cubit/logout_cubit.dart';
+import 'package:gamecircle/features/profile/presentation/screens/profile_screen.dart';
 import 'package:gamecircle/injection_container.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -47,11 +48,22 @@ class AvatarDialog extends StatelessWidget {
             MdiIcons.homeEdit,
             size: 24,
           ),
+          onTapped: () => _navigate(ProfileScreen(), context),
         ),
+        CustomDivider(),
         _DialogListTile(
           label: Localization.of(context, 'favorites'),
           icon: Icon(
             MdiIcons.starCircle,
+            color: CustomColors.secondaryAccent,
+            size: 24,
+          ),
+        ),
+        _DialogListTile(
+          label: Localization.of(context, 'reviews'),
+          icon: Icon(
+            MdiIcons.commentOutline,
+            color: CustomColors.secondaryAccent,
             size: 24,
           ),
         ),
@@ -82,6 +94,15 @@ class AvatarDialog extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void _navigate(Widget screen, BuildContext context) async {
+    final result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => screen,
+      ),
+    );
+    Navigator.of(context).pop(result);
   }
 }
 

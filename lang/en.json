@@ -19,5 +19,10 @@
     "search": "Search...",
     "logout": "Logout",
     "favorites": "Favorites",
-    "profile": "Profile"
+    "profile": "Profile",
+    "reviews": "Reviews",
+    "no_name": "No name provided.",
+    "no_email": "No email provided.",
+    "about": "About",
+    "save": "Save"
 }
