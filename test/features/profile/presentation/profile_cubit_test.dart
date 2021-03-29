@@ -18,8 +18,11 @@ void main() {
   late MockSessionManager mockSessionManager;
 
   setUp(() {
-    registerFallbackValue<PostUserInformationParams>(
-        PostUserInformationParams());
+    registerFallbackValue<PostUserInformationParams>(PostUserInformationParams(
+      email: '',
+      name: '',
+      image: null,
+    ));
     mockPostUserInformation = MockPostUserInformation();
     mockSessionManager = MockSessionManager();
     profileCubit = ProfileCubit(
@@ -42,7 +45,11 @@ void main() {
         await untilCalled(() => mockPostUserInformation(any()));
         // assert
         verify(
-          () => mockPostUserInformation(PostUserInformationParams()),
+          () => mockPostUserInformation(PostUserInformationParams(
+            email: '',
+            name: '',
+            image: null,
+          )),
         );
       },
     );

@@ -6,6 +6,7 @@ import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/custom_dialog.dart';
 import 'package:gamecircle/core/widgets/custom_divider.dart';
 import 'package:gamecircle/core/widgets/profile_picture.dart';
+import 'package:gamecircle/features/favorites/presentation/screens/favorite_lounges_screen.dart';
 import 'package:gamecircle/features/logout/presentation/cubit/logout_cubit.dart';
 import 'package:gamecircle/features/profile/presentation/screens/profile_screen.dart';
 import 'package:gamecircle/injection_container.dart';
@@ -58,6 +59,7 @@ class AvatarDialog extends StatelessWidget {
             color: CustomColors.secondaryAccent,
             size: 24,
           ),
+          onTapped: () => _navigate(FavoriteLougnesScreen(), context),
         ),
         _DialogListTile(
           label: Localization.of(context, 'reviews'),

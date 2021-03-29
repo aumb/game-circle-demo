@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Theme.of(context).primaryColor,
         onRefresh: () {
           _bloc.add(HomeRefreshEvent());
-          return _bloc.firstWhere(
+          return _bloc.stream.firstWhere(
             (val) => val is HomeLoaded || val is LocationError,
           );
         },

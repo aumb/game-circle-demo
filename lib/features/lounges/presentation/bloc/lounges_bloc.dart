@@ -39,8 +39,6 @@ class LoungesBloc extends Bloc<LoungesEvent, LoungesState> {
       canGetMoreLounges = true;
       if (state is! LoungesLoading) yield LoungesLoading();
 
-      print(sessionManager.latitude);
-
       final lounges = await getLounges(
         GetLoungesParams(
           latitude: sessionManager.latitude,
@@ -48,7 +46,6 @@ class LoungesBloc extends Bloc<LoungesEvent, LoungesState> {
           sortBy: filter.value.toLowerCase(),
         ),
       );
-      print("test");
       yield* _handledGetLoungesState(lounges);
     } else if (event is GetMoreLoungesEvent) {
       if (state is! LoungesLoadingMore) yield LoungesLoadingMore();

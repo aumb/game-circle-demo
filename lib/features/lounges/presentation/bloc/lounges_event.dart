@@ -7,19 +7,6 @@ abstract class LoungesEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class GetLoungesEvent extends LoungesEvent {
-  // final String? sortBy;
-  // final num? longitude;
-  // final num? latitude;
-
-  // GetLoungesEvent({
-  //   required this.sortBy,
-  //   required this.longitude,
-  //   required this.latitude,
-  // });
-
-  // @override
-  // List<Object?> get props => [sortBy, longitude, latitude];
-}
+class GetLoungesEvent extends LoungesEvent {}
 
 class GetMoreLoungesEvent extends LoungesEvent {}

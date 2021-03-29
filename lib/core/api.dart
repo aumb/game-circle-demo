@@ -7,4 +7,7 @@ class API {
   static final String users = "/users";
   static final String logout = "/logout";
   static final String lounges = "/lounges";
+  static final String favorites = "/favorites";
+
+  static final String favoriteLounges = favorites + lounges;
 }

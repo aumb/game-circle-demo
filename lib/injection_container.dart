@@ -8,6 +8,11 @@ import 'package:gamecircle/features/authentication/data/repositories/authenticat
 import 'package:gamecircle/features/authentication/domain/repositories/authentication_repository.dart';
 import 'package:gamecircle/features/authentication/domain/usecases/get_cached_token.dart';
 import 'package:gamecircle/features/authentication/presentation/bloc/authentication_bloc.dart';
+import 'package:gamecircle/features/favorites/data/datasources/favorites_remote_data_source.dart';
+import 'package:gamecircle/features/favorites/domain/repositories/favorites_repository.dart';
+import 'package:gamecircle/features/favorites/domain/usecases/get_favorite_lounges.dart';
+import 'package:gamecircle/features/favorites/domain/usecases/get_more_favorite_lounges.dart';
+import 'package:gamecircle/features/favorites/presentation/bloc/favorites_bloc.dart';
 import 'package:gamecircle/features/home/data/datasources/user_remote_data_source.dart';
 import 'package:gamecircle/features/home/data/repositories/user_repository_impl.dart';
 import 'package:gamecircle/features/home/domain/repositories/user_repository.dart';
@@ -55,6 +60,7 @@ import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'features/favorites/data/repositories/favorites_repository_impl.dart';
 import 'features/home/data/datasources/user_local_data_source.dart';
 
 final sl = GetIt.instance;
@@ -74,6 +80,7 @@ Future<void> init() async {
   _initUsersUseCases();
   _initLoungesUseCases();
   _initProfileUseCases();
+  _initFavoritesUseCases();
 
   // Repositories
   _initRepositories();
@@ -161,9 +168,21 @@ void _initSingletonBlocs() {
       postUserInformation: sl(),
     ),
   );
+
+  sl.registerFactory(
+    () => FavoritesBloc(
+      getFavoriteLounges: sl(),
+      getMoreFavoriteLounges: sl(),
+    ),
+  );
 }
 
 //Usecases
+
+void _initFavoritesUseCases() {
+  sl.registerLazySingleton(() => GetFavoriteLounges(sl()));
+  sl.registerLazySingleton(() => GetMoreFavoriteLounges(sl()));
+}
 
 void _initProfileUseCases() {
   sl.registerLazySingleton(() => PostUserInformation(sl()));
@@ -241,25 +260,16 @@ void _initRepositories() {
       remoteDataSource: sl(),
     ),
   );
+
+  sl.registerLazySingleton<FavoritesRepository>(
+    () => FavoritesRepositoryImpl(
+      remoteDataSource: sl(),
+    ),
+  );
 }
 
 void _initManagers() {
   sl.registerLazySingleton(() => SessionManager());
-}
-
-Future<void> _initExternal() async {
-  final sharedPreferences = await SharedPreferences.getInstance();
-  sl.registerLazySingleton(() => sharedPreferences);
-  sl.registerLazySingleton(() => FacebookAuth.instance);
-  sl.registerLazySingleton(
-    () => GoogleSignIn(
-      scopes: [
-        'email',
-      ],
-    ),
-  );
-
-  _initDio();
 }
 
 void _initDataSources() {
@@ -305,6 +315,25 @@ void _initDataSources() {
   sl.registerLazySingleton<ProfileRemoteDataSource>(
     () => ProfileRemoteDataSourceImpl(client: sl()),
   );
+
+  sl.registerLazySingleton<FavoritesRemoteDataSource>(
+    () => FavoritesRemoteDataSourceImpl(client: sl()),
+  );
+}
+
+Future<void> _initExternal() async {
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
+  sl.registerLazySingleton(() => FacebookAuth.instance);
+  sl.registerLazySingleton(
+    () => GoogleSignIn(
+      scopes: [
+        'email',
+      ],
+    ),
+  );
+
+  _initDio();
 }
 
 void _initDio() {
@@ -313,31 +342,36 @@ void _initDio() {
       BaseOptions(baseUrl: API.base),
     )..interceptors.addAll([
         LogInterceptor(),
-        InterceptorsWrapper(onError: (e) {
-          final RequestOptions options = e.response!.request;
+        InterceptorsWrapper(onError: (e, handler) async {
+          final client = Dio();
+          final RequestOptions options = e.response!.requestOptions;
           if (e.response?.statusCode == 401 &&
               StringUtils().isNotEmpty(options.headers['Authorization'])) {
             sl<Dio>().lock();
             sl<Dio>().interceptors.responseLock.lock();
             sl<Dio>().interceptors.errorLock.lock();
 
-            return Dio()
-                .post(
-              "http://192.168.10.12/api/refresh_token",
-              data: FormData.fromMap({
-                "token":
-                    "def502002bb8b5a246e7171acc02b26116a2f0d7e1ce8dad2a26202ddc2c2cf40b28195b3202c8833f8b08f4f95d172bd4e60a3e239c712c79300f301cfed4c8a9e536d25836e513ec1d1c31879eaf584d4984db42f91d7d70ca1bb26a5d156c66482db4c1f8a917586c37ac39fcf5cb17637ee3279667981d7143a14ed90d5ad2ba1f3b15392260af7ba1f95186e0e98faeae90389f1a33ed0ef3a79290b33791c77dd950ae0adc8e6e3ff55789c33b767612f81c3c75c81af26a4c4d6d79626e4e50bca0c3d8684bdd9888e88fc5d5f7c60801dc3c68686676d6f4a4af94eee2a5ea75aa9e623e4199dcb12bc24a8854fb4180e497bd1985bf7a37bce81a501e5c0cb5d0ed449950917b4dea4026377fbbd6dbe61b3af909781024768c0de7baf04e14e109d2b8a5f0df375e7795ac5c71f4c14beaf59129c84418b73a382a8151e93515c05cdde3f210fa4a41878ba4e2ec75fe1d1f06d16e1c0227cba7c83947d0c5e8"
-              }),
-            )
-                .whenComplete(() {
-              sl<Dio>().unlock();
-              sl<Dio>().interceptors.responseLock.unlock();
-              sl<Dio>().interceptors.errorLock.unlock();
-            }).then((value) {
-              return sl<Dio>().fetch(options);
-            });
+            return handler.resolve(
+              await client
+                  .post(
+                "http://192.168.10.12/api/refresh_token",
+                data: FormData.fromMap({
+                  "token":
+                      "def502002bb8b5a246e7171acc02b26116a2f0d7e1ce8dad2a26202ddc2c2cf40b28195b3202c8833f8b08f4f95d172bd4e60a3e239c712c79300f301cfed4c8a9e536d25836e513ec1d1c31879eaf584d4984db42f91d7d70ca1bb26a5d156c66482db4c1f8a917586c37ac39fcf5cb17637ee3279667981d7143a14ed90d5ad2ba1f3b15392260af7ba1f95186e0e98faeae90389f1a33ed0ef3a79290b33791c77dd950ae0adc8e6e3ff55789c33b767612f81c3c75c81af26a4c4d6d79626e4e50bca0c3d8684bdd9888e88fc5d5f7c60801dc3c68686676d6f4a4af94eee2a5ea75aa9e623e4199dcb12bc24a8854fb4180e497bd1985bf7a37bce81a501e5c0cb5d0ed449950917b4dea4026377fbbd6dbe61b3af909781024768c0de7baf04e14e109d2b8a5f0df375e7795ac5c71f4c14beaf59129c84418b73a382a8151e93515c05cdde3f210fa4a41878ba4e2ec75fe1d1f06d16e1c0227cba7c83947d0c5e8"
+                }),
+              )
+                  .whenComplete(() {
+                sl<Dio>().unlock();
+                sl<Dio>().interceptors.responseLock.unlock();
+                sl<Dio>().interceptors.errorLock.unlock();
+              }).then(
+                (value) {
+                  return sl<Dio>().fetch(options);
+                },
+              ),
+            );
           }
-          return e;
+          return handler.reject(e);
         }),
       ]),
   );

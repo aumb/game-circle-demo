@@ -39,6 +39,7 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   void submitProfile() async {
     emit(ProfileLoading());
+
     final user = await postUserInformation(PostUserInformationParams(
       email: didEmailChange ? email : '',
       name: didNameChange ? name : '',
