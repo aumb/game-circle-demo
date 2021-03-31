@@ -65,7 +65,7 @@ void main() {
           ProfileLoading(),
           ProfileLoaded(),
         ];
-        expectLater(profileCubit, emitsInOrder(expected));
+        expectLater(profileCubit.stream, emitsInOrder(expected));
         // act
         profileCubit.submitProfile();
       },
@@ -89,7 +89,7 @@ void main() {
             message: failure.message,
           ),
         ];
-        expectLater(profileCubit, emitsInOrder(expected));
+        expectLater(profileCubit.stream, emitsInOrder(expected));
         // act
         profileCubit.submitProfile();
       },

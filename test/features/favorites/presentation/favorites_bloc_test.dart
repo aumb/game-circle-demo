@@ -71,7 +71,7 @@ void main() {
           FavoritesLoading(),
           FavoritesLoaded(),
         ];
-        expectLater(favoritesBloc, emitsInOrder(expected)).then((value) {
+        expectLater(favoritesBloc.stream, emitsInOrder(expected)).then((value) {
           expect(favoritesBloc.lounges, equals(tLounges));
         });
         // act
@@ -96,7 +96,7 @@ void main() {
             message: failure.message,
           ),
         ];
-        expectLater(favoritesBloc, emitsInOrder(expected));
+        expectLater(favoritesBloc.stream, emitsInOrder(expected));
         // act
         favoritesBloc.add(GetFavoriteLoungesEvent());
       },
@@ -140,7 +140,7 @@ void main() {
           FavoritesLoadingMore(),
           FavoritesLoadedMore(),
         ];
-        expectLater(favoritesBloc, emitsInOrder(expected)).then((value) {
+        expectLater(favoritesBloc.stream, emitsInOrder(expected)).then((value) {
           lounges.addAll(tLounges);
           expect(favoritesBloc.lounges, equals(lounges));
         });
@@ -166,7 +166,7 @@ void main() {
             message: failure.message,
           ),
         ];
-        expectLater(favoritesBloc, emitsInOrder(expected));
+        expectLater(favoritesBloc.stream, emitsInOrder(expected));
         // act
         favoritesBloc.add(GetMoreFavoriteLoungesEvent());
       },
@@ -184,7 +184,7 @@ void main() {
           FavoritesLoadingMore(),
           FavoritesLoadedMore(),
         ];
-        expectLater(favoritesBloc, emitsInOrder(expected)).then((value) {
+        expectLater(favoritesBloc.stream, emitsInOrder(expected)).then((value) {
           expect(favoritesBloc.canGetMoreLounges, equals(false));
         });
         // act

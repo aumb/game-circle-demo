@@ -86,7 +86,7 @@ void main() {
           // LoungesLoading(),
           LoungesLoaded(),
         ];
-        expectLater(loungesBloc, emitsInOrder(expected)).then((value) {
+        expectLater(loungesBloc.stream, emitsInOrder(expected)).then((value) {
           expect(loungesBloc.lounges, equals(tLounges));
         });
         // act
@@ -111,7 +111,7 @@ void main() {
             message: failure.message,
           ),
         ];
-        expectLater(loungesBloc, emitsInOrder(expected));
+        expectLater(loungesBloc.stream, emitsInOrder(expected));
         // act
         loungesBloc.add(GetLoungesEvent());
       },
@@ -160,7 +160,7 @@ void main() {
           LoungesLoadingMore(),
           LoungesLoadedMore(),
         ];
-        expectLater(loungesBloc, emitsInOrder(expected)).then((value) {
+        expectLater(loungesBloc.stream, emitsInOrder(expected)).then((value) {
           lounges.addAll(tLounges);
           expect(loungesBloc.lounges, equals(lounges));
         });
@@ -186,7 +186,7 @@ void main() {
             message: failure.message,
           ),
         ];
-        expectLater(loungesBloc, emitsInOrder(expected));
+        expectLater(loungesBloc.stream, emitsInOrder(expected));
         // act
         loungesBloc.add(GetMoreLoungesEvent());
       },
@@ -204,7 +204,7 @@ void main() {
           LoungesLoadingMore(),
           LoungesLoadedMore(),
         ];
-        expectLater(loungesBloc, emitsInOrder(expected)).then((value) {
+        expectLater(loungesBloc.stream, emitsInOrder(expected)).then((value) {
           expect(loungesBloc.canGetMoreLounges, equals(false));
         });
         // act

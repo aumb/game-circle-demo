@@ -46,6 +46,7 @@ dependencies:
   async: ^2.5.0
   geolocator: ^7.0.1
   image_picker: ^0.7.3
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

@@ -16,7 +16,7 @@ void main() {
 
     bloc.add(ChangedEmailEvent(email: email));
 
-    expectLater(bloc, emitsInOrder(expected));
+    expectLater(bloc.stream, emitsInOrder(expected));
   });
 
   test("Should change name state value when [ChangedNameEvent] is called", () {
@@ -26,7 +26,7 @@ void main() {
 
     bloc.add(ChangedNameEvent(name: name));
 
-    expectLater(bloc, emitsInOrder(expected));
+    expectLater(bloc.stream, emitsInOrder(expected));
   });
 
   test(
@@ -38,7 +38,7 @@ void main() {
 
     bloc.add(ChangedPasswordEvent(password: password));
 
-    expectLater(bloc, emitsInOrder(expected));
+    expectLater(bloc.stream, emitsInOrder(expected));
   });
 
   test(
@@ -50,7 +50,7 @@ void main() {
 
     bloc.add(ChangedConfirmPasswordEvent(confirmPassword: confirmPassword));
 
-    expectLater(bloc, emitsInOrder(expected));
+    expectLater(bloc.stream, emitsInOrder(expected));
   });
 
   test(
@@ -62,6 +62,6 @@ void main() {
 
     bloc.add(ChangedObsecureTextEvent(obsecureText: obscureText));
 
-    expectLater(bloc, emitsInOrder(expected));
+    expectLater(bloc.stream, emitsInOrder(expected));
   });
 }

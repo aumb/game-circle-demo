@@ -53,7 +53,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Hero(
-                child: ProfilePicture(size: 130),
+                child: ProfilePicture(
+                  imageUrl: sl<SessionManager>().user?.imageUrl,
+                  size: 130,
+                ),
                 tag: "profile_picture",
               ),
             ],

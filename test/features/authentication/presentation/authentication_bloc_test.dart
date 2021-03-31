@@ -54,7 +54,7 @@ void main() {
         final expected = [
           AuthenticatedState(),
         ];
-        expectLater(authenticationBloc, emitsInOrder(expected));
+        expectLater(authenticationBloc.stream, emitsInOrder(expected));
         // act
         authenticationBloc.add(GetCachedTokenEvent());
       },
@@ -78,7 +78,7 @@ void main() {
             message: failure.message,
           ),
         ];
-        expectLater(authenticationBloc, emitsInOrder(expected));
+        expectLater(authenticationBloc.stream, emitsInOrder(expected));
         // act
         authenticationBloc.add(GetCachedTokenEvent());
       },

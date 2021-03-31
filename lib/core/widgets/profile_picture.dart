@@ -1,17 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/images.dart';
-import 'package:gamecircle/injection_container.dart';
 
 class ProfilePicture extends StatelessWidget {
   final double size;
   final Function()? onTap;
+  final String? imageUrl;
 
   const ProfilePicture({
     this.onTap,
     this.size = 45,
+    required this.imageUrl,
   });
 
   @override
@@ -20,7 +20,7 @@ class ProfilePicture extends StatelessWidget {
       borderRadius: BorderRadius.all(Radius.circular(16)),
       onTap: onTap,
       child: CachedNetworkImage(
-        imageUrl: sl<SessionManager>().user?.imageUrl ?? '',
+        imageUrl: imageUrl ?? '',
         imageBuilder: (context, imageProvider) => Container(
           width: size,
           height: size,

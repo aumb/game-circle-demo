@@ -110,7 +110,7 @@ void main() {
           Loading(),
           Loaded(token: tToken),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
         // act
         addEmailRegistrationEventToBloc(
           tEmail: tEmail,
@@ -138,7 +138,7 @@ void main() {
             message: failure.message,
           ),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
         // act
         addEmailRegistrationEventToBloc(
           tEmail: tEmail,

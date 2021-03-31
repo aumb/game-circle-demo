@@ -70,7 +70,7 @@ void main() {
           LogoutLoading(),
           LogoutLoaded(),
         ];
-        expectLater(_logoutCubit, emitsInOrder(expected));
+        expectLater(_logoutCubit.stream, emitsInOrder(expected));
         // act
         _logoutCubit.logout();
       },
@@ -94,7 +94,7 @@ void main() {
             message: failure.message,
           ),
         ];
-        expectLater(_logoutCubit, emitsInOrder(expected));
+        expectLater(_logoutCubit.stream, emitsInOrder(expected));
         // act
         _logoutCubit.logout();
       },

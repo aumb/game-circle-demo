@@ -17,13 +17,21 @@ class UserModel extends User {
           confirmPassword: confirmPassword,
         );
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    final Map<String, dynamic>? innerBody = json['data'];
+  factory UserModel.fromJson(Map<String, dynamic>? json) {
+    final Map<String, dynamic>? innerBody = json?['data'];
+    if (innerBody != null) {
+      return UserModel(
+        id: innerBody['id'],
+        name: innerBody['name'],
+        email: innerBody['email'],
+        imageUrl: innerBody['avatar'],
+      );
+    }
     return UserModel(
-      id: innerBody?['id'],
-      name: innerBody?['name'],
-      email: innerBody?['email'],
-      imageUrl: innerBody?['avatar'],
+      id: json?['id'],
+      name: json?['name'],
+      email: json?['email'],
+      imageUrl: json?['avatar'],
     );
   }
 

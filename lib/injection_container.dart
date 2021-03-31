@@ -56,6 +56,18 @@ import 'package:gamecircle/features/registration/domain/repository/registration_
 import 'package:gamecircle/features/registration/domain/usecases/post_email_registration.dart';
 import 'package:gamecircle/features/registration/presentation/bloc/registration_bloc.dart';
 import 'package:gamecircle/features/registration/presentation/bloc/registration_form_bloc.dart';
+import 'package:gamecircle/features/reviews/data/datasources/reviews_remote_data_source.dart';
+import 'package:gamecircle/features/reviews/data/datasources/reviews_remote_data_source_impl.dart';
+import 'package:gamecircle/features/reviews/data/repositories/reviews_repository_impl.dart';
+import 'package:gamecircle/features/reviews/domain/repositories/reviews_repository.dart';
+import 'package:gamecircle/features/reviews/domain/usecases/delete_lounge_review.dart';
+import 'package:gamecircle/features/reviews/domain/usecases/get_lounge_reviews.dart';
+import 'package:gamecircle/features/reviews/domain/usecases/get_more_lounge_reviews.dart';
+import 'package:gamecircle/features/reviews/domain/usecases/get_more_user_reviews.dart';
+import 'package:gamecircle/features/reviews/domain/usecases/get_user_reviews.dart';
+import 'package:gamecircle/features/reviews/domain/usecases/patch_lounge_review.dart';
+import 'package:gamecircle/features/reviews/domain/usecases/post_lounge_review.dart';
+import 'package:gamecircle/features/reviews/presentation/blocs/user_reviews_bloc/user_reviews_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -81,6 +93,7 @@ Future<void> init() async {
   _initLoungesUseCases();
   _initProfileUseCases();
   _initFavoritesUseCases();
+  _initReviewsUseCases();
 
   // Repositories
   _initRepositories();
@@ -175,9 +188,26 @@ void _initSingletonBlocs() {
       getMoreFavoriteLounges: sl(),
     ),
   );
+
+  sl.registerFactory(
+    () => UserReviewsBloc(
+      getMoreUserReviews: sl(),
+      getUserReviews: sl(),
+    ),
+  );
 }
 
 //Usecases
+
+void _initReviewsUseCases() {
+  sl.registerLazySingleton(() => GetUserReviews(sl()));
+  sl.registerLazySingleton(() => GetMoreUserReviews(sl()));
+  sl.registerLazySingleton(() => GetLoungeReviews(sl()));
+  sl.registerLazySingleton(() => GetMoreLoungeReviews(sl()));
+  sl.registerLazySingleton(() => PostLoungeReview(sl()));
+  sl.registerLazySingleton(() => PatchLoungeReview(sl()));
+  sl.registerLazySingleton(() => DeleteLoungeReview(sl()));
+}
 
 void _initFavoritesUseCases() {
   sl.registerLazySingleton(() => GetFavoriteLounges(sl()));
@@ -266,6 +296,12 @@ void _initRepositories() {
       remoteDataSource: sl(),
     ),
   );
+
+  sl.registerLazySingleton<ReviewsRepository>(
+    () => ReviewsRepositoryImpl(
+      remoteDataSource: sl(),
+    ),
+  );
 }
 
 void _initManagers() {
@@ -319,6 +355,10 @@ void _initDataSources() {
   sl.registerLazySingleton<FavoritesRemoteDataSource>(
     () => FavoritesRemoteDataSourceImpl(client: sl()),
   );
+
+  sl.registerLazySingleton<ReviewsRemoteDataSource>(
+    () => ReviewsRemoteDataSourceImpl(client: sl()),
+  );
 }
 
 Future<void> _initExternal() async {
@@ -341,7 +381,7 @@ void _initDio() {
     () => Dio(
       BaseOptions(baseUrl: API.base),
     )..interceptors.addAll([
-        LogInterceptor(),
+        LogInterceptor(request: true),
         InterceptorsWrapper(onError: (e, handler) async {
           final client = Dio();
           final RequestOptions options = e.response!.requestOptions;

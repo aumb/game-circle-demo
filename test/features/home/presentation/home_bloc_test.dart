@@ -85,7 +85,7 @@ void main() {
           HomeLoading(),
           HomeLoaded(),
         ];
-        expectLater(homeBloc, emitsInOrder(expected));
+        expectLater(homeBloc.stream, emitsInOrder(expected));
         // act
         homeBloc.add(GetUserInformationEvent());
       },
@@ -109,7 +109,7 @@ void main() {
             message: failure.message,
           ),
         ];
-        expectLater(homeBloc, emitsInOrder(expected));
+        expectLater(homeBloc.stream, emitsInOrder(expected));
         // act
         homeBloc.add(GetUserInformationEvent());
       },

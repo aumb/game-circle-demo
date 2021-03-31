@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/buttons/custom_outline_button.dart';
 import 'package:gamecircle/core/widgets/profile_picture.dart';
@@ -95,16 +96,18 @@ class _LoungesScreenState extends State<LoungesScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            ProfilePicture(onTap: () async {
-              final bool? result = await showDialog(
-                context: context,
-                builder: (context) => AvatarDialog(),
-              );
+            ProfilePicture(
+                imageUrl: sl<SessionManager>().user?.imageUrl,
+                onTap: () async {
+                  final bool? result = await showDialog(
+                    context: context,
+                    builder: (context) => AvatarDialog(),
+                  );
 
-              if (result ?? false) {
-                setState(() {});
-              }
-            }),
+                  if (result ?? false) {
+                    setState(() {});
+                  }
+                }),
           ],
         ),
       ),

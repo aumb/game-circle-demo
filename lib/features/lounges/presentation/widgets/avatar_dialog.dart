@@ -9,6 +9,7 @@ import 'package:gamecircle/core/widgets/profile_picture.dart';
 import 'package:gamecircle/features/favorites/presentation/screens/favorite_lounges_screen.dart';
 import 'package:gamecircle/features/logout/presentation/cubit/logout_cubit.dart';
 import 'package:gamecircle/features/profile/presentation/screens/profile_screen.dart';
+import 'package:gamecircle/features/reviews/presentation/screens/user_reviews_screen.dart';
 import 'package:gamecircle/injection_container.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -22,7 +23,9 @@ class AvatarDialog extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              ProfilePicture(),
+              ProfilePicture(
+                imageUrl: sl<SessionManager>().user?.imageUrl,
+              ),
               SizedBox(width: 8),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,6 +71,7 @@ class AvatarDialog extends StatelessWidget {
             color: CustomColors.secondaryAccent,
             size: 24,
           ),
+          onTapped: () => _navigate(UserReviewsScreen(), context),
         ),
         CustomDivider(),
         BlocProvider(

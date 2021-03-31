@@ -1,0 +1,39 @@
+{
+    "data": [
+        {
+            "id": 13,
+            "rating": 4,
+            "review": "tessssstt tesssttt tesstttt",
+            "images": [
+                {
+                    "id": 11,
+                    "image": "https://gamecircleinc.s3.eu-west-3.amazonaws.com/review_images/ri-13-1614862977.jpg"
+                }
+            ]
+        },
+        {
+            "id": 14,
+            "rating": 4,
+            "review": "tessssstt tesssttt tesstttt",
+            "images": []
+        },
+        {
+            "id": 15,
+            "rating": 4,
+            "review": "tessssstt tesssttt tesstttt",
+            "images": []
+        }
+    ],
+    "meta": {
+        "pagination": {
+            "total": 3,
+            "count": 3,
+            "per_page": 10,
+            "current_page": 1,
+            "total_pages": 1,
+            "links": {
+                "next": "test"
+            }
+        }
+    }
+}

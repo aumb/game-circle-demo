@@ -16,7 +16,7 @@ void main() {
 
     bloc.add(ChangedEmailEvent(email: email));
 
-    expectLater(bloc, emitsInOrder(expected));
+    expectLater(bloc.stream, emitsInOrder(expected));
   });
 
   test(
@@ -28,7 +28,7 @@ void main() {
 
     bloc.add(ChangedPasswordEvent(password: password));
 
-    expectLater(bloc, emitsInOrder(expected));
+    expectLater(bloc.stream, emitsInOrder(expected));
   });
 
   test(
@@ -40,6 +40,6 @@ void main() {
 
     bloc.add(ChangedObsecureTextEvent(obsecureText: obscureText));
 
-    expectLater(bloc, emitsInOrder(expected));
+    expectLater(bloc.stream, emitsInOrder(expected));
   });
 }

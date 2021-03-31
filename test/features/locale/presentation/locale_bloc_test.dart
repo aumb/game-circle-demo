@@ -57,7 +57,7 @@ void main() {
             locale: tLocale,
           ),
         ];
-        expectLater(localeBloc, emitsInOrder(expected));
+        expectLater(localeBloc.stream, emitsInOrder(expected));
         // act
         localeBloc.add(GetCachedLocaleEvent());
       },
@@ -80,7 +80,7 @@ void main() {
             message: failure.message,
           ),
         ];
-        expectLater(localeBloc, emitsInOrder(expected));
+        expectLater(localeBloc.stream, emitsInOrder(expected));
         // act
         localeBloc.add(GetCachedLocaleEvent());
       },

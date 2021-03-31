@@ -121,7 +121,7 @@ void main() {
           Loading(),
           Empty(),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
         // act
         bloc.add(PostEmailLoginEvent(
           email: tEmail,
@@ -149,7 +149,7 @@ void main() {
             provider: '',
           ),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
         // act
         bloc.add(PostEmailLoginEvent(
           email: tEmail,
@@ -195,7 +195,7 @@ void main() {
           Loading(),
           Empty(),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
         // act
         bloc.add(PostSocialLoginEvent(
           provider: tProvider,
@@ -218,7 +218,7 @@ void main() {
           Loading(),
           Error(message: serverFailure.message, provider: ''),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
         // act
         bloc.add(PostSocialLoginEvent(
           provider: tProvider,
@@ -245,7 +245,7 @@ void main() {
           Loading(),
           Empty(),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
         // act
         bloc.add(GoogleLoginEvent());
       },
@@ -265,7 +265,7 @@ void main() {
           if (bloc.state != Empty()) Empty(),
           Error(message: serverFailure.message, provider: 'google'),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
         // act
         bloc.add(GoogleLoginEvent());
       },
@@ -290,7 +290,7 @@ void main() {
           Loading(),
           Empty(),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
         // act
         bloc.add(FacebookLoginEvent());
       },
@@ -310,7 +310,7 @@ void main() {
           if (bloc.state != Empty()) Empty(),
           Error(message: serverFailure.message, provider: 'facebook'),
         ];
-        expectLater(bloc, emitsInOrder(expected));
+        expectLater(bloc.stream, emitsInOrder(expected));
         // act
         bloc.add(FacebookLoginEvent());
       },
