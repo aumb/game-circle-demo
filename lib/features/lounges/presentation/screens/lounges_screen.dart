@@ -213,53 +213,48 @@ class _LoungesScreenState extends State<LoungesScreen> {
       automaticallyImplyLeading: false,
       backgroundColor: Colors.transparent,
       elevation: 0,
-      title: InkWell(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (BuildContext context) => LoungesSearchScreen(),
+      title: Semantics(
+        container: true,
+        child: Material(
+          elevation: 10,
+          color: Colors.grey[600],
+          type: MaterialType.card,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(24.0)),
           ),
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[700],
-            borderRadius: BorderRadius.circular(24),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black38,
-                spreadRadius: 1,
-                blurRadius: 1,
-                offset: Offset(0, 1),
+          borderOnForeground: true,
+          child: Semantics(
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => LoungesSearchScreen(),
+                ),
               ),
-            ],
-          ),
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-          child: Row(
-            children: <Widget>[
-              Expanded(
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
                 child: Row(
-                  children: [
-                    Icon(Icons.search, size: 26),
-                    SizedBox(width: 4),
-                    Text(
-                      Localization.of(context, 'search'),
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText2!
-                          .copyWith(fontSize: 18),
+                  children: <Widget>[
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Icon(Icons.search, size: 26),
+                          SizedBox(width: 4),
+                          Text(
+                            Localization.of(context, 'search'),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyText2!
+                                .copyWith(fontSize: 18),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Icon(Icons.mic, size: 26),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),

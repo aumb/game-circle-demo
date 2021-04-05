@@ -13,11 +13,7 @@ class _ReviewPopUpMenuState extends State<ReviewPopUpMenu> {
   Widget build(BuildContext context) {
     return PopupMenuButton<ReviewPopUpItemsEnum>(
       icon: Icon(Icons.more_vert),
-      onSelected: (ReviewPopUpItemsEnum result) {
-        setState(() {
-          print("test");
-        });
-      },
+      onSelected: (ReviewPopUpItemsEnum result) {},
       itemBuilder: (BuildContext context) =>
           <PopupMenuEntry<ReviewPopUpItemsEnum>>[
         PopupMenuItem<ReviewPopUpItemsEnum>(

@@ -5,6 +5,7 @@ import 'package:gamecircle/core/widgets/custom_divider.dart';
 import 'package:gamecircle/core/widgets/profile_picture.dart';
 import 'package:gamecircle/features/profile/presentation/screens/edit_profile_screen.dart';
 import 'package:gamecircle/injection_container.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon: BackButtonIcon(),
             onPressed: () => Navigator.of(context).pop(shouldReloadLounges),
           ),
-          expandedHeight: 100,
+          expandedHeight: 120,
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.edit),
@@ -45,6 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             centerTitle: true,
             title: Text(
               Localization.of(context, 'profile'),
+              style: GoogleFonts.play(),
             ),
           ),
         ),

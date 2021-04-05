@@ -20,7 +20,7 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
 
   @override
   Future<Review?> deleteLoungeReview({required int? id}) async {
-    final String url = API.loungeReviews + "/" + id.toString();
+    final String url = API.reviews + "/" + id.toString();
 
     try {
       final Response? response = await client.delete(url);
@@ -31,9 +31,8 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
         final serverError = ServerError.fromJson(null);
         throw ServerException(serverError);
       }
-    } on DioError catch (e) {
-      final serverError = ServerError.fromJson(e.response?.data);
-      throw ServerException(serverError);
+    } catch (e) {
+      throw ServerException.handleError(e);
     }
   }
 
@@ -52,9 +51,8 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
         final serverError = ServerError.fromJson(null);
         throw ServerException(serverError);
       }
-    } on DioError catch (e) {
-      final serverError = ServerError.fromJson(e.response?.data);
-      throw ServerException(serverError);
+    } catch (e) {
+      throw ServerException.handleError(e);
     }
   }
 
@@ -75,9 +73,8 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
           final serverError = ServerError.fromJson(null);
           throw ServerException(serverError);
         }
-      } on DioError catch (e) {
-        final serverError = ServerError.fromJson(e.response?.data);
-        throw ServerException(serverError);
+      } catch (e) {
+        throw ServerException.handleError(e);
       }
     } else {
       return Future.value([]);
@@ -101,9 +98,8 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
           final serverError = ServerError.fromJson(null);
           throw ServerException(serverError);
         }
-      } on DioError catch (e) {
-        final serverError = ServerError.fromJson(e.response?.data);
-        throw ServerException(serverError);
+      } catch (e) {
+        throw ServerException.handleError(e);
       }
     } else {
       return Future.value([]);
@@ -125,9 +121,8 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
         final serverError = ServerError.fromJson(null);
         throw ServerException(serverError);
       }
-    } on DioError catch (e) {
-      final serverError = ServerError.fromJson(e.response?.data);
-      throw ServerException(serverError);
+    } catch (e) {
+      throw ServerException.handleError(e);
     }
   }
 
@@ -153,8 +148,8 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
       if (rating != null) 'rating': rating,
       if (StringUtils().isNotEmpty(review)) 'review': review,
       if (deletedImages != null && deletedImages.isNotEmpty)
-        "deleted_images": deletedImages,
-      if (_multipartImages.isNotEmpty) "images": _multipartImages,
+        "deleted_images[]": deletedImages,
+      if (_multipartImages.isNotEmpty) "images[]": _multipartImages,
     });
 
     try {
@@ -166,9 +161,8 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
         final serverError = ServerError.fromJson(null);
         throw ServerException(serverError);
       }
-    } on DioError catch (e) {
-      final serverError = ServerError.fromJson(e.response?.data);
-      throw ServerException(serverError);
+    } catch (e) {
+      throw ServerException.handleError(e);
     }
   }
 
@@ -191,12 +185,11 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
       if (loungeId != null) 'lounge_id': loungeId,
       if (rating != null) 'rating': rating,
       if (StringUtils().isNotEmpty(review)) 'review': review,
-      if (_multipartImages.isNotEmpty) "images": _multipartImages,
+      if (_multipartImages.isNotEmpty) "images[]": _multipartImages,
     });
 
     try {
-      final Response? response =
-          await client.post(API.loungeReviews, data: body);
+      final Response? response = await client.post(API.reviews, data: body);
       if (response?.statusCode == 200) {
         final review = ReviewModel.fromJson(response?.data);
         return review;
@@ -204,9 +197,8 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
         final serverError = ServerError.fromJson(null);
         throw ServerException(serverError);
       }
-    } on DioError catch (e) {
-      final serverError = ServerError.fromJson(e.response?.data);
-      throw ServerException(serverError);
+    } catch (e) {
+      throw ServerException.handleError(e);
     }
   }
 }

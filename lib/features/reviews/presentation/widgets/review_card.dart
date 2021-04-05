@@ -1,20 +1,24 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/gc_date_utils.dart';
-import 'package:gamecircle/core/utils/images.dart';
 import 'package:gamecircle/core/widgets/custom_divider.dart';
 import 'package:gamecircle/core/widgets/profile_picture.dart';
 import 'package:gamecircle/core/widgets/read_more_widget.dart';
 import 'package:gamecircle/core/widgets/star_rating.dart';
 import 'package:gamecircle/features/reviews/domain/entities/review.dart';
+import 'package:gamecircle/features/reviews/presentation/widgets/reivew_image.dart';
+import 'package:gamecircle/features/reviews/presentation/widgets/review_image_preview.dart';
 import 'package:gamecircle/injection_container.dart';
 
 class ReviewCard extends StatelessWidget {
   final Review review;
+  final Function()? onEdit;
 
-  ReviewCard({required this.review});
+  ReviewCard({
+    required this.review,
+    this.onEdit,
+  });
 
   bool get isReviewer => review.user?.id == sl<SessionManager>().user?.id;
 
@@ -53,11 +57,13 @@ class ReviewCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     IconButton(
-                        icon: Icon(
-                          Icons.edit,
-                          size: 20,
-                        ),
-                        onPressed: () {})
+                      icon: Icon(
+                        Icons.edit,
+                        color: CustomColors.secondaryAccent,
+                        size: 20,
+                      ),
+                      onPressed: onEdit,
+                    )
                   ],
                 ),
               ),
@@ -89,7 +95,8 @@ class ReviewCard extends StatelessWidget {
         ),
         if (review.images != null && review.images!.isNotEmpty)
           SizedBox(height: 12),
-        if (review.images != null && review.images!.isNotEmpty) _buildImages(),
+        if (review.images != null && review.images!.isNotEmpty)
+          _buildImages(context),
         SizedBox(height: 12),
         CustomDivider(),
         SizedBox(height: 12),
@@ -97,43 +104,27 @@ class ReviewCard extends StatelessWidget {
     );
   }
 
-  Column _buildImages() {
+  Column _buildImages(BuildContext context) {
     List<Widget> imagesWidget = [];
     for (int i = 0; i < review.images!.length; i++) {
       imagesWidget.add(
-        CachedNetworkImage(
-          imageUrl: review.images![i]!.imageUrl!,
-          imageBuilder: (context, imageProvider) => Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
+        ReviewImage(
+          urlImage: review.images![i]!.imageUrl!,
+          onImageTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => ReviewImagePreview(
+                  selectedImageIndex: i,
+                  images: review.images,
+                ),
               ),
-            ),
-          ),
-          placeholder: (context, url) => Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              color: CustomColors.cardColor,
-            ),
-          ),
-          errorWidget: (context, url, error) => Container(
-            width: 120,
-            height: 120,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-              color: CustomColors.cardColor,
-              image: DecorationImage(
-                image: AssetImage(Images.logoNoText),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+            );
+          },
+        ),
+      );
+      imagesWidget.add(
+        SizedBox(
+          width: 12,
         ),
       );
     }

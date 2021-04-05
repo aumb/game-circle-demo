@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/features/reviews/presentation/blocs/user_reviews_bloc/user_reviews_bloc.dart';
+import 'package:gamecircle/features/reviews/presentation/screens/add_edit_review_screen.dart';
 import 'package:gamecircle/features/reviews/presentation/widgets/review_card.dart';
 import 'package:gamecircle/injection_container.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class UserReviewsScreen extends StatefulWidget {
   @override
@@ -55,11 +57,12 @@ class _UserReviewsScreenState extends State<UserReviewsScreen> {
                 slivers: <Widget>[
                   SliverAppBar(
                     automaticallyImplyLeading: true,
-                    expandedHeight: 100,
+                    expandedHeight: 120,
                     flexibleSpace: FlexibleSpaceBar(
                       centerTitle: true,
                       title: Text(
                         Localization.of(context, 'reviews'),
+                        style: GoogleFonts.play(),
                       ),
                     ),
                   ),
@@ -90,23 +93,7 @@ class _UserReviewsScreenState extends State<UserReviewsScreen> {
     } else if (_bloc.state is UserReviewsLoaded ||
         _bloc.state is UserReviewsLoadedMore ||
         _bloc.state is UserReviewsLoadingMore) {
-      return SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (BuildContext context, int index) {
-            if (index == _bloc.reviews.length - 1 &&
-                _bloc.state is UserReviewsLoadingMore) {
-              return Column(
-                children: [
-                  _buildLoungeCard(index),
-                  _buildLoadingMore(),
-                ],
-              );
-            }
-            return _buildLoungeCard(index);
-          },
-          childCount: _bloc.reviews.length,
-        ),
-      );
+      return _buildReviewList();
     } else {
       return SliverToBoxAdapter(
         child: Container(),
@@ -114,12 +101,43 @@ class _UserReviewsScreenState extends State<UserReviewsScreen> {
     }
   }
 
-  Padding _buildLoungeCard(int index) {
+  SliverList _buildReviewList() {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          if (index == _bloc.reviews.length - 1 &&
+              _bloc.state is UserReviewsLoadingMore) {
+            return Column(
+              children: [
+                _buildLoungeReviewCard(index),
+                _buildLoadingMore(),
+              ],
+            );
+          }
+          return _buildLoungeReviewCard(index);
+        },
+        childCount: _bloc.reviews.length,
+      ),
+    );
+  }
+
+  Padding _buildLoungeReviewCard(int index) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ReviewCard(
-        review: _bloc.reviews[index]!,
-      ),
+          review: _bloc.reviews[index]!,
+          onEdit: () async {
+            final bool? result = await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) =>
+                    AddEditReviewScreen(review: _bloc.reviews[index]!),
+              ),
+            );
+
+            if (result ?? false) {
+              _bloc.add(GetUserReviewsEvent());
+            }
+          }),
     );
   }
 

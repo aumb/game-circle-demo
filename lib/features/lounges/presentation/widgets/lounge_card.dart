@@ -25,6 +25,7 @@ class LoungeCard extends StatelessWidget {
         // );
       },
       child: Card(
+        elevation: 20,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
@@ -33,13 +34,15 @@ class LoungeCard extends StatelessWidget {
               SizedBox(width: 4),
               Expanded(
                 child: Container(
-                  height: _width * 0.2,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       _buildNameAndNumberOfPlaces(context),
+                      SizedBox(height: 6),
                       _buildRating(context),
+                      SizedBox(height: 6),
                       _buildLocationInformation(context),
+                      SizedBox(height: 4),
+                      if (lounge?.distance != null) _buildDistance(context),
                     ],
                   ),
                 ),
@@ -48,6 +51,18 @@ class LoungeCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Row _buildDistance(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Icon(MdiIcons.car),
+        SizedBox(width: 4),
+        Text((lounge?.distance.toString() ?? '') + " km",
+            style: Theme.of(context).textTheme.caption),
+      ],
     );
   }
 
@@ -71,27 +86,10 @@ class LoungeCard extends StatelessWidget {
         SizedBox(width: 4),
         Expanded(
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
             //Location
             children: <Widget>[
-              Expanded(
-                flex: 2,
-                child: Text(locationInformation ?? 'No known address',
-                    style: Theme.of(context).textTheme.caption),
-              ),
-              SizedBox(width: 4),
-              if (lounge?.distance != null)
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Icon(MdiIcons.car),
-                      SizedBox(width: 2),
-                      Text((lounge?.distance.toString() ?? '') + " km",
-                          style: Theme.of(context).textTheme.caption),
-                    ],
-                  ),
-                ),
+              Text(locationInformation ?? 'No known address',
+                  style: Theme.of(context).textTheme.caption),
             ],
           ),
         ),

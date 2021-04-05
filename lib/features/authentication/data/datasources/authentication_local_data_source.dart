@@ -38,7 +38,6 @@ class AuthenticationLocalDataSourceImpl
 
       return Future.value(tokenModel);
     } catch (e) {
-      safePrint(e.toString());
       throw ServerException(
           ServerError(message: "local_storage_access_error", code: 401));
     }

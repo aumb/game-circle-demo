@@ -17,7 +17,7 @@ void main() {
       review: "tessssstt tesssttt tesstttt",
       user: UserModel(id: 1),
       lounge: LoungeModel(
-          id: null,
+          id: 1,
           places: null,
           rating: null,
           reviewCount: null,

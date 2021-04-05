@@ -53,7 +53,6 @@ class _MyAppState extends State<MyApp> {
       ],
       child: BlocBuilder<LocaleBloc, LocaleState>(
         builder: (context, localeState) {
-          print(localeState.locale);
           return MaterialApp(
             title: 'GameCircle',
             theme: AppTheme().themeData,

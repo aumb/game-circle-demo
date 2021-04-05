@@ -40,9 +40,11 @@ class CustomTextFormField extends StatelessWidget {
   final bool showCounter;
   final String? Function(String?)? validator;
   final ValueChanged<String>? onSubmitted;
+  final bool isOutlineBorder;
 
   const CustomTextFormField({
     Key? key,
+    this.isOutlineBorder = true,
     this.focusNode,
     this.onChanged,
     this.hintText,
@@ -115,20 +117,44 @@ class CustomTextFormField extends StatelessWidget {
         counterText: showCounter ? counterText : '',
         helperText: helperText,
         hintText: hintText,
-        border: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white30),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white30),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.black),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: CustomColors.accentColor,
-          ),
-        ),
+        border: isOutlineBorder
+            ? OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white30),
+              )
+            : UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.white30,
+                ),
+              ),
+        enabledBorder: isOutlineBorder
+            ? OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white30),
+              )
+            : UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.white30,
+                ),
+              ),
+        disabledBorder: isOutlineBorder
+            ? OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.white30),
+              )
+            : UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.white30,
+                ),
+              ),
+        focusedBorder: isOutlineBorder
+            ? OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: CustomColors.accentColor,
+                ),
+              )
+            : UnderlineInputBorder(
+                borderSide: BorderSide(
+                  color: CustomColors.accentColor,
+                ),
+              ),
       ),
       textInputAction: textInputAction,
       autofocus: autofocus,

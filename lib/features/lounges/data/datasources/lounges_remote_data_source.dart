@@ -54,9 +54,8 @@ class LoungesRemoteDataSourceImpl implements LoungesRemoteDataSource {
         final serverError = ServerError.fromJson(null);
         throw ServerException(serverError);
       }
-    } on DioError catch (e) {
-      final serverError = ServerError.fromJson(e.response?.data);
-      throw ServerException(serverError);
+    } catch (e) {
+      throw ServerException.handleError(e);
     }
   }
 
@@ -81,9 +80,8 @@ class LoungesRemoteDataSourceImpl implements LoungesRemoteDataSource {
           final serverError = ServerError.fromJson(null);
           throw ServerException(serverError);
         }
-      } on DioError catch (e) {
-        final serverError = ServerError.fromJson(e.response?.data);
-        throw ServerException(serverError);
+      } catch (e) {
+        throw ServerException.handleError(e);
       }
     } else {
       return Future.value([]);

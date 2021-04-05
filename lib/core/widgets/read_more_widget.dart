@@ -10,8 +10,8 @@ class ReadMoreWidget extends StatefulWidget {
   const ReadMoreWidget(
     this.data, {
     Key? key,
-    this.trimExpandedText = ' read less',
-    this.trimCollapsedText = ' ...read more',
+    this.trimExpandedText = '  read less',
+    this.trimCollapsedText = '...read more',
     this.colorClickableText,
     this.trimLength = 240,
     this.trimLines = 2,
@@ -73,7 +73,8 @@ class ReadMoreWidgetState extends State<ReadMoreWidget> {
         widget.colorClickableText ?? Theme.of(context).accentColor;
 
     TextSpan link = TextSpan(
-      text: _readMore ? widget.trimCollapsedText : widget.trimExpandedText,
+      text:
+          _readMore ? widget.trimCollapsedText : " " + widget.trimExpandedText,
       style: effectiveTextStyle?.copyWith(
         color: colorClickableText,
       ),
@@ -108,8 +109,6 @@ class ReadMoreWidgetState extends State<ReadMoreWidget> {
         textPainter.text = text;
         textPainter.layout(minWidth: constraints.minWidth, maxWidth: maxWidth);
         final textSize = textPainter.size;
-
-        // print('linkSize $linkSize textSize $textSize');
 
         // Get the endIndex of data
         bool linkLongerThanLine = false;

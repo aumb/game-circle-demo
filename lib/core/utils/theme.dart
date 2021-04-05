@@ -90,10 +90,22 @@ class AppTheme {
   TextTheme getMainTextTheme() {
     return GoogleFonts.playTextTheme(
       ThemeData.dark().textTheme.copyWith(
+            headline1: TextStyle(
+              color: CustomColors.white87,
+            ),
+            headline2: TextStyle(
+              color: CustomColors.white87,
+            ),
+            headline3: TextStyle(
+              color: CustomColors.white87,
+            ),
             headline4: TextStyle(
               color: CustomColors.white87,
               fontWeight: FontWeight.w600,
               fontSize: 30,
+            ),
+            headline5: TextStyle(
+              color: CustomColors.white87,
             ),
             headline6: TextStyle(
               color: CustomColors.white87,

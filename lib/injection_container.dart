@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/api.dart';
+import 'package:gamecircle/core/errors/exceptions.dart';
 import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/string_utils.dart';
 import 'package:gamecircle/features/authentication/data/datasources/authentication_local_data_source.dart';
@@ -59,6 +60,7 @@ import 'package:gamecircle/features/registration/presentation/bloc/registration_
 import 'package:gamecircle/features/reviews/data/datasources/reviews_remote_data_source.dart';
 import 'package:gamecircle/features/reviews/data/datasources/reviews_remote_data_source_impl.dart';
 import 'package:gamecircle/features/reviews/data/repositories/reviews_repository_impl.dart';
+import 'package:gamecircle/features/reviews/domain/entities/review.dart';
 import 'package:gamecircle/features/reviews/domain/repositories/reviews_repository.dart';
 import 'package:gamecircle/features/reviews/domain/usecases/delete_lounge_review.dart';
 import 'package:gamecircle/features/reviews/domain/usecases/get_lounge_reviews.dart';
@@ -74,6 +76,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'features/favorites/data/repositories/favorites_repository_impl.dart';
 import 'features/home/data/datasources/user_local_data_source.dart';
+import 'features/reviews/presentation/blocs/add_edit_review_bloc/add_edit_review_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -195,6 +198,17 @@ void _initSingletonBlocs() {
       getUserReviews: sl(),
     ),
   );
+
+  sl.registerFactoryParam<AddEditReviewBloc, Review?, void>((
+    Review? review,
+    _,
+  ) =>
+      AddEditReviewBloc(
+        review: review,
+        patchLoungeReview: sl(),
+        postLoungeReview: sl(),
+        deleteLoungeReview: sl(),
+      ));
 }
 
 //Usecases
@@ -410,9 +424,38 @@ void _initDio() {
                 },
               ),
             );
+          } else {
+            final dioError = DioError(
+              requestOptions: e.response!.requestOptions,
+              response: _ensureParsable(e.response),
+              type: e.type,
+              error: e.error,
+            );
+            return handler.reject(dioError);
           }
-          return handler.reject(e);
         }),
       ]),
   );
+}
+
+_ensureParsable(Response<dynamic>? response) {
+  dynamic responseData = response?.data;
+
+  Map<String, dynamic> _mockError = {
+    "error": "unexpected_error",
+    "code": 500,
+  };
+
+  if (responseData is Map) {
+    if (responseData.keys.contains("error") &&
+        responseData.keys.contains("code")) {
+      return response;
+    } else {
+      response?.data = _mockError;
+      return response;
+    }
+  } else {
+    response?.data = _mockError;
+    return response;
+  }
 }

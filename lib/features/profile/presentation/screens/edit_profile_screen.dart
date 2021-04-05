@@ -140,9 +140,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
           if (pickedFile != null) {
             _cubit.setImage(File(pickedFile.path));
-            print(_cubit.image?.lengthSync());
-          } else {
-            print('No image selected.');
           }
         },
         child: Stack(
@@ -216,8 +213,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() {
       if (pickedFile != null) {
         _cubit.image = File(pickedFile.path);
-      } else {
-        print('No image selected.');
       }
     });
   }

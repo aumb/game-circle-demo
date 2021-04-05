@@ -5,6 +5,8 @@ import 'package:gamecircle/features/lounges/domain/entities/lounge.dart';
 
 class Review extends Equatable {
   final int? id;
+
+  ///Used when sending a lounge id to the server
   final int? loungeId;
   final num? rating;
   final String? review;

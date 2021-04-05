@@ -4,6 +4,7 @@ import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/features/favorites/presentation/bloc/favorites_bloc.dart';
 import 'package:gamecircle/features/lounges/presentation/widgets/lounge_card.dart';
 import 'package:gamecircle/injection_container.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FavoriteLougnesScreen extends StatefulWidget {
   @override
@@ -52,11 +53,12 @@ class _FavoriteLougnesScreenState extends State<FavoriteLougnesScreen> {
               slivers: <Widget>[
                 SliverAppBar(
                   automaticallyImplyLeading: true,
-                  expandedHeight: 100,
+                  expandedHeight: 120,
                   flexibleSpace: FlexibleSpaceBar(
                     centerTitle: true,
                     title: Text(
                       Localization.of(context, 'favorites'),
+                      style: GoogleFonts.play(),
                     ),
                   ),
                 ),

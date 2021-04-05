@@ -75,7 +75,6 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
       googleSignIn.signOut();
       return googleSignInAuthentication;
     } catch (e) {
-      safePrint(e.toString());
       throw ServerException(
         ServerError(code: 401, message: "social_provider_error"),
       );
@@ -102,9 +101,8 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
       if (response?.statusCode == 200) {
         return TokenModel.fromJson(response?.data);
       }
-    } on DioError catch (e) {
-      final serverError = ServerError.fromJson(e.response?.data);
-      throw ServerException(serverError);
+    } catch (e) {
+      throw ServerException.handleError(e);
     }
   }
 }

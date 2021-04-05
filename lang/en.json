@@ -24,5 +24,14 @@
     "no_name": "No name provided.",
     "no_email": "No email provided.",
     "about": "About",
-    "save": "Save"
+    "save": "Save",
+    "rate_gaming_session": "Rate your gaming session",
+    "add_review": "Add Review",
+    "edit_review": "Edit Review",
+    "good": "Good",
+    "bad": "Bad",
+    "excellent": "Excellent",
+    "horrible": "Horrible",
+    "average": "Average",
+    "review_hint": "Describe how your session went!"
 }

@@ -32,7 +32,6 @@ class LocaleLocalDataSourceImpl implements LocaleLocalDataSource {
 
       return Future.value(locale);
     } catch (e) {
-      safePrint(e.toString());
       throw ServerException(
           ServerError(message: "local_storage_access_error", code: 401));
     }

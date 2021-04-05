@@ -46,14 +46,8 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         final serverError = ServerError.fromJson(null);
         throw ServerException(serverError);
       }
-    } on DioError catch (e) {
-      ServerError error;
-      try {
-        error = ServerError.fromJson(e.response?.data);
-      } catch (e) {
-        error = ServerError.fromJson(null);
-      }
-      throw ServerException(error);
+    } catch (e) {
+      throw ServerException.handleError(e);
     }
   }
 }

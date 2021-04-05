@@ -41,9 +41,8 @@ class RegistrationRemoteDataSourceImpl implements RegistrationRemoteDataSource {
       if (response?.statusCode == 200 || response?.statusCode == 201) {
         return TokenModel.fromJson(response?.data);
       }
-    } on DioError catch (e) {
-      final serverError = ServerError.fromJson(e.response?.data);
-      throw ServerException(serverError);
+    } catch (e) {
+      throw ServerException.handleError(e);
     }
   }
 }
