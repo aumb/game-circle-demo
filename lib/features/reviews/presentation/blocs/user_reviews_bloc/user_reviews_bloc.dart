@@ -78,9 +78,12 @@ class UserReviewsBloc extends Bloc<UserReviewsEvent, UserReviewsState> {
   UserReviewsError _handleFailureEvent(Failure failure) {
     UserReviewsError error;
     if (failure is ServerFailure) {
-      error = UserReviewsError(message: failure.message);
+      error = UserReviewsError(
+        message: failure.message,
+        code: failure.code,
+      );
     } else {
-      error = UserReviewsError(message: "unexpected_error");
+      error = UserReviewsError(message: "unexpected_error", code: 500);
     }
 
     return error;

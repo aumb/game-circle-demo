@@ -102,49 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             _buildPasswordInput(state, formState),
                             SizedBox(height: 24),
                             _buildSubmitButton(formState, state),
-                            Expanded(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  Text(Localization.of(
-                                      context, "no_account_message")),
-                                  SizedBox(height: 16),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      _buildRegisterOptionsButton(
-                                        onPressed: () {
-                                          _bloc.add(FacebookLoginEvent());
-                                        },
-                                        color: CustomColors.facebookColor,
-                                        icon: MdiIcons.facebook,
-                                      ),
-                                      SizedBox(width: 16),
-                                      _buildRegisterOptionsButton(
-                                        onPressed: () {
-                                          _bloc.add(GoogleLoginEvent());
-                                        },
-                                        icon: MdiIcons.google,
-                                      ),
-                                      SizedBox(width: 16),
-                                      _buildRegisterOptionsButton(
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  RegistrationScreen(),
-                                            ),
-                                          );
-                                        },
-                                        color: Theme.of(context).errorColor,
-                                        icon: MdiIcons.email,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 24),
-                                ],
-                              ),
-                            ),
+                            _buildRegistrationRow(context),
                           ],
                         ),
                       ),
@@ -155,6 +113,50 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Expanded _buildRegistrationRow(BuildContext context) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Text(Localization.of(context, "no_account_message")),
+          SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _buildRegisterOptionsButton(
+                onPressed: () {
+                  _bloc.add(FacebookLoginEvent());
+                },
+                color: CustomColors.facebookColor,
+                icon: MdiIcons.facebook,
+              ),
+              SizedBox(width: 16),
+              _buildRegisterOptionsButton(
+                onPressed: () {
+                  _bloc.add(GoogleLoginEvent());
+                },
+                icon: MdiIcons.google,
+              ),
+              SizedBox(width: 16),
+              _buildRegisterOptionsButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => RegistrationScreen(),
+                    ),
+                  );
+                },
+                color: Theme.of(context).errorColor,
+                icon: MdiIcons.email,
+              ),
+            ],
+          ),
+          SizedBox(height: 24),
+        ],
       ),
     );
   }

@@ -88,9 +88,12 @@ class LoungesBloc extends Bloc<LoungesEvent, LoungesState> {
   LoungesError _handleFailureEvent(Failure failure) {
     LoungesError error;
     if (failure is ServerFailure) {
-      error = LoungesError(message: failure.message);
+      error = LoungesError(message: failure.message, code: failure.code);
     } else {
-      error = LoungesError(message: "unexpected_error");
+      error = LoungesError(
+        message: "unexpected_error",
+        code: 500,
+      );
     }
 
     return error;

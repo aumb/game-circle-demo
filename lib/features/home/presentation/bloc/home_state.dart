@@ -17,10 +17,14 @@ class HomeRefreshing extends HomeState {}
 
 class HomeError extends HomeState {
   final String? message;
-  HomeError({required this.message});
+  final int? code;
+  HomeError({
+    this.message,
+    this.code,
+  });
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, code];
 }
 
 class LocationError extends HomeState {

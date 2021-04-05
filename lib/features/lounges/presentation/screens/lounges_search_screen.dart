@@ -4,6 +4,7 @@ import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/utils/string_utils.dart';
 import 'package:gamecircle/core/widgets/custom_text_field.dart';
+import 'package:gamecircle/core/widgets/states/error_widget.dart';
 import 'package:gamecircle/features/lounges/presentation/cubit/lounges_search_cubit.dart';
 import 'package:gamecircle/features/lounges/presentation/widgets/lounge_card.dart';
 import 'package:gamecircle/injection_container.dart';
@@ -140,6 +141,8 @@ class _LoungesSearchScreenState extends State<LoungesSearchScreen> {
         child:
             _SearchLoaded(scrollController: _scrollController, cubit: _cubit),
       );
+    } else if (state is LoungesSearchError) {
+      return Expanded(child: _SearchError(cubit: _cubit));
     } else {
       return Container();
     }
@@ -150,13 +153,41 @@ class _LoungesSearchScreenState extends State<LoungesSearchScreen> {
         _scrollController.offset / _scrollController.position.maxScrollExtent;
     if (percentage > 0.8 &&
         _cubit.state is! LoungesSearchLoadingMore &&
-        _cubit.canGetMoreLounges) _cubit.loadMore();
+        _cubit.canGetMoreLounges &&
+        _cubit.state is! LoungesSearchError) _cubit.loadMore();
   }
 
   void textListener() {
     String currentValue = _searchController.text;
     _cubit.query = currentValue;
     _cubit.search();
+  }
+}
+
+class _SearchError extends StatelessWidget {
+  const _SearchError({
+    Key? key,
+    required LoungesSearchCubit cubit,
+  })   : _cubit = cubit,
+        super(key: key);
+
+  final LoungesSearchCubit _cubit;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = _cubit.state as LoungesSearchError;
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CustomErrorWidget(
+          isScreen: false,
+          errorCode: state.code!,
+          onPressed: () {
+            _cubit.search();
+          },
+        ),
+      ],
+    );
   }
 }
 

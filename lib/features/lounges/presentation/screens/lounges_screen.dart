@@ -4,6 +4,7 @@ import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/buttons/custom_outline_button.dart';
 import 'package:gamecircle/core/widgets/profile_picture.dart';
+import 'package:gamecircle/core/widgets/states/error_widget.dart';
 import 'package:gamecircle/features/lounges/presentation/widgets/avatar_dialog.dart';
 import 'package:gamecircle/features/lounges/domain/entities/lounges_filter_option.dart';
 import 'package:gamecircle/features/lounges/presentation/bloc/lounges_bloc.dart';
@@ -26,11 +27,11 @@ class _LoungesScreenState extends State<LoungesScreen> {
     _init();
   }
 
-  @override
-  void didUpdateWidget(covariant LoungesScreen oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _bloc.add(GetLoungesEvent());
-  }
+  // @override
+  // void didUpdateWidget(covariant LoungesScreen oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   _bloc.add(GetLoungesEvent());
+  // }
 
   @override
   void dispose() {
@@ -65,25 +66,42 @@ class _LoungesScreenState extends State<LoungesScreen> {
           }
         },
         builder: (context, state) {
-          if (state is! LoungesError) {
-            return SafeArea(
-              child: Scaffold(
-                body: CustomScrollView(
-                  controller: _scrollController,
-                  slivers: [
-                    _buildProfilePicture(),
-                    _buildAppBar(deviceSize),
-                    _buildFilterList(),
-                    (state is LoungesLoading)
-                        ? _buildLoungesLoading()
-                        : _buildLoungesList(),
-                  ],
-                ),
+          return SafeArea(
+            child: Scaffold(
+              body: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  _buildProfilePicture(),
+                  _buildAppBar(deviceSize),
+                  _buildFilterList(),
+                  _buildAccordingToState(),
+                ],
               ),
-            );
-          } else {
-            return Container();
-          }
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildAccordingToState() {
+    if (_bloc.state is LoungesLoading) {
+      return _buildLoungesLoading();
+    } else if (_bloc.state is LoungesError) {
+      return _buildLoungesError();
+    } else {
+      return _buildLoungesList();
+    }
+  }
+
+  SliverFillRemaining _buildLoungesError() {
+    final errorState = _bloc.state as LoungesError;
+    return SliverFillRemaining(
+      child: CustomErrorWidget(
+        isScreen: false,
+        errorCode: errorState.code!,
+        onPressed: () {
+          _bloc.add(GetLoungesEvent());
         },
       ),
     );
@@ -213,46 +231,50 @@ class _LoungesScreenState extends State<LoungesScreen> {
       automaticallyImplyLeading: false,
       backgroundColor: Colors.transparent,
       elevation: 0,
-      title: Semantics(
-        container: true,
-        child: Material(
-          elevation: 10,
-          color: Colors.grey[600],
-          type: MaterialType.card,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(24.0)),
-          ),
-          borderOnForeground: true,
-          child: Semantics(
-            child: InkWell(
-              borderRadius: BorderRadius.circular(20),
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (BuildContext context) => LoungesSearchScreen(),
-                ),
+      title: _buildSearchBar(),
+    );
+  }
+
+  Semantics _buildSearchBar() {
+    return Semantics(
+      container: true,
+      child: Material(
+        elevation: 10,
+        color: Colors.grey[600],
+        type: MaterialType.card,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(24.0)),
+        ),
+        borderOnForeground: true,
+        child: Semantics(
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) => LoungesSearchScreen(),
               ),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Icon(Icons.search, size: 26),
-                          SizedBox(width: 4),
-                          Text(
-                            Localization.of(context, 'search'),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyText2!
-                                .copyWith(fontSize: 18),
-                          ),
-                        ],
-                      ),
+            ),
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Icon(Icons.search, size: 26),
+                        SizedBox(width: 4),
+                        Text(
+                          Localization.of(context, 'search'),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2!
+                              .copyWith(fontSize: 18),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -266,6 +288,7 @@ class _LoungesScreenState extends State<LoungesScreen> {
         _scrollController.offset / _scrollController.position.maxScrollExtent;
     if (percentage > 0.8 &&
         _bloc.state is! LoungesLoadingMore &&
-        _bloc.canGetMoreLounges) _bloc.add(GetMoreLoungesEvent());
+        _bloc.canGetMoreLounges &&
+        _bloc.state is! LoungesError) _bloc.add(GetMoreLoungesEvent());
   }
 }

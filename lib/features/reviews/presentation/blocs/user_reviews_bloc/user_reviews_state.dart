@@ -27,10 +27,11 @@ class UserReviewsErrorMore extends UserReviewsState {
 }
 
 class UserReviewsError extends UserReviewsState {
+  final int? code;
   final String? message;
 
-  UserReviewsError({required this.message});
+  UserReviewsError({this.message, this.code});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, code];
 }

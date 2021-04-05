@@ -33,5 +33,6 @@
     "excellent": "Excellent",
     "horrible": "Horrible",
     "average": "Average",
-    "review_hint": "Describe how your session went!"
+    "review_hint": "Describe how your session went!",
+    "retry": "Retry"
 }

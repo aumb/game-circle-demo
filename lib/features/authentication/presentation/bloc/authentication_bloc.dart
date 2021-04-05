@@ -47,9 +47,15 @@ class AuthenticationBloc
   AuthenticationError _handleFailureEvent(Failure failure) {
     AuthenticationError error;
     if (failure is ServerFailure) {
-      error = AuthenticationError(message: failure.message);
+      error = AuthenticationError(
+        message: failure.message,
+        code: failure.code,
+      );
     } else {
-      error = AuthenticationError(message: "unexpected_error");
+      error = AuthenticationError(
+        message: "unexpected_error",
+        code: 500,
+      );
     }
 
     return error;

@@ -2,17 +2,12 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gamecircle/core/errors/failure.dart';
-import 'package:gamecircle/core/models/pagination_model.dart';
 import 'package:gamecircle/core/usecases/usecases.dart';
 import 'package:gamecircle/features/reviews/data/models/review_model.dart';
-import 'package:gamecircle/features/reviews/domain/entities/review.dart';
 import 'package:gamecircle/features/reviews/domain/usecases/delete_lounge_review.dart';
-import 'package:gamecircle/features/reviews/domain/usecases/get_user_reviews.dart';
 import 'package:gamecircle/features/reviews/domain/usecases/patch_lounge_review.dart';
 import 'package:gamecircle/features/reviews/domain/usecases/post_lounge_review.dart';
 import 'package:gamecircle/features/reviews/presentation/blocs/add_edit_review_bloc/add_edit_review_bloc.dart';
-import 'package:gamecircle/features/reviews/presentation/blocs/user_reviews_bloc/user_reviews_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../fixtures/fixture_reader.dart';

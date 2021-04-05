@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/api.dart';
-import 'package:gamecircle/core/errors/exceptions.dart';
 import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/string_utils.dart';
 import 'package:gamecircle/features/authentication/data/datasources/authentication_local_data_source.dart';

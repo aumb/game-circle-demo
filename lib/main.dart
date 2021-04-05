@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gamecircle/core/utils/locale/locale_utils.dart';
 import 'package:gamecircle/core/utils/theme.dart';
+import 'package:gamecircle/core/widgets/states/error_widget.dart';
 import 'package:gamecircle/features/authentication/presentation/bloc/authentication_bloc.dart';
 import 'package:gamecircle/features/home/presentation/screens/home_screen.dart';
 import 'package:gamecircle/features/locale/presentation/bloc/locale_bloc.dart';
@@ -71,14 +72,18 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ],
                 child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-                  builder: (context, state) {
-                    if (state is UnauthenticatedState) {
-                      return LoginScreen();
-                    } else {
-                      return HomeScreen();
-                    }
-                  },
-                ),
+                    builder: (context, state) {
+                  if (state is UnauthenticatedState) {
+                    return LoginScreen();
+                  } else if (state is AuthenticationError) {
+                    return CustomErrorWidget(
+                        errorCode: state.code!,
+                        onPressed: () {
+                          _localesBloc.add(GetCachedLocaleEvent());
+                        });
+                  } else
+                    return HomeScreen();
+                }),
               ),
             ),
           );

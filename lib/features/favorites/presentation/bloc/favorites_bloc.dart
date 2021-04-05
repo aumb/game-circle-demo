@@ -83,9 +83,15 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
   FavoritesError _handleFailureEvent(Failure failure) {
     FavoritesError error;
     if (failure is ServerFailure) {
-      error = FavoritesError(message: failure.message);
+      error = FavoritesError(
+        message: failure.message,
+        code: failure.code,
+      );
     } else {
-      error = FavoritesError(message: "unexpected_error");
+      error = FavoritesError(
+        message: "unexpected_error",
+        code: 500,
+      );
     }
 
     return error;

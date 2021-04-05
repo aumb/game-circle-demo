@@ -102,9 +102,9 @@ class LoungesSearchCubit extends Cubit<LoungesSearchState> {
   LoungesSearchError _handleFailureEvent(Failure failure) {
     LoungesSearchError error;
     if (failure is ServerFailure) {
-      error = LoungesSearchError(message: failure.message);
+      error = LoungesSearchError(message: failure.message, code: failure.code);
     } else {
-      error = LoungesSearchError(message: "unexpected_error");
+      error = LoungesSearchError(message: "unexpected_error", code: 500);
     }
 
     return error;

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/widgets/states/error_widget.dart';
+import 'package:gamecircle/core/widgets/states/loading_widget.dart';
 import 'package:gamecircle/features/home/presentation/bloc/home_bloc.dart';
 import 'package:gamecircle/features/lounges/presentation/screens/lounges_screen.dart';
 
@@ -39,7 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
         onRefresh: () {
           _bloc.add(HomeRefreshEvent());
           return _bloc.stream.firstWhere(
-            (val) => val is HomeLoaded || val is LocationError,
+            (val) =>
+                val is HomeLoaded || val is LocationError || val is HomeError,
           );
         },
         child: Scaffold(
@@ -55,15 +58,13 @@ class _HomeScreenState extends State<HomeScreen> {
               },
               builder: (context, state) {
                 if (state is HomeLoading) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return LoadingWidget();
                 } else if (state is HomeError) {
-                  return Center(
-                    child: ElevatedButton(
-                      child: Text(state.message ?? ''),
-                      onPressed: () {},
-                    ),
+                  return CustomErrorWidget(
+                    errorCode: state.code!,
+                    onPressed: () {
+                      _bloc.add(GetUserInformationEvent());
+                    },
                   );
                 } else if (state is HomeLoaded || state is LocationError) {
                   return LoungesScreen();

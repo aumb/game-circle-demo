@@ -15,11 +15,12 @@ class FavoritesLoaded extends FavoritesState {}
 
 class FavoritesError extends FavoritesState {
   final String? message;
+  final int? code;
 
-  FavoritesError({required this.message});
+  FavoritesError({this.message, this.code});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, code];
 }
 
 class FavoritesErrorMore extends FavoritesState {

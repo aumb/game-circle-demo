@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
+import 'package:gamecircle/core/widgets/states/error_widget.dart';
+import 'package:gamecircle/core/widgets/states/loading_widget.dart';
 import 'package:gamecircle/features/reviews/presentation/blocs/user_reviews_bloc/user_reviews_bloc.dart';
 import 'package:gamecircle/features/reviews/presentation/screens/add_edit_review_screen.dart';
 import 'package:gamecircle/features/reviews/presentation/widgets/review_card.dart';
@@ -55,17 +57,7 @@ class _UserReviewsScreenState extends State<UserReviewsScreen> {
               child: CustomScrollView(
                 controller: _scrollController,
                 slivers: <Widget>[
-                  SliverAppBar(
-                    automaticallyImplyLeading: true,
-                    expandedHeight: 120,
-                    flexibleSpace: FlexibleSpaceBar(
-                      centerTitle: true,
-                      title: Text(
-                        Localization.of(context, 'reviews'),
-                        style: GoogleFonts.play(),
-                      ),
-                    ),
-                  ),
+                  _buildAppBar(context),
                   SliverToBoxAdapter(
                     child: SizedBox(
                       height: 16,
@@ -81,24 +73,53 @@ class _UserReviewsScreenState extends State<UserReviewsScreen> {
     );
   }
 
+  SliverAppBar _buildAppBar(BuildContext context) {
+    return SliverAppBar(
+      automaticallyImplyLeading: true,
+      expandedHeight: 120,
+      flexibleSpace: FlexibleSpaceBar(
+        centerTitle: true,
+        title: Text(
+          Localization.of(context, 'reviews'),
+          style: GoogleFonts.play(),
+        ),
+      ),
+    );
+  }
+
   Widget _buildAccordingToState() {
     if (_bloc.state is UserReviewsLoading) {
-      return SliverToBoxAdapter(
-        child: Column(
-          children: [
-            CircularProgressIndicator(),
-          ],
-        ),
-      );
+      return _buildLoadingWidget();
     } else if (_bloc.state is UserReviewsLoaded ||
         _bloc.state is UserReviewsLoadedMore ||
         _bloc.state is UserReviewsLoadingMore) {
       return _buildReviewList();
+    } else if (_bloc.state is UserReviewsError) {
+      final errorState = _bloc.state as UserReviewsError;
+      return SliverToBoxAdapter(
+        child: _buildErrorWidget(errorState),
+      );
     } else {
       return SliverToBoxAdapter(
         child: Container(),
       );
     }
+  }
+
+  CustomErrorWidget _buildErrorWidget(UserReviewsError errorState) {
+    return CustomErrorWidget(
+      isScreen: false,
+      errorCode: errorState.code!,
+      onPressed: () {
+        _bloc.add(GetUserReviewsEvent());
+      },
+    );
+  }
+
+  SliverToBoxAdapter _buildLoadingWidget() {
+    return SliverToBoxAdapter(
+      child: LoadingWidget(isScreen: false),
+    );
   }
 
   SliverList _buildReviewList() {
@@ -157,6 +178,7 @@ class _UserReviewsScreenState extends State<UserReviewsScreen> {
         _scrollController.offset / _scrollController.position.maxScrollExtent;
     if (percentage > 0.8 &&
         _bloc.state is! UserReviewsLoadingMore &&
-        _bloc.canGetMoreReviews) _bloc.add(GetMoreUserReviewsEvent());
+        _bloc.canGetMoreReviews &&
+        _bloc.state is! UserReviewsError) _bloc.add(GetMoreUserReviewsEvent());
   }
 }

@@ -28,9 +28,10 @@ class LoungesErrorMore extends LoungesState {
 
 class LoungesError extends LoungesState {
   final String? message;
+  final int? code;
 
-  LoungesError({required this.message});
+  LoungesError({this.message, this.code});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, code];
 }

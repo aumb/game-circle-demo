@@ -17,11 +17,15 @@ class LoungesSearchEmpty extends LoungesSearchState {}
 
 class LoungesSearchError extends LoungesSearchState {
   final String? message;
+  final int? code;
 
-  LoungesSearchError({required this.message});
+  LoungesSearchError({
+    this.message,
+    this.code,
+  });
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, code];
 }
 
 class LoungesSearchLoadedMore extends LoungesSearchState {}

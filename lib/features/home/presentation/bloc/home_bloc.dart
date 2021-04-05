@@ -85,9 +85,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeError _handleFailureEvent(Failure failure) {
     HomeError error;
     if (failure is ServerFailure) {
-      error = HomeError(message: failure.message);
+      error = HomeError(message: failure.message, code: failure.code);
     } else {
-      error = HomeError(message: "unexpected_error");
+      error = HomeError(message: "unexpected_error", code: 500);
     }
 
     return error;

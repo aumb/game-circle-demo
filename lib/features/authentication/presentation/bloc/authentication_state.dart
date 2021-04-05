@@ -17,9 +17,13 @@ class UnknownAuthenticationState extends AuthenticationState {}
 
 class AuthenticationError extends AuthenticationState {
   final String? message;
+  final int? code;
 
-  AuthenticationError({required this.message});
+  AuthenticationError({
+    this.message,
+    this.code,
+  });
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, code];
 }
