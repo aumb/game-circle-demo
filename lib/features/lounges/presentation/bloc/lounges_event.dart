@@ -10,3 +10,5 @@ abstract class LoungesEvent extends Equatable {
 class GetLoungesEvent extends LoungesEvent {}
 
 class GetMoreLoungesEvent extends LoungesEvent {}
+
+class RefreshLoungesEvent extends LoungesEvent {}

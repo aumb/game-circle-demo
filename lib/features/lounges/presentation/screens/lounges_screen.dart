@@ -27,11 +27,11 @@ class _LoungesScreenState extends State<LoungesScreen> {
     _init();
   }
 
-  // @override
-  // void didUpdateWidget(covariant LoungesScreen oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-  //   _bloc.add(GetLoungesEvent());
-  // }
+  @override
+  void didUpdateWidget(covariant LoungesScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // _bloc.add(RefreshLoungesEvent());
+  }
 
   @override
   void dispose() {
@@ -45,9 +45,7 @@ class _LoungesScreenState extends State<LoungesScreen> {
     _scrollController = ScrollController();
     _scrollController.addListener(listener);
     _bloc = sl<LoungesBloc>();
-    _bloc.add(
-      GetLoungesEvent(),
-    );
+    _bloc.add(GetLoungesEvent());
   }
 
   @override

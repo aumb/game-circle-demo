@@ -58,6 +58,17 @@ class LoungesBloc extends Bloc<LoungesEvent, LoungesState> {
         ),
       );
       yield* _handledGetMoreLoungesState(lounges);
+    } else if (event is RefreshLoungesEvent) {
+      yield LoungesRefreshing();
+
+      final lounges = await getLounges(
+        GetLoungesParams(
+          latitude: sessionManager.latitude,
+          longitude: sessionManager.longitude,
+          sortBy: filter.value.toLowerCase(),
+        ),
+      );
+      yield* _handledRefreshingLoungesState(lounges);
     }
   }
 
@@ -82,6 +93,18 @@ class LoungesBloc extends Bloc<LoungesEvent, LoungesState> {
       if (lounges.isEmpty) canGetMoreLounges = false;
       _lounges.addAll(lounges);
       return LoungesLoadedMore();
+    });
+  }
+
+  Stream<LoungesState> _handledRefreshingLoungesState(
+    Either<Failure, List<Lounge?>> failureOrToken,
+  ) async* {
+    yield failureOrToken.fold((failure) {
+      return _handleGetMoreFailureEvent(failure);
+    }, (lounges) {
+      _lounges = [];
+      _lounges.addAll(lounges);
+      return LoungesRefreshed();
     });
   }
 

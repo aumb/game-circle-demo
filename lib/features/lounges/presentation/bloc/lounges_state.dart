@@ -35,3 +35,7 @@ class LoungesError extends LoungesState {
   @override
   List<Object?> get props => [message, code];
 }
+
+class LoungesRefreshing extends LoungesState {}
+
+class LoungesRefreshed extends LoungesState {}
