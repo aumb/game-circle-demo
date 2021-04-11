@@ -20,7 +20,7 @@ class GameModel extends Game {
   }
 
   static List<GameModel> fromJsonList(List? json) {
-    if (json != null && json.isEmpty) {
+    if (json != null && json.isNotEmpty) {
       List<GameModel> games =
           json.map((game) => GameModel.fromJson(game)).toList();
       return games;

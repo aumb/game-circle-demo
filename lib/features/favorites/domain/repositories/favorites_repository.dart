@@ -6,4 +6,7 @@ abstract class FavoritesRepository {
   Future<Either<Failure, List<Lounge?>>> getFavoriteLounges();
 
   Future<Either<Failure, List<Lounge?>>> getMoreFavoriteLounges();
+
+  Future<Either<Failure, String?>> toggleLoungeFavoriteStatus(
+      {required int id});
 }

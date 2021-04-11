@@ -28,4 +28,17 @@ class GCDateUtils {
     }
     return formattedDate;
   }
+
+  DateTime getDateTimeFromTime(String time) {
+    DateTime now = DateTime.now();
+    List<String> timeList = time.split(":");
+
+    int? hour = int.tryParse(timeList.first);
+    int? minute = int.tryParse(timeList[1]);
+
+    DateTime dateTime =
+        DateTime(now.year, now.month, now.day, hour ?? 0, minute ?? 0);
+
+    return dateTime;
+  }
 }

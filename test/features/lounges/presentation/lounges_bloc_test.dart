@@ -109,6 +109,7 @@ void main() {
           // LoungesLoading(),
           LoungesError(
             message: failure.message,
+            code: failure.code,
           ),
         ];
         expectLater(loungesBloc.stream, emitsInOrder(expected));

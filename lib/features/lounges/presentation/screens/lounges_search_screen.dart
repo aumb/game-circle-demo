@@ -105,11 +105,9 @@ class _LoungesSearchScreenState extends State<LoungesSearchScreen> {
   Expanded _buildSearchTextField(BuildContext context) {
     return Expanded(
       child: CustomTextField(
+        controller: _searchController,
         isOutlineBorder: false,
         hintText: Localization.of(context, 'search'),
-        onChanged: (v) {
-          _searchController.text = v;
-        },
       ),
     );
   }

@@ -12,6 +12,7 @@ import 'package:gamecircle/features/favorites/data/datasources/favorites_remote_
 import 'package:gamecircle/features/favorites/domain/repositories/favorites_repository.dart';
 import 'package:gamecircle/features/favorites/domain/usecases/get_favorite_lounges.dart';
 import 'package:gamecircle/features/favorites/domain/usecases/get_more_favorite_lounges.dart';
+import 'package:gamecircle/features/favorites/domain/usecases/toggle_lounge_favorite_status.dart';
 import 'package:gamecircle/features/favorites/presentation/bloc/favorites_bloc.dart';
 import 'package:gamecircle/features/home/data/datasources/user_remote_data_source.dart';
 import 'package:gamecircle/features/home/data/repositories/user_repository_impl.dart';
@@ -37,8 +38,14 @@ import 'package:gamecircle/features/login/domain/usecases/post_social_login.dart
 import 'package:gamecircle/features/login/presentation/bloc/login_bloc.dart';
 import 'package:gamecircle/features/login/presentation/bloc/login_form_bloc.dart';
 import 'package:gamecircle/features/logout/presentation/cubit/logout_cubit.dart';
+import 'package:gamecircle/features/lounge/data/datasources/lounge_remote_data_source.dart';
+import 'package:gamecircle/features/lounge/data/repositories/lounge_repository_impl.dart';
+import 'package:gamecircle/features/lounge/domain/respositories/lounge_repository.dart';
+import 'package:gamecircle/features/lounge/domain/usecases/get_lounge.dart';
+import 'package:gamecircle/features/lounge/presentation/cubit/games_search_cubit.dart';
 import 'package:gamecircle/features/lounges/data/datasources/lounges_remote_data_source.dart';
 import 'package:gamecircle/features/lounges/data/respositories/lounges_repository_impl.dart';
+import 'package:gamecircle/features/lounges/domain/entities/game.dart';
 import 'package:gamecircle/features/lounges/domain/repositories/lounges_repository.dart';
 import 'package:gamecircle/features/lounges/domain/usecases/get_lounges.dart';
 import 'package:gamecircle/features/lounges/domain/usecases/get_more_lounges.dart';
@@ -75,6 +82,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'features/favorites/data/repositories/favorites_repository_impl.dart';
 import 'features/home/data/datasources/user_local_data_source.dart';
+import 'features/lounge/presentation/bloc/lounge_bloc.dart';
+import 'features/lounges/domain/entities/lounge.dart';
 import 'features/reviews/presentation/blocs/add_edit_review_bloc/add_edit_review_bloc.dart';
 
 final sl = GetIt.instance;
@@ -96,6 +105,7 @@ Future<void> init() async {
   _initProfileUseCases();
   _initFavoritesUseCases();
   _initReviewsUseCases();
+  _initLoungeUseCases();
 
   // Repositories
   _initRepositories();
@@ -208,9 +218,31 @@ void _initSingletonBlocs() {
         postLoungeReview: sl(),
         deleteLoungeReview: sl(),
       ));
+
+  sl.registerFactoryParam<LoungeBloc, Lounge?, void>((
+    Lounge? lounge,
+    _,
+  ) =>
+      LoungeBloc(
+        lounge: lounge!,
+        getLounge: sl(),
+        toggleLoungeFavoriteStatus: sl(),
+      ));
+
+  sl.registerFactoryParam<GamesSearchCubit, List<Game?>?, void>((
+    List<Game?>? games,
+    _,
+  ) =>
+      GamesSearchCubit(
+        games: games,
+      ));
 }
 
 //Usecases
+
+void _initLoungeUseCases() {
+  sl.registerLazySingleton(() => GetLounge(sl()));
+}
 
 void _initReviewsUseCases() {
   sl.registerLazySingleton(() => GetUserReviews(sl()));
@@ -225,6 +257,7 @@ void _initReviewsUseCases() {
 void _initFavoritesUseCases() {
   sl.registerLazySingleton(() => GetFavoriteLounges(sl()));
   sl.registerLazySingleton(() => GetMoreFavoriteLounges(sl()));
+  sl.registerLazySingleton(() => ToggleLoungeFavoriteStatus(sl()));
 }
 
 void _initProfileUseCases() {
@@ -263,6 +296,11 @@ void _initLoungesUseCases() {
 }
 
 void _initRepositories() {
+  sl.registerLazySingleton<LoungeRepository>(
+    () => LoungeRepositoryImpl(
+      remoteDataSource: sl(),
+    ),
+  );
   sl.registerLazySingleton<LoginRepository>(
     () => LoginRespositoryImpl(
       localDataSource: sl(),
@@ -322,6 +360,12 @@ void _initManagers() {
 }
 
 void _initDataSources() {
+  sl.registerLazySingleton<LoungeRemoteDataSource>(
+    () => LoungeRemoteDataSourceImpl(
+      client: sl(),
+    ),
+  );
+
   sl.registerLazySingleton<LoginRemoteDataSource>(
     () => LoginRemoteDataSourceImpl(
         client: sl(), googleSignIn: sl(), facebookSignIn: sl()),

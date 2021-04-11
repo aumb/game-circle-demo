@@ -8,22 +8,18 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class LoungeCard extends StatelessWidget {
   final Lounge? lounge;
+  final Function()? onTap;
 
   const LoungeCard({
     this.lounge,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final double _width = MediaQuery.of(context).size.width;
     return InkWell(
-      onTap: () {
-        // Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //       builder: (BuildContext context) =>
-        //           GamingLoungeDetailsScreen(lounge: lounge)),
-        // );
-      },
+      onTap: onTap,
       child: Card(
         elevation: 20,
         child: Padding(

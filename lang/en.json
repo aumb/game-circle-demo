@@ -34,5 +34,22 @@
     "horrible": "Horrible",
     "average": "Average",
     "review_hint": "Describe how your session went!",
-    "retry": "Retry"
+    "retry": "Retry",
+    "overview": "Overview",
+    "sections": "Sections",
+    "features": "Features",
+    "games": "Games",
+    "closed": "Closed",
+    "open": "Open",
+    "all_day": "All Day",
+    "24/7": "24/7",
+    "open_all_day": "Open all day",
+    "opening_hours": "Opening Hours",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday"
 }

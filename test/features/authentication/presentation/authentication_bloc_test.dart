@@ -76,6 +76,7 @@ void main() {
           // UnauthenticatedState(),
           AuthenticationError(
             message: failure.message,
+            code: failure.code,
           ),
         ];
         expectLater(authenticationBloc.stream, emitsInOrder(expected));

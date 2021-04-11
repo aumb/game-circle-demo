@@ -1,11 +1,12 @@
+import 'package:gamecircle/core/utils/gc_date_utils.dart';
 import 'package:gamecircle/features/lounges/domain/entities/timing.dart';
 
 class TimingModel extends Timing {
   TimingModel({
     required bool? open,
     required num? day,
-    required String? openTime,
-    required String? closeTime,
+    required DateTime? openTime,
+    required DateTime? closeTime,
   }) : super(
           open: open,
           day: day,
@@ -17,8 +18,12 @@ class TimingModel extends Timing {
     return TimingModel(
       day: json?['day'],
       open: json?['open'],
-      openTime: json?['openTime'],
-      closeTime: json?['closeTime'],
+      openTime: json?['open_time'] != null
+          ? GCDateUtils().getDateTimeFromTime(json?['open_time'])
+          : null,
+      closeTime: json?['close_time'] != null
+          ? GCDateUtils().getDateTimeFromTime(json?['close_time'])
+          : null,
     );
   }
   static List<TimingModel> fromJsonList(List? json) {

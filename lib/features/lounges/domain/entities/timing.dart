@@ -1,10 +1,11 @@
 import 'package:equatable/equatable.dart';
+import 'package:gamecircle/core/entities/enum.dart';
 
 class Timing extends Equatable {
   final bool? open;
   final num? day;
-  final String? openTime;
-  final String? closeTime;
+  final DateTime? openTime;
+  final DateTime? closeTime;
 
   Timing({
     required this.day,
@@ -15,27 +16,32 @@ class Timing extends Equatable {
 
   @override
   List<Object?> get props => [day, openTime, closeTime, open];
+}
 
-  // factory Timing.fromJson(Map<String, dynamic> json) {
-  //   if (json != null) {
-  //     return Timing(
-  //       day: json['day'] != null ? json['day'] + 1 : null,
-  //       open: json['open'] != null ? json['open'] : false,
-  //       openTime: json['openTime'] != null ? json['openTime'] : null,
-  //       closeTime: json['closeTime'] != null ? json['closeTime'] : null,
-  //     );
-  //   } else {
-  //     return null;
-  //   }
-  // }
+class Days extends Enum {
+  static const monday = Days._internal("monday");
+  static const tuesday = Days._internal("tuesday");
+  static const wednesday = Days._internal("wednesday");
+  static const thursday = Days._internal("thursday");
+  static const friday = Days._internal("friday");
+  static const saturday = Days._internal("saturday");
+  static const sunday = Days._internal("sunday");
+  static const unknown = Days._internal("");
 
-  // static List<Timing> fromJsonList(List json) {
-  //   if (json != null && json.isNotEmpty) {
-  //     List<Timing> timings =
-  //         json.map((timing) => Timing.fromJson(timing)).toList();
-  //     return timings;
-  //   } else {
-  //     return [];
-  //   }
-  // }
+  static const List<Days> values = [
+    monday,
+    tuesday,
+    wednesday,
+    thursday,
+    friday,
+    saturday,
+    sunday,
+  ];
+
+  const Days._internal(String value) : super.internal(value);
+
+  factory Days(String raw) => values.firstWhere(
+        (val) => val.value == raw,
+        orElse: () => unknown,
+      );
 }

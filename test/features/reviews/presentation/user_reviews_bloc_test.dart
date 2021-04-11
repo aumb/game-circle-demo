@@ -97,6 +97,7 @@ void main() {
           // LoungesLoading(),
           UserReviewsError(
             message: failure.message,
+            code: failure.code,
           ),
         ];
         expectLater(userReviewsBloc.stream, emitsInOrder(expected));

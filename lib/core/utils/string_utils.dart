@@ -36,4 +36,10 @@ class StringUtils {
     if (isEmpty(message)) return '';
     return message!.replaceFirst('{$variable}', value ?? '');
   }
+
+  String addCommaToNumber(String value) {
+    RegExp reg = new RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
+    String Function(Match) mathFunc = (Match match) => '${match[1]},';
+    return value.replaceAllMapped(reg, mathFunc);
+  }
 }

@@ -6,7 +6,8 @@
         "id": 1
     },
     "lounge": {
-        "id": 1
+        "id": 1,
+        "images": []
     },
     "updated_at": "2021-03-29T11:45:55.000000Z",
     "images": [

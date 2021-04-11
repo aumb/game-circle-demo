@@ -5,6 +5,7 @@ import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/buttons/custom_outline_button.dart';
 import 'package:gamecircle/core/widgets/profile_picture.dart';
 import 'package:gamecircle/core/widgets/states/error_widget.dart';
+import 'package:gamecircle/features/lounge/presentation/screens/lounge_screen.dart';
 import 'package:gamecircle/features/lounges/presentation/widgets/avatar_dialog.dart';
 import 'package:gamecircle/features/lounges/domain/entities/lounges_filter_option.dart';
 import 'package:gamecircle/features/lounges/presentation/bloc/lounges_bloc.dart';
@@ -30,7 +31,7 @@ class _LoungesScreenState extends State<LoungesScreen> {
   @override
   void didUpdateWidget(covariant LoungesScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // _bloc.add(RefreshLoungesEvent());
+    _bloc.add(RefreshLoungesEvent());
   }
 
   @override
@@ -164,8 +165,17 @@ class _LoungesScreenState extends State<LoungesScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: LoungeCard(
-        lounge: _bloc.lounges[index],
-      ),
+          lounge: _bloc.lounges[index],
+          onTap: () async {
+            final result = await Navigator.of(context).push(
+              MaterialPageRoute(
+                  builder: (BuildContext context) =>
+                      LoungeScreen(lounge: _bloc.lounges[index]!)),
+            );
+            if (result ?? false) {
+              _bloc.add(GetLoungesEvent());
+            }
+          }),
     );
   }
 

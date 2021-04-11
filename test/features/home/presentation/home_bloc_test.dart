@@ -107,6 +107,7 @@ void main() {
           HomeLoading(),
           HomeError(
             message: failure.message,
+            code: failure.code,
           ),
         ];
         expectLater(homeBloc.stream, emitsInOrder(expected));

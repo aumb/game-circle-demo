@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:gamecircle/core/entities/gc_image.dart';
+import 'package:gamecircle/features/lounges/domain/entities/contact.dart';
 import 'package:gamecircle/features/lounges/domain/entities/country.dart';
 import 'package:gamecircle/features/lounges/domain/entities/feature.dart';
 import 'package:gamecircle/features/lounges/domain/entities/game.dart';
@@ -15,7 +17,7 @@ class Lounge extends Equatable {
   final bool? featured;
   final String? name;
   final String? logoUrl;
-  final String? phoneNumber;
+  final Contact? contact;
   final Country? country;
   final GCLocation? location;
   final List<Package?>? packages;
@@ -24,6 +26,8 @@ class Lounge extends Equatable {
   final List<SectionInformation?>? sectionInformation;
   final List<Feature?>? features;
   final num? distance;
+  final bool? isFavorite;
+  final List<GCImage?>? images;
 
   Lounge({
     required this.id,
@@ -33,7 +37,7 @@ class Lounge extends Equatable {
     required this.featured,
     required this.name,
     required this.logoUrl,
-    required this.phoneNumber,
+    required this.contact,
     required this.country,
     required this.location,
     required this.packages,
@@ -42,6 +46,8 @@ class Lounge extends Equatable {
     required this.sectionInformation,
     required this.features,
     required this.distance,
+    required this.isFavorite,
+    required this.images,
   });
 
   @override
@@ -53,7 +59,7 @@ class Lounge extends Equatable {
         featured,
         name,
         logoUrl,
-        phoneNumber,
+        contact,
         country,
         location,
         packages,
@@ -62,5 +68,7 @@ class Lounge extends Equatable {
         sectionInformation,
         features,
         distance,
+        isFavorite,
+        images,
       ];
 }

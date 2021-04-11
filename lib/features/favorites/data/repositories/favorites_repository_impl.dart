@@ -32,4 +32,16 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
       return Left(ServerFailure.fromServerException(e.error));
     }
   }
+
+  @override
+  Future<Either<Failure, String?>> toggleLoungeFavoriteStatus(
+      {required int id}) async {
+    try {
+      final toggleLoungeSuccess =
+          await remoteDataSource.toggleFavoriteLoungeStatus(id: id);
+      return Right(toggleLoungeSuccess);
+    } on ServerException catch (e) {
+      return Left(ServerFailure.fromServerException(e.error));
+    }
+  }
 }

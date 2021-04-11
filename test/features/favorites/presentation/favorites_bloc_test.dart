@@ -94,6 +94,7 @@ void main() {
           FavoritesLoading(),
           FavoritesError(
             message: failure.message,
+            code: failure.code,
           ),
         ];
         expectLater(favoritesBloc.stream, emitsInOrder(expected));
