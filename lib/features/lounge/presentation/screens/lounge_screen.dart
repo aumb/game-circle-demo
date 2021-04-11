@@ -4,7 +4,6 @@ import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/general_utils.dart';
 
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
-import 'package:gamecircle/core/utils/string_utils.dart';
 import 'package:gamecircle/core/widgets/animations/shimmer.dart';
 import 'package:gamecircle/core/widgets/custom_divider.dart';
 import 'package:gamecircle/core/widgets/sliver_fab.dart';
