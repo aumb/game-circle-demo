@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/dynamic_links_manager.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/general_utils.dart';
 
@@ -21,9 +23,11 @@ import 'package:share/share.dart';
 
 class LoungeScreen extends StatefulWidget {
   final Lounge lounge;
+  final bool isDynamicLink;
 
   const LoungeScreen({
     required this.lounge,
+    this.isDynamicLink = false,
   });
 
   @override
@@ -237,9 +241,8 @@ class _LoungeScreenState extends State<LoungeScreen> {
               imgUrl: _bloc.fullLounge?.games?[index]?.imgUrl ?? '',
               onTap: index == 3
                   ? () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => GamesSearchScreen(
-                              games: _bloc.fullLounge!.games)));
+                      sl<NavigationManager>().navigateTo(
+                          GamesSearchScreen(games: _bloc.fullLounge!.games));
                     }
                   : () {},
             );
@@ -261,7 +264,7 @@ class _LoungeScreenState extends State<LoungeScreen> {
       leading: IconButton(
         icon: BackButtonIcon(),
         onPressed: () {
-          Navigator.of(context).pop(shouldReload);
+          sl<NavigationManager>().goBack(shouldReload);
         },
       ),
       actions: <Widget>[
@@ -288,9 +291,10 @@ class _LoungeScreenState extends State<LoungeScreen> {
           icon: Icon(
             Icons.share,
           ),
-          onPressed: () {
-            Share.share('check out my website https://example.com',
-                subject: 'Look what I made!');
+          onPressed: () async {
+            Uri uri = await sl<DynamicLinksManager>()
+                .createDynamicLink(_bloc.fullLounge!.id!.toString());
+            Share.share(uri.toString());
           },
         ),
       ],
@@ -306,8 +310,47 @@ class _LoungeScreenState extends State<LoungeScreen> {
                 ),
                 baseColor: CustomColors.backgroundColor,
                 highlightColor: CustomColors.accentColor)
-            : LoungePicturesCarousel(
-                images: _bloc.fullLounge?.images,
+            : Stack(
+                fit: StackFit.expand,
+                children: [
+                  LoungePicturesCarousel(
+                    images: _bloc.fullLounge?.images,
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: CustomColors.backgroundColor,
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8),
+                            bottomLeft: Radius.circular(8)),
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.desktop_windows,
+                            color: Theme.of(context).secondaryHeaderColor,
+                            size: 20,
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            _bloc.fullLounge?.places?.toString() ?? '0',
+                            style: Theme.of(context).textTheme.button!.copyWith(
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .headline6!
+                                      .color,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
       ),
     );

@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:gamecircle/core/utils/safe_print.dart';
 import 'package:gamecircle/features/lounges/domain/entities/game.dart';
 
 part 'games_search_state.dart';
@@ -29,7 +28,6 @@ class GamesSearchCubit extends Cubit<GamesSearchState> {
     }).toList();
     _allGames = [];
     _allGames!.addAll(_list);
-    safePrint(_allGames!.length.toString());
     if (_allGames!.isEmpty) {
       emit(GamesSearchEmpty());
     } else {

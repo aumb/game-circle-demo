@@ -28,11 +28,14 @@ class ReviewsRepositoryImpl implements ReviewsRepository {
   }
 
   @override
-  Future<Either<Failure, List<Review?>>> getLoungeReviews(
-      {String? sortBy}) async {
+  Future<Either<Failure, List<Review?>>> getLoungeReviews({
+    String? sortBy,
+    required int? id,
+  }) async {
     try {
       final reviews = await remoteDataSource.getLoungeReviews(
         sortBy: sortBy,
+        id: id,
       );
       return Right(reviews);
     } on ServerException catch (e) {
@@ -41,11 +44,14 @@ class ReviewsRepositoryImpl implements ReviewsRepository {
   }
 
   @override
-  Future<Either<Failure, List<Review?>>> getMoreLoungeReviews(
-      {String? sortBy}) async {
+  Future<Either<Failure, List<Review?>>> getMoreLoungeReviews({
+    String? sortBy,
+    required int? id,
+  }) async {
     try {
       final reviews = await remoteDataSource.getMoreLoungeReviews(
         sortBy: sortBy,
+        id: id,
       );
       return Right(reviews);
     } on ServerException catch (e) {

@@ -1,5 +1,6 @@
 import 'package:gamecircle/core/utils/gc_date_utils.dart';
 import 'package:gamecircle/features/lounges/domain/entities/timing.dart';
+import 'package:intl/intl.dart';
 
 class TimingModel extends Timing {
   TimingModel({
@@ -19,7 +20,8 @@ class TimingModel extends Timing {
       day: json?['day'],
       open: json?['open'],
       openTime: json?['open_time'] != null
-          ? GCDateUtils().getDateTimeFromTime(json?['open_time'])
+          ? DateFormat('Hms', 'en_US').parse(json?['open_time'])
+          // GCDateUtils().getDateTimeFromTime()
           : null,
       closeTime: json?['close_time'] != null
           ? GCDateUtils().getDateTimeFromTime(json?['close_time'])

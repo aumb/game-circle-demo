@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/utils/string_utils.dart';
@@ -98,7 +99,7 @@ class _LoungesSearchScreenState extends State<LoungesSearchScreen> {
   IconButton _buildBackButton(BuildContext context) {
     return IconButton(
       icon: BackButtonIcon(),
-      onPressed: () => Navigator.of(context).pop(),
+      onPressed: () => sl<NavigationManager>().goBack(),
     );
   }
 

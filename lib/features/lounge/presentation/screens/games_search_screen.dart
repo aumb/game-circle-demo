@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/utils/string_utils.dart';
@@ -89,7 +90,7 @@ class _GamesSearchScreenState extends State<GamesSearchScreen> {
   IconButton _buildBackButton(BuildContext context) {
     return IconButton(
       icon: BackButtonIcon(),
-      onPressed: () => Navigator.of(context).pop(),
+      onPressed: () => sl<NavigationManager>().goBack(),
     );
   }
 
@@ -125,7 +126,6 @@ class _GamesSearchScreenState extends State<GamesSearchScreen> {
     } else if (state is GamesSearchEmpty) {
       return Expanded(child: _SearchFailure());
     } else if (state is GamesSearchLoaded) {
-      print(_cubit.allGames!.length);
       return Expanded(
         child: _SearchLoaded(cubit: _cubit),
       );

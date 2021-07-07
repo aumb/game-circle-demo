@@ -1,4 +1,4 @@
-package com.example.gamecircle
+package com.exmaple.gamecircle
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,13 +1,21 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gamecircle/core/api.dart';
+import 'package:gamecircle/core/managers/dynamic_links_manager.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
+import 'package:gamecircle/core/managers/notifications_manager.dart';
 import 'package:gamecircle/core/managers/session_manager.dart';
+import 'package:gamecircle/core/usecases/usecases.dart';
+import 'package:gamecircle/core/utils/safe_print.dart';
 import 'package:gamecircle/core/utils/string_utils.dart';
 import 'package:gamecircle/features/authentication/data/datasources/authentication_local_data_source.dart';
 import 'package:gamecircle/features/authentication/data/repositories/authentication_repository_impl.dart';
 import 'package:gamecircle/features/authentication/domain/repositories/authentication_repository.dart';
 import 'package:gamecircle/features/authentication/domain/usecases/get_cached_token.dart';
 import 'package:gamecircle/features/authentication/presentation/bloc/authentication_bloc.dart';
+import 'package:gamecircle/features/dynamic_links/presentation/bloc/dynamic_links_bloc.dart';
 import 'package:gamecircle/features/favorites/data/datasources/favorites_remote_data_source.dart';
 import 'package:gamecircle/features/favorites/domain/repositories/favorites_repository.dart';
 import 'package:gamecircle/features/favorites/domain/usecases/get_favorite_lounges.dart';
@@ -51,6 +59,7 @@ import 'package:gamecircle/features/lounges/domain/usecases/get_lounges.dart';
 import 'package:gamecircle/features/lounges/domain/usecases/get_more_lounges.dart';
 import 'package:gamecircle/features/lounges/presentation/bloc/lounges_bloc.dart';
 import 'package:gamecircle/features/lounges/presentation/cubit/lounges_search_cubit.dart';
+import 'package:gamecircle/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:gamecircle/features/profile/data/datasources/profile_remote_data_source.dart';
 import 'package:gamecircle/features/profile/data/repositories/profile_repository_impl.dart';
 import 'package:gamecircle/features/profile/domain/repositories/profile_repository.dart';
@@ -85,12 +94,16 @@ import 'features/home/data/datasources/user_local_data_source.dart';
 import 'features/lounge/presentation/bloc/lounge_bloc.dart';
 import 'features/lounges/domain/entities/lounge.dart';
 import 'features/reviews/presentation/blocs/add_edit_review_bloc/add_edit_review_bloc.dart';
+import 'features/reviews/presentation/blocs/lounge_reviews_bloc/lounge_reviews_bloc.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   // Blocs
   _initBlocs();
+
+  // Managers
+  _initManagers();
 
   // Singleton blocs
   _initSingletonBlocs();
@@ -111,9 +124,6 @@ Future<void> init() async {
   _initRepositories();
   // Data sources
   _initDataSources();
-
-  // Managers
-  _initManagers();
   // External
   await _initExternal();
 }
@@ -187,6 +197,21 @@ void _initSingletonBlocs() {
     ),
   );
 
+  sl.registerLazySingleton(
+    () => DynamicLinksBloc(
+      navigationManager: sl(),
+      authenticationBloc: sl(),
+      dynamicLinksManager: sl(),
+      sessionManager: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton(
+    () => NotificationsBloc(
+      notificationsManager: sl(),
+    ),
+  );
+
   sl.registerFactory(
     () => ProfileCubit(
       sessionManager: sl(),
@@ -235,6 +260,16 @@ void _initSingletonBlocs() {
   ) =>
       GamesSearchCubit(
         games: games,
+      ));
+
+  sl.registerFactoryParam<LoungeReviewsBloc, Lounge?, void>((
+    Lounge? lounge,
+    _,
+  ) =>
+      LoungeReviewsBloc(
+        lounge: lounge!,
+        getLoungeReviews: sl(),
+        getMoreLoungeReviews: sl(),
       ));
 }
 
@@ -357,6 +392,9 @@ void _initRepositories() {
 
 void _initManagers() {
   sl.registerLazySingleton(() => SessionManager());
+  sl.registerLazySingleton(() => DynamicLinksManager());
+  sl.registerLazySingleton(() => NavigationManager());
+  sl.registerLazySingleton(() => NotificationsManager());
 }
 
 void _initDataSources() {
@@ -429,8 +467,20 @@ Future<void> _initExternal() async {
       ],
     ),
   );
+  await Firebase.initializeApp();
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
   _initDio();
+}
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  safePrint("Notification ${message.messageId} recieved succesfully");
+  // sl<NotificationsBloc>().add(HandleNotificationEvent(remoteMessage: message));
 }
 
 void _initDio() {
@@ -439,44 +489,8 @@ void _initDio() {
       BaseOptions(baseUrl: API.base),
     )..interceptors.addAll([
         LogInterceptor(request: true),
-        InterceptorsWrapper(onError: (e, handler) async {
-          final client = Dio();
-          final RequestOptions options = e.response!.requestOptions;
-          if (e.response?.statusCode == 401 &&
-              StringUtils().isNotEmpty(options.headers['Authorization'])) {
-            sl<Dio>().lock();
-            sl<Dio>().interceptors.responseLock.lock();
-            sl<Dio>().interceptors.errorLock.lock();
-
-            return handler.resolve(
-              await client
-                  .post(
-                "http://192.168.10.12/api/refresh_token",
-                data: FormData.fromMap({
-                  "token":
-                      "def502002bb8b5a246e7171acc02b26116a2f0d7e1ce8dad2a26202ddc2c2cf40b28195b3202c8833f8b08f4f95d172bd4e60a3e239c712c79300f301cfed4c8a9e536d25836e513ec1d1c31879eaf584d4984db42f91d7d70ca1bb26a5d156c66482db4c1f8a917586c37ac39fcf5cb17637ee3279667981d7143a14ed90d5ad2ba1f3b15392260af7ba1f95186e0e98faeae90389f1a33ed0ef3a79290b33791c77dd950ae0adc8e6e3ff55789c33b767612f81c3c75c81af26a4c4d6d79626e4e50bca0c3d8684bdd9888e88fc5d5f7c60801dc3c68686676d6f4a4af94eee2a5ea75aa9e623e4199dcb12bc24a8854fb4180e497bd1985bf7a37bce81a501e5c0cb5d0ed449950917b4dea4026377fbbd6dbe61b3af909781024768c0de7baf04e14e109d2b8a5f0df375e7795ac5c71f4c14beaf59129c84418b73a382a8151e93515c05cdde3f210fa4a41878ba4e2ec75fe1d1f06d16e1c0227cba7c83947d0c5e8"
-                }),
-              )
-                  .whenComplete(() {
-                sl<Dio>().unlock();
-                sl<Dio>().interceptors.responseLock.unlock();
-                sl<Dio>().interceptors.errorLock.unlock();
-              }).then(
-                (value) {
-                  return sl<Dio>().fetch(options);
-                },
-              ),
-            );
-          } else {
-            final dioError = DioError(
-              requestOptions: e.response!.requestOptions,
-              response: _ensureParsable(e.response),
-              type: e.type,
-              error: e.error,
-            );
-            return handler.reject(dioError);
-          }
-        }),
+        InterceptorsWrapper(
+            onError: (e, handler) => _handleInterceptorError(e, handler)),
       ]),
   );
 }
@@ -501,4 +515,62 @@ _ensureParsable(Response<dynamic>? response) {
     response?.data = _mockError;
     return response;
   }
+}
+
+void _handleInterceptorError(
+    DioError e, ErrorInterceptorHandler handler) async {
+  final RequestOptions options =
+      e.response?.requestOptions ?? RequestOptions(path: "failed");
+  if (e.response?.statusCode == 401 &&
+      StringUtils().isNotEmpty(options.headers['Authorization'])) {
+    sl<Dio>().lock();
+    sl<Dio>().interceptors.responseLock.lock();
+    sl<Dio>().interceptors.errorLock.lock();
+
+    return handler.resolve(await _handleUnauthorizedError(options));
+  } else {
+    final dioError = DioError(
+      requestOptions: options,
+      response: _ensureParsable(e.response),
+      type: e.type,
+      error: e.error,
+    );
+    return handler.reject(dioError);
+  }
+}
+
+Future<Response<dynamic>> _handleUnauthorizedError(
+    RequestOptions options) async {
+  final client = Dio();
+  final localToken = await sl<AuthenticationLocalDataSource>().getCachedToken();
+
+  return client
+      .post(
+    API.refreshToken,
+    data: FormData.fromMap({
+      "token": localToken?.refreshToken,
+    }),
+  )
+      .catchError((e) async {
+    final postLogoutUser = sl<PostLogoutUser>();
+    final response = await postLogoutUser(NoParams());
+    response.fold(
+      (l) {
+        final userLocalDataSource = sl<UserLocalDataSource>();
+        userLocalDataSource.deleteCachedToken();
+      },
+      (r) => null,
+    );
+
+    sl<NavigationManager>().popTillFirst();
+    sl<AuthenticationBloc>().add(GetCachedTokenEvent());
+  }).whenComplete(() {
+    sl<Dio>().unlock();
+    sl<Dio>().interceptors.responseLock.unlock();
+    sl<Dio>().interceptors.errorLock.unlock();
+  }).then(
+    (value) {
+      return sl<Dio>().fetch(options);
+    },
+  );
 }

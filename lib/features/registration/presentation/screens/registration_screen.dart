@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/buttons/custom_raised_button.dart';
 import 'package:gamecircle/core/widgets/custom_text_form_field.dart';
@@ -66,7 +67,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 } else if (state is Loaded) {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  sl<NavigationManager>().popTillFirst();
                 }
               },
             ),

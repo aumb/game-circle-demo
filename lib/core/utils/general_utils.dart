@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:gamecircle/core/utils/safe_print.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GeneralUtils {
@@ -18,7 +19,7 @@ class GeneralUtils {
     if (await canLaunch(uri.toString())) {
       await launch(uri.toString());
     } else {
-      print('Could not launch ${uri.toString()}');
+      safePrint('Could not launch ${uri.toString()}');
     }
   }
 

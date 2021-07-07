@@ -1,14 +1,18 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gamecircle/core/entities/gc_image.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/widgets/custom_dismissible.dart';
 import 'package:gamecircle/core/widgets/flat_app_bar.dart';
+import 'package:gamecircle/injection_container.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class AddEditReviewImagePreview extends StatefulWidget {
-  final List<dynamic?>? images;
+  final List<dynamic>? images;
   final int selectedImageIndex;
 
   const AddEditReviewImagePreview({
@@ -33,8 +37,8 @@ class _AddEditReviewImagePreviewState extends State<AddEditReviewImagePreview> {
       extendBodyBehindAppBar: true,
       body: CustomDismissible(
         disable: !canDismiss,
-        key: Key("add_edit_review_image_${widget.images?.first?.imageUrl}"),
-        onDismissed: (_) => Navigator.of(context).pop(),
+        key: Key("add_edit_review_image_${widget.images?.first}"),
+        onDismissed: (_) => sl<NavigationManager>().goBack(),
         direction: DismissDirection.vertical,
         movementDuration: Duration(milliseconds: 0),
         resizeDuration: null,
@@ -53,8 +57,10 @@ class _AddEditReviewImagePreviewState extends State<AddEditReviewImagePreview> {
             return PhotoViewGalleryPageOptions(
               imageProvider: _buildImage(index),
               minScale: PhotoViewComputedScale.contained,
-              heroAttributes:
-                  PhotoViewHeroAttributes(tag: widget.images?[index]?.id ?? 0),
+              heroAttributes: PhotoViewHeroAttributes(
+                  tag: (widget.images?[index] is GCImage)
+                      ? (widget.images?[index] as GCImage).id!
+                      : (widget.images?[index] as File).path),
             );
           },
           pageController: PageController(

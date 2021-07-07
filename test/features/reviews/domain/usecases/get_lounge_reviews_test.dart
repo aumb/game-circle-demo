@@ -34,18 +34,21 @@ void main() {
       when(
         () => mockReviewsRepository.getLoungeReviews(
           sortBy: any(named: "sortBy"),
+          id: any(named: "id"),
         ),
       ).thenAnswer((_) async => Right(reviews));
 
       // act
       final result = await usecase(GetLoungeReviewsParams(
         sortBy: "",
+        id: 0,
       ));
 
       // assert
       expect(result, Right(reviews));
       verify(() => mockReviewsRepository.getLoungeReviews(
             sortBy: "",
+            id: 0,
           ));
       verifyNoMoreInteractions(mockReviewsRepository);
     },

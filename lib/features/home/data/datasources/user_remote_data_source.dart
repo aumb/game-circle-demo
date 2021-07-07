@@ -61,7 +61,8 @@ class UserRemoteDataSourceImpl implements UserRemoteDataSource {
     bool serviceEnabled;
     LocationPermission permission;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    serviceEnabled = await Geolocator.isLocationServiceEnabled()
+        .catchError((e) async => false);
 
     if (!serviceEnabled) {
       throw ServerException(

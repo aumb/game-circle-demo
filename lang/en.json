@@ -51,5 +51,8 @@
     "thursday": "Thursday",
     "friday": "Friday",
     "saturday": "Saturday",
-    "sunday": "Sunday"
+    "sunday": "Sunday",
+    "most_recent": "most recent",
+    "highest_rated": "highest rated",
+    "lowest_rated": "lowest rated"
 }

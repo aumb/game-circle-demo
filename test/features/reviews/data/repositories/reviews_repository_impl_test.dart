@@ -32,12 +32,12 @@ void main() {
       'should return remote data when the call to remote data source is successful',
       () async {
         // arrange
-        when(() => mockRemoteDataSource.getLoungeReviews())
+        when(() => mockRemoteDataSource.getLoungeReviews(id: any(named: "id")))
             .thenAnswer((_) async => tReviewsModel);
         // act
-        final result = await repository.getLoungeReviews();
+        final result = await repository.getLoungeReviews(id: null);
         // assert
-        verify(() => mockRemoteDataSource.getLoungeReviews()).called(1);
+        verify(() => mockRemoteDataSource.getLoungeReviews(id: null)).called(1);
 
         expect(result, equals(Right(tReviews)));
       },
@@ -53,12 +53,14 @@ void main() {
       'should return remote data when the call to remote data source is successful',
       () async {
         // arrange
-        when(() => mockRemoteDataSource.getMoreLoungeReviews())
+        when(() =>
+                mockRemoteDataSource.getMoreLoungeReviews(id: any(named: "id")))
             .thenAnswer((_) async => tReviewsModel);
         // act
-        final result = await repository.getMoreLoungeReviews();
+        final result = await repository.getMoreLoungeReviews(id: 0);
         // assert
-        verify(() => mockRemoteDataSource.getMoreLoungeReviews()).called(1);
+        verify(() => mockRemoteDataSource.getMoreLoungeReviews(id: 0))
+            .called(1);
 
         expect(result, equals(Right(tReviews)));
       },

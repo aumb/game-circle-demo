@@ -25,7 +25,7 @@ class AddEditReviewBloc extends Bloc<AddEditReviewEvent, AddEditReviewState> {
   late List<int?> deletedImages;
   late List<File?> addedImages;
   late List<GCImage?>? reviewImages;
-  late List<dynamic?>? allImages;
+  late List<dynamic>? allImages;
 
   late double? reviewRating;
   late String? reviewText;

@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gamecircle/core/entities/gc_image.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/buttons/custom_raised_button.dart';
@@ -40,8 +41,8 @@ class _AddEditReviewScreenState extends State<AddEditReviewScreen> {
 
     for (int i = 0; i < _bloc.allImages!.length; i++) {
       imageWidgets.add(AddEditReviewImage(
-        urlImage: _bloc.allImages![i] is GCImage
-            ? (_bloc.allImages![i] as GCImage).imageUrl
+        gcImage: _bloc.allImages![i] is GCImage
+            ? (_bloc.allImages![i] as GCImage)
             : null,
         fileImage:
             _bloc.allImages![i] is File ? (_bloc.allImages![i] as File) : null,
@@ -49,12 +50,10 @@ class _AddEditReviewScreenState extends State<AddEditReviewScreen> {
           _bloc.add(DeletedImageEvent(image: _bloc.allImages![i]));
         },
         onImageTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => AddEditReviewImagePreview(
-                images: _bloc.allImages,
-                selectedImageIndex: i,
-              ),
+          sl<NavigationManager>().navigateTo(
+            AddEditReviewImagePreview(
+              images: _bloc.allImages,
+              selectedImageIndex: i,
             ),
           );
         },
@@ -86,7 +85,7 @@ class _AddEditReviewScreenState extends State<AddEditReviewScreen> {
       child: BlocConsumer<AddEditReviewBloc, AddEditReviewState>(
         listener: (context, state) {
           if (state is AddEditReviewLoaded) {
-            Navigator.of(context).pop(true);
+            sl<NavigationManager>().goBack(true);
           } else if (state is AddEditReviewError) {
             final snackBar = SnackBar(
                 content: Text(Localization.of(context, state.message ?? '')),

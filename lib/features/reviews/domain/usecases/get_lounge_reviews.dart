@@ -16,19 +16,23 @@ class GetLoungeReviews
       GetLoungeReviewsParams params) async {
     return await repository.getLoungeReviews(
       sortBy: params.sortBy,
+      id: params.id,
     );
   }
 }
 
 class GetLoungeReviewsParams extends Equatable {
   final String? sortBy;
+  final int? id;
 
   GetLoungeReviewsParams({
     this.sortBy,
+    required this.id,
   });
 
   @override
   List<Object?> get props => [
         sortBy,
+        id,
       ];
 }

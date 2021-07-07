@@ -82,7 +82,7 @@ void main() {
         // arrange
         setUpMockHttpClientSuccess();
         // act
-        final result = await dataSource.getLoungeReviews();
+        final result = await dataSource.getLoungeReviews(id: 0);
         // assert
         expect(result, equals(tReviewsModel));
       },
@@ -96,7 +96,7 @@ void main() {
         // act
         final call = dataSource.getLoungeReviews;
         // assert
-        expect(() => call(), throwsA(TypeMatcher<ServerException>()));
+        expect(() => call(id: 0), throwsA(TypeMatcher<ServerException>()));
       },
     );
   });
@@ -112,7 +112,7 @@ void main() {
         // arrange
         setUpMockHttpClientSuccess();
         // act
-        final result = await dataSource.getMoreLoungeReviews();
+        final result = await dataSource.getMoreLoungeReviews(id: 0);
         // assert
         expect(result, equals(tReviewsModel));
       },
@@ -126,7 +126,7 @@ void main() {
         // act
         final call = dataSource.getMoreLoungeReviews;
         // assert
-        expect(() => call(), throwsA(TypeMatcher<ServerException>()));
+        expect(() => call(id: 0), throwsA(TypeMatcher<ServerException>()));
       },
     );
   });

@@ -5,10 +5,12 @@ import 'package:gamecircle/features/reviews/domain/entities/review.dart';
 abstract class ReviewsRemoteDataSource {
   Future<List<Review?>> getLoungeReviews({
     String? sortBy,
+    required int? id,
   });
 
   Future<List<Review?>> getMoreLoungeReviews({
     String? sortBy,
+    required int? id,
   });
 
   Future<List<Review?>> getUserReviews({

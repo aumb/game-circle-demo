@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/states/error_widget.dart';
 import 'package:gamecircle/core/widgets/states/loading_widget.dart';
@@ -148,12 +149,8 @@ class _UserReviewsScreenState extends State<UserReviewsScreen> {
       child: ReviewCard(
           review: _bloc.reviews[index]!,
           onEdit: () async {
-            final bool? result = await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) =>
-                    AddEditReviewScreen(review: _bloc.reviews[index]!),
-              ),
-            );
+            final bool? result = await sl<NavigationManager>()
+                .navigateTo(AddEditReviewScreen(review: _bloc.reviews[index]!));
 
             if (result ?? false) {
               _bloc.add(GetUserReviewsEvent());

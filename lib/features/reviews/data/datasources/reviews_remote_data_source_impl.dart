@@ -37,10 +37,13 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
   }
 
   @override
-  Future<List<Review?>> getLoungeReviews({String? sortBy}) async {
+  Future<List<Review?>> getLoungeReviews({
+    String? sortBy,
+    required int? id,
+  }) async {
     try {
-      final Response? response =
-          await client.get(API.loungeReviews, queryParameters: {
+      final url = API.loungeReviews + "/" + id.toString();
+      final Response? response = await client.get(url, queryParameters: {
         if (StringUtils().isNotEmpty(sortBy)) "sort_by": sortBy,
       });
       if (response?.statusCode == 200) {
@@ -57,12 +60,16 @@ class ReviewsRemoteDataSourceImpl implements ReviewsRemoteDataSource {
   }
 
   @override
-  Future<List<Review?>> getMoreLoungeReviews({String? sortBy}) async {
+  Future<List<Review?>> getMoreLoungeReviews({
+    String? sortBy,
+    required int? id,
+  }) async {
     if (StringUtils().isNotEmpty(paginationModel?.meta.links?.next)) {
       try {
-        final Response? response =
-            await client.get(API.loungeReviews, queryParameters: {
-          if (StringUtils().isNotEmpty(sortBy)) "sort_by": sortBy,
+        final url = API.loungeReviews + "/" + id.toString();
+        final Response? response = await client.get(url, queryParameters: {
+          if (StringUtils().isNotEmpty(sortBy))
+            "sort_by": sortBy!.toLowerCase(),
           "page": paginationModel!.meta.currentPage! + 1,
         });
         if (response?.statusCode == 200) {

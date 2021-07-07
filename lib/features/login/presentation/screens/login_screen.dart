@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/images.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
@@ -144,11 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(width: 16),
               _buildRegisterOptionsButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => RegistrationScreen(),
-                    ),
-                  );
+                  sl<NavigationManager>().navigateTo(RegistrationScreen());
                 },
                 color: Theme.of(context).errorColor,
                 icon: MdiIcons.email,

@@ -16,6 +16,7 @@ class GetMoreLoungeReviews
       GetLoungeReviewsParams params) async {
     return await repository.getMoreLoungeReviews(
       sortBy: params.sortBy,
+      id: params.id,
     );
   }
 }

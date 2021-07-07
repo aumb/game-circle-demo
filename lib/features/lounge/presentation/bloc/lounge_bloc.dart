@@ -32,7 +32,7 @@ class LoungeBloc extends Bloc<LoungeEvent, LoungeState> {
     required this.getLounge,
   }) : super(LoungeInitial()) {
     _fullLounge = lounge;
-    _timings = _getLoungeTimings();
+    _timings = [];
     _isFavorite = _fullLounge?.isFavorite ?? false;
   }
 
@@ -88,6 +88,7 @@ class LoungeBloc extends Bloc<LoungeEvent, LoungeState> {
       return _handleFailureEvent(failure);
     }, (lounge) {
       _fullLounge = lounge;
+      _timings = _getLoungeTimings();
       return LoungeLoaded();
     });
   }

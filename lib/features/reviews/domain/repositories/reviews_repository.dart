@@ -15,10 +15,12 @@ abstract class ReviewsRepository {
 
   Future<Either<Failure, List<Review?>>> getLoungeReviews({
     String? sortBy,
+    required int? id,
   });
 
   Future<Either<Failure, List<Review?>>> getMoreLoungeReviews({
     String? sortBy,
+    required int? id,
   });
 
   Future<Either<Failure, Review?>> deleteLoungeReview({

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/custom_divider.dart';
@@ -22,20 +23,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         SliverAppBar(
           leading: IconButton(
             icon: BackButtonIcon(),
-            onPressed: () => Navigator.of(context).pop(shouldReloadLounges),
+            onPressed: () =>
+                sl<NavigationManager>().goBack(shouldReloadLounges),
           ),
           expandedHeight: 120,
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.edit),
               onPressed: () async {
-                bool shouldReload = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => EditProfileScreen(),
-                  ),
+                final shouldReload = await sl<NavigationManager>().navigateTo(
+                  EditProfileScreen(),
                 );
 
-                if (shouldReload) {
+                if (shouldReload ?? false) {
                   shouldReloadLounges = true;
                   if (mounted) setState(() {});
                 }
@@ -55,11 +55,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Hero(
+                tag: "profile_picture",
                 child: ProfilePicture(
                   imageUrl: sl<SessionManager>().user?.imageUrl,
                   size: 130,
                 ),
-                tag: "profile_picture",
               ),
             ],
           ),

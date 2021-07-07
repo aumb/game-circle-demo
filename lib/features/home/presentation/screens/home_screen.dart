@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/dynamic_links_manager.dart';
 import 'package:gamecircle/core/widgets/states/error_widget.dart';
 import 'package:gamecircle/core/widgets/states/loading_widget.dart';
+import 'package:gamecircle/features/dynamic_links/presentation/bloc/dynamic_links_bloc.dart';
 import 'package:gamecircle/features/home/presentation/bloc/home_bloc.dart';
 import 'package:gamecircle/features/lounges/presentation/screens/lounges_screen.dart';
 
@@ -49,7 +51,13 @@ class _HomeScreenState extends State<HomeScreen> {
           body: MultiBlocListener(
             listeners: [
               BlocListener<HomeBloc, HomeState>(
-                listener: (context, state) {},
+                listener: (context, state) {
+                  if (state is HomeLoaded) {
+                    sl<DynamicLinksBloc>().add(HandleDynamicLinkEvent());
+                  } else if (state is HomeError) {
+                    sl<DynamicLinksManager>().navigateTo = null;
+                  }
+                },
               ),
             ],
             child: BlocBuilder<HomeBloc, HomeState>(

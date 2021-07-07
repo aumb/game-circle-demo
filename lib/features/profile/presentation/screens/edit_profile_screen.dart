@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/images.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
@@ -41,7 +42,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       child: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ProfileLoaded) {
-            Navigator.of(context).pop(true);
+            sl<NavigationManager>().goBack(true);
           } else if (state is ProfileError) {
             final snackBar = SnackBar(
                 content: Text(Localization.of(context, state.message ?? '')),

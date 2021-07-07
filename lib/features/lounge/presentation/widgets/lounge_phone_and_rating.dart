@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/utils/string_utils.dart';
 import 'package:gamecircle/features/lounges/domain/entities/lounge.dart';
+import 'package:gamecircle/features/reviews/presentation/screens/lounge_reviews_screen.dart';
+import 'package:gamecircle/injection_container.dart';
 
 class LoungePhoneAndRating extends StatelessWidget {
   final Lounge lounge;
@@ -41,9 +44,8 @@ class LoungePhoneAndRating extends StatelessWidget {
               InkWell(
                 borderRadius: BorderRadius.circular(4),
                 onTap: () {
-                  // Navigator.of(context).push(MaterialPageRoute(
-                  //     builder: (BuildContext context) =>
-                  //         GamingLoungeReviewsScreen(lounge: lounge)));
+                  sl<NavigationManager>()
+                      .navigateTo(LoungeReviewsScreen(lounge: lounge));
                 },
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(4),

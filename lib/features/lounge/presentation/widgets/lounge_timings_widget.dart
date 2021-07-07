@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamecircle/core/utils/gc_date_utils.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/custom_dialog.dart';
 import 'package:gamecircle/core/widgets/custom_divider.dart';
@@ -157,16 +158,45 @@ class LoungeTimingsWidget extends StatelessWidget {
                                       e.openTime == null
                                           ? Localization.of(
                                               context, 'open_all_day')
-                                          : "${e.openTime} - ${e.closeTime}",
-                                      style: e.day == now.day
+                                          : "${dateToString(e.openTime)} - ${dateToString(e.closeTime)}",
+                                      style: e.day == now.weekday - 1
                                           ? TextStyle(
                                               fontWeight: FontWeight.bold,
                                             )
                                           : null),
                                 )
                               : Expanded(
-                                  child: Text(
-                                    Localization.of(context, 'closed'),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        Localization.of(context, 'closed') +
+                                            " ",
+                                        style: e.day == now.weekday - 1
+                                            ? TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              )
+                                            : null,
+                                      ),
+                                      Text(
+                                        getFromTimeToTime(e),
+                                        style: e.day == now.weekday - 1
+                                            ? TextStyle(
+                                                fontSize: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2!
+                                                        .fontSize! -
+                                                    2,
+                                                fontWeight: FontWeight.bold,
+                                              )
+                                            : TextStyle(
+                                                fontSize: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2!
+                                                        .fontSize! -
+                                                    2,
+                                              ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                         ],
@@ -176,5 +206,17 @@ class LoungeTimingsWidget extends StatelessWidget {
                 }).toList(),
               ],
             ));
+  }
+
+  String dateToString(DateTime? date) {
+    return GCDateUtils().getStrDate(date, pattern: "HH:mm");
+  }
+
+  String getFromTimeToTime(Timing? e) {
+    if (e?.openTime != null && e?.closeTime != null) {
+      return "(${dateToString(e?.openTime)} - ${dateToString(e?.closeTime)})";
+    } else {
+      return '';
+    }
   }
 }

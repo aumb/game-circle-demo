@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "143236840270",
+    "project_id": "gamecircle-d0b16",
+    "storage_bucket": "gamecircle-d0b16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:143236840270:android:4956730a15eab5160afc1f",
+        "android_client_info": {
+          "package_name": "com.exmaple.gamecircle"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "143236840270-luaks5n8qts7a3913u9rcjteq7ut5v9u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.exmaple.gamecircle",
+            "certificate_hash": "734bea27f6b5bcdef93c17ad97df00aa11d94e29"
+          }
+        },
+        {
+          "client_id": "143236840270-1dndqblsfq3pndj3728qac6bsptjsoj3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDakR52csFcjjc5Jovws5LwtYe5Zr7TQz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "143236840270-1dndqblsfq3pndj3728qac6bsptjsoj3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "143236840270-rpn5n6bsp0rs58bfpu5067f6ptj4uqb2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.game-circle"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

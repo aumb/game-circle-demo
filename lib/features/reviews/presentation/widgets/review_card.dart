@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/gc_date_utils.dart';
@@ -109,14 +110,12 @@ class ReviewCard extends StatelessWidget {
     for (int i = 0; i < review.images!.length; i++) {
       imagesWidget.add(
         ReviewImage(
-          urlImage: review.images![i]!.imageUrl!,
+          image: review.images![i]!,
           onImageTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => ReviewImagePreview(
-                  selectedImageIndex: i,
-                  images: review.images,
-                ),
+            sl<NavigationManager>().navigateTo(
+              ReviewImagePreview(
+                selectedImageIndex: i,
+                images: review.images,
               ),
             );
           },

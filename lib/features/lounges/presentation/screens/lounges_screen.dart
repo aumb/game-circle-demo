@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
 import 'package:gamecircle/core/widgets/buttons/custom_outline_button.dart';
@@ -113,18 +114,21 @@ class _LoungesScreenState extends State<LoungesScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            ProfilePicture(
-                imageUrl: sl<SessionManager>().user?.imageUrl,
-                onTap: () async {
-                  final bool? result = await showDialog(
-                    context: context,
-                    builder: (context) => AvatarDialog(),
-                  );
+            Hero(
+              tag: "profile_picture1",
+              child: ProfilePicture(
+                  imageUrl: sl<SessionManager>().user?.imageUrl,
+                  onTap: () async {
+                    final bool? result = await showDialog(
+                      context: context,
+                      builder: (context) => AvatarDialog(),
+                    );
 
-                  if (result ?? false) {
-                    setState(() {});
-                  }
-                }),
+                    if (result ?? false) {
+                      setState(() {});
+                    }
+                  }),
+            ),
           ],
         ),
       ),
@@ -167,11 +171,8 @@ class _LoungesScreenState extends State<LoungesScreen> {
       child: LoungeCard(
           lounge: _bloc.lounges[index],
           onTap: () async {
-            final result = await Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      LoungeScreen(lounge: _bloc.lounges[index]!)),
-            );
+            final result = await sl<NavigationManager>()
+                .navigateTo(LoungeScreen(lounge: _bloc.lounges[index]!));
             if (result ?? false) {
               _bloc.add(GetLoungesEvent());
             }
@@ -257,10 +258,8 @@ class _LoungesScreenState extends State<LoungesScreen> {
         child: Semantics(
           child: InkWell(
             borderRadius: BorderRadius.circular(20),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (BuildContext context) => LoungesSearchScreen(),
-              ),
+            onTap: () => sl<NavigationManager>().navigateTo(
+              LoungesSearchScreen(),
             ),
             child: Container(
               width: double.infinity,

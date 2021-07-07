@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gamecircle/core/managers/navgiation_manager.dart';
 import 'package:gamecircle/core/managers/session_manager.dart';
 import 'package:gamecircle/core/utils/custom_colors.dart';
 import 'package:gamecircle/core/utils/locale/app_localizations.dart';
@@ -23,8 +24,11 @@ class AvatarDialog extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              ProfilePicture(
-                imageUrl: sl<SessionManager>().user?.imageUrl,
+              Hero(
+                tag: "profile_picture1",
+                child: ProfilePicture(
+                  imageUrl: sl<SessionManager>().user?.imageUrl,
+                ),
               ),
               SizedBox(width: 8),
               Column(
@@ -79,7 +83,7 @@ class AvatarDialog extends StatelessWidget {
           child: BlocConsumer<LogoutCubit, LogoutState>(
             listener: (context, state) {
               if (state is LogoutLoaded) {
-                Navigator.of(context).popUntil((route) => route.isFirst);
+                sl<NavigationManager>().popTillFirst();
               }
             },
             builder: (context, state) {
@@ -103,12 +107,9 @@ class AvatarDialog extends StatelessWidget {
   }
 
   void _navigate(Widget screen, BuildContext context) async {
-    final result = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => screen,
-      ),
-    );
-    Navigator.of(context).pop(result);
+    final result = await sl<NavigationManager>().navigateTo(screen);
+
+    sl<NavigationManager>().goBack(result);
   }
 }
 
